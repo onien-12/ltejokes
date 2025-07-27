@@ -1,6 +1,7 @@
 import numpy as np
 from channels.processing.precoding import transform_precoding
-from .processing import modulation, scrambling
+from sequence.pseudo_random import get_pseudorandom_sequence
+from .processing import modulation 
 
 class InputBit:
     value: int
@@ -36,7 +37,7 @@ codebook_2_antenna = {
 
 def scramble(bits: list[InputBit], q: int, n_rnti: int, N_Cell_id: int, n_s: int):
     c_init = n_rnti * (2 ** 14) + q * (2 ** 13) + int(np.floor(n_s / 2)) * (2 ** 9) + N_Cell_id
-    c = scrambling.get_scrambling_sequence(c_init, len(bits))
+    c = get_pseudorandom_sequence(c_init, len(bits))
     b_hat = [0] * len(bits)
 
     for i in range(len(bits)):
