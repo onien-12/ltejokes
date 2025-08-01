@@ -6,7 +6,6 @@ class PUCCHConfig:
     delta_pucch_shift: int
     n_RB_CQI: int
     n_CS_AN: int
-    n1_PUCCH_AN: int
 
 @dataclass
 class PUSCHConfig:
