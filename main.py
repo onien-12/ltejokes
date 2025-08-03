@@ -1,6 +1,7 @@
 from timeit_decorator import timeit_sync
 import matplotlib.pyplot as plt
 from context import context, sib2
+from essentials.debug_tools import plot_constellation, plot_resource_grid
 import signals.crs
 
 enb = context.Context(
@@ -20,15 +21,18 @@ enb = context.Context(
     is_extended_cp=False,
     physical_cell_id=0,
     antenna_ports=1,
-    N_DL_RB=50,
-    N_UL_RB=50
+    N_DL_RB=5,
+    N_UL_RB=5
 )
 
 @timeit_sync(runs=1)
-def process(antenna_port: int, enb: context.Context):
-    signals.crs.map_crs(antenna_port, enb)
+def process(enb: context.Context):
+    for antenna_port in range(enb.antenna_ports):
+        signals.crs.map_crs(antenna_port, enb)
 
-process(0, enb)
+process(enb)
+for antenna_port in range(enb.antenna_ports):
+    plot_resource_grid(enb.dl_resource_grid, antenna_port)
+
 print(enb)
-plt.imshow(enb.dl_resource_grid.debug.visualize_img(0))
 plt.show()

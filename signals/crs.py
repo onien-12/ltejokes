@@ -1,7 +1,8 @@
 from context.context import Context
 from .common import get_rs_sequence
 from context.constants import N_max_DL_RB
-from channels.symbol import ReferenceSignal
+from channels.symbol import ReferenceSignal, Reserved
+from matplotlib import pyplot as plt
 
 crs_sequences = {}
 
@@ -24,14 +25,23 @@ def get_subcarrier_shift_v(antenna_port, l, n_s):
     if antenna_port == 3: return 3 + 3 * (n_s % 2)
 
 def map_crs(antenna_port: int, context: Context):
+    symbols = []
     possible_l = [1] if antenna_port in (2, 3) else [0, context.N_DL_symb - 3]
+    v_shift = context.physical_cell_id % 6
     for n_s in range(context.nof_slots):
         for l in possible_l:
             for m in range(2 * context.N_DL_RB):
                 crs_sequence = get_crs_sequence(n_s, l, context)
-                m_tick = m + N_max_DL_RB - context.N_DL_RB
-                v_shift = context.physical_cell_id % 6
                 v = get_subcarrier_shift_v(antenna_port, l, n_s)
+                m_tick = m + N_max_DL_RB - context.N_DL_RB
                 k = 6*m + (v + v_shift) % 6
                 current_symb = crs_sequence[m_tick]
-                context.dl_resource_grid.map_re(antenna_port, k, n_s * context.N_DL_symb + l, ReferenceSignal(current_symb))
+                global_l = n_s * context.N_DL_symb + l
+
+                context.dl_resource_grid.map_re(antenna_port, k, global_l, ReferenceSignal(current_symb))
+                for other_antenna_port in range(context.antenna_ports):
+                    if other_antenna_port != antenna_port:
+                        context.dl_resource_grid.map_re(other_antenna_port, k, global_l, Reserved(0))
+
+                symbols.append(current_symb)
+    return symbols
