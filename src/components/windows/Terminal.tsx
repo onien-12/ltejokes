@@ -4,14 +4,14 @@ import Terminal, {
   TerminalInput,
   TerminalOutput,
 } from "react-terminal-ui";
-import { FileItem, useFilesystemStore } from "../../store/useFilesystemStore";
-import { findFolderByPath } from "../../utils";
 import React from "react";
 import { useSystemStore } from "../../store/useSystemStore";
 import { pwdCommand, lsCommand, cdCommand, catCommand } from "./commands/fs";
-import { CommandHandler } from "./commands/types";
+import { CommandContext, CommandHandler } from "./commands/types";
 import { unameCommand } from "./commands/system";
 import { ipCommand } from "./commands/network";
+import { FileItem } from "../../store/useFilesystemStore";
+import { readDirectory, readFile } from "../../utils";
 
 const commandDescriptions: { [key: string]: string } = {
   pwd: "Print working directory",
@@ -30,7 +30,7 @@ const helpCommand: CommandHandler = (args, { addOutput, getCommandsList }) => {
   commandsList.forEach((cmd) => {
     const spaces = 13 - cmd.name.length;
     addOutput(
-      `  ${cmd.name}${" ".repeat(Math.max(0, spaces))} - ${cmd.description}`
+      `${cmd.name}${" ".repeat(Math.max(0, spaces))} - ${cmd.description}`
     );
   });
 };
@@ -45,14 +45,14 @@ const commands: { [key: string]: CommandHandler } = {
   ip: ipCommand,
 };
 
-function useTerminalCommands(initialFileSystem: FileItem[]) {
+function useTerminalCommands() {
   const systemStore = useSystemStore();
 
   const [path, setPath] = useState<string[]>([]);
-  const [currentDirItems, setCurrentDirItems] =
-    useState<FileItem[]>(initialFileSystem);
+  const [currentDirItems, setCurrentDirItems] = useState<FileItem[]>([]);
   const [lineData, setLineData] = useState<JSX.Element[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentDirError, setCurrentDirError] = useState<string | null>(null);
 
   useEffect(() => {
     setLineData([
@@ -76,23 +76,51 @@ function useTerminalCommands(initialFileSystem: FileItem[]) {
     });
   }, []);
 
-  const findDirectoryContentsMemo = useCallback(
-    (segments: string[]): FileItem[] | null => {
-      return findFolderByPath(initialFileSystem, segments);
+  const updateCurrentDirectoryItems = useCallback(
+    async (newPathSegments: string[]) => {
+      setIsLoading(true);
+      setCurrentDirError(null);
+      try {
+        const fullRelativeApiPath = `/${newPathSegments.join("/")}`;
+        const data = await readDirectory(fullRelativeApiPath);
+        setCurrentDirItems(data.contents);
+        setPath(newPathSegments);
+      } catch (error: any) {
+        setCurrentDirError(error.message);
+        addOutput(`Error loading directory: ${error.message}`);
+
+        if (newPathSegments.length > 0) {
+          if (
+            newPathSegments.length > path.length ||
+            newPathSegments.length === 0
+          ) {
+            setPath([]);
+          }
+        }
+        setCurrentDirItems([]);
+      } finally {
+        setIsLoading(false);
+      }
     },
-    [initialFileSystem]
+    [addOutput, path]
   );
 
   useEffect(() => {
-    const newContents = findDirectoryContentsMemo(path);
-    if (newContents) {
-      setCurrentDirItems(newContents);
-    } else {
-      setPath([]);
-      setCurrentDirItems(initialFileSystem);
-      addOutput("Path invalid. Resetting to root.");
+    if (
+      path.length === 0 &&
+      currentDirItems.length === 0 &&
+      !isLoading &&
+      !currentDirError
+    ) {
+      updateCurrentDirectoryItems([]);
     }
-  }, [path, initialFileSystem, findDirectoryContentsMemo, addOutput]);
+  }, [
+    path,
+    currentDirItems,
+    isLoading,
+    currentDirError,
+    updateCurrentDirectoryItems,
+  ]);
 
   const getCommandsList = useCallback(() => {
     const list = Object.keys(commands).map((cmdName) => ({
@@ -115,6 +143,12 @@ function useTerminalCommands(initialFileSystem: FileItem[]) {
 
   const onInput = useCallback(
     async (input: string) => {
+      if (isLoading) {
+        addOutput(<TerminalInput>{input}</TerminalInput>);
+        addOutput("Please wait for the current command to finish...");
+        return;
+      }
+
       const trimmedInput = input.trim();
       addOutput(<TerminalInput>{trimmedInput}</TerminalInput>);
 
@@ -132,15 +166,19 @@ function useTerminalCommands(initialFileSystem: FileItem[]) {
 
       const commandHandler = commands[commandName];
       if (commandHandler) {
-        const result = commandHandler(args, {
-          currentDirItems,
-          addOutput,
-          setPath,
-          getCommandsList,
-          systemStore,
-          filesystem: initialFileSystem,
+        const context: CommandContext = {
           currentPath: path,
-        });
+          currentDirItems: currentDirItems,
+          addOutput: addOutput,
+          setPath: setPath,
+          setCurrentDirItems: setCurrentDirItems,
+          getCommandsList: getCommandsList,
+          systemStore: systemStore,
+          fetchDirectoryContents: readDirectory,
+          fetchFileContent: readFile,
+        };
+
+        const result = commandHandler(args, context);
 
         if (result instanceof Promise) {
           setIsLoading(true);
@@ -148,6 +186,9 @@ function useTerminalCommands(initialFileSystem: FileItem[]) {
             await result;
           } catch (e) {
             console.error(e);
+            addOutput(
+              `Command failed: ${e instanceof Error ? e.message : String(e)}`
+            );
           } finally {
             setIsLoading(false);
           }
@@ -160,9 +201,10 @@ function useTerminalCommands(initialFileSystem: FileItem[]) {
       addOutput,
       path,
       currentDirItems,
-      initialFileSystem,
       getCommandsList,
       systemStore,
+      isLoading,
+      updateCurrentDirectoryItems,
     ]
   );
 
@@ -170,9 +212,7 @@ function useTerminalCommands(initialFileSystem: FileItem[]) {
 }
 
 export default function TerminalWindow() {
-  const { filesystem } = useFilesystemStore();
-  const { path, lineData, onInput, isLoading } =
-    useTerminalCommands(filesystem);
+  const { path, lineData, onInput, isLoading } = useTerminalCommands();
 
   return (
     <div className="h-full text-start">
