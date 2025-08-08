@@ -1,5 +1,7 @@
 import { FileItem } from "./store/useFilesystemStore";
 
+const API = process.env.REACT_APP_API_URL as string;
+
 export function formatTime(date: Date): string {
   const pad = (n: number) => n.toString().padStart(2, "0");
 
@@ -81,7 +83,16 @@ export const resolvePath = (
 };
 
 export const readFile = async (path: string) => {
+  console.log(path);
   return fetch(
-    "/filesystem/" + (path.startsWith("/") ? path.slice(1) : path)
+    `${API}/api/filesystem/file?path=` +
+      encodeURIComponent(path.startsWith("/") ? path.slice(1) : path)
   ).then((rsp) => rsp.arrayBuffer());
+};
+
+export const readDirectory = async (path: string) => {
+  return fetch(
+    `${API}/api/filesystem?path=` +
+      encodeURIComponent(path.startsWith("/") ? path.slice(1) : path)
+  ).then((rsp) => rsp.json());
 };

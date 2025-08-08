@@ -1,10 +1,3 @@
-import { FileItem } from "../../../store/useFilesystemStore";
-import {
-  findFileByPath,
-  findFolderByPath,
-  readFile,
-  resolvePath,
-} from "../../../utils";
 import { CommandHandler } from "./types";
 
 export const pwdCommand: CommandHandler = (
@@ -14,9 +7,65 @@ export const pwdCommand: CommandHandler = (
   addOutput(`/${currentPath.join("/")}`);
 };
 
-export const cdCommand: CommandHandler = (
+export const lsCommand: CommandHandler = async (
   args,
-  { currentPath, filesystem, addOutput, setPath }
+  { currentPath, addOutput, fetchDirectoryContents }
+) => {
+  let targetPathSegments = [...currentPath];
+  let displayPath = "";
+
+  if (args.length > 1) {
+    const argPath = args[1];
+    if (argPath.startsWith("/")) {
+      targetPathSegments = argPath.split("/").filter(Boolean);
+      displayPath = ` ${argPath}`;
+    } else {
+      const parts = argPath.split("/").filter(Boolean);
+      for (const part of parts) {
+        if (part === "..") {
+          if (targetPathSegments.length > 0) targetPathSegments.pop();
+        } else if (part !== ".") {
+          targetPathSegments.push(part);
+        }
+      }
+      displayPath = ` ${argPath}`;
+    }
+  }
+
+  const fullApiPath = `/${targetPathSegments.join("/")}`;
+
+  try {
+    const data = await fetchDirectoryContents(fullApiPath);
+    const contents = data.contents;
+
+    if (contents.length === 0) {
+      addOutput(` (empty directory)${displayPath} `);
+    } else {
+      const listOutput = contents
+        //@ts-expect-error
+        .map((item) => {
+          if (item.type === "folder") {
+            return `<span style="color:#8be9fd;">${item.name}/</span>`;
+          }
+          return item.name;
+        })
+        .join("   ");
+      addOutput(<span dangerouslySetInnerHTML={{ __html: listOutput }} />);
+    }
+  } catch (error: any) {
+    addOutput(`ls: cannot access '${args[1] || "."}': ${error.message}`);
+  }
+};
+
+export const cdCommand: CommandHandler = async (
+  args,
+  {
+    currentPath,
+    setPath,
+    addOutput,
+    fetchDirectoryContents,
+    setCurrentDirItems,
+  }
 ) => {
   if (args.length < 2) {
     addOutput("cd: missing operand");
@@ -24,88 +73,71 @@ export const cdCommand: CommandHandler = (
   }
   const targetPath = args[1];
 
+  let newPathSegments: string[];
+
   if (targetPath === "..") {
-    if (currentPath.length > 0) {
-      setPath((prevPath) => prevPath.slice(0, -1));
-    } else {
-      addOutput("cd: already at root");
-    }
+    newPathSegments = currentPath.slice(0, -1);
   } else if (targetPath === ".") {
+    newPathSegments = [...currentPath];
   } else if (targetPath.startsWith("/")) {
-    const newSegments = targetPath.split("/").filter(Boolean);
-    const targetContents = findFolderByPath(filesystem, newSegments);
-    if (targetContents) {
-      setPath(newSegments);
-    } else {
-      addOutput(`cd: no such directory: ${targetPath}`);
-    }
+    newPathSegments = targetPath.split("/").filter(Boolean);
   } else {
-    const newSegments = [...currentPath, targetPath];
-    const targetContents = findFolderByPath(filesystem, newSegments);
-    if (targetContents) {
-      setPath(newSegments);
-    } else {
-      addOutput(`cd: no such directory: ${targetPath}`);
-    }
-  }
-};
-
-export const lsCommand: CommandHandler = (
-  args,
-  { currentPath, filesystem, addOutput }
-) => {
-  let targetDirItems: FileItem[] | null = null;
-  let targetPathDisplay = "";
-
-  if (args.length < 2) {
-    targetDirItems = findFolderByPath(filesystem, currentPath);
-    targetPathDisplay = "";
-  } else {
-    const targetPathString = args[1];
-    const resolvedSegments = resolvePath(currentPath, targetPathString);
-    targetDirItems = findFolderByPath(filesystem, resolvedSegments);
-    targetPathDisplay = ` ${targetPathString}`;
+    newPathSegments = [...currentPath, targetPath];
   }
 
-  if (!targetDirItems) {
-    addOutput(`ls: cannot access '${args[1]}': No such file or directory`);
-    return;
-  }
+  const fullApiPath = `/${newPathSegments.join("/")}`;
 
-  if (targetDirItems.length === 0) {
-    addOutput(` (empty directory)${targetPathDisplay} `);
-  } else {
-    const listOutput = targetDirItems
-      .map((item) => {
-        if (item.type === "folder") {
-          return `<span style="color:#8be9fd;">${item.name}/</span>`;
-        }
-        return item.name;
-      })
-      .join("   ");
-    addOutput(<span dangerouslySetInnerHTML={{ __html: listOutput }} />);
+  try {
+    const data = await fetchDirectoryContents(fullApiPath);
+    setPath(newPathSegments);
+    setCurrentDirItems(data.contents);
+  } catch (error: any) {
+    addOutput(`cd: no such directory: ${targetPath}: ${error.message}`);
   }
 };
 
 export const catCommand: CommandHandler = async (
   args,
-  { currentPath, filesystem, addOutput }
+  { currentPath, addOutput, fetchFileContent, fetchDirectoryContents }
 ) => {
   if (args.length < 2) {
     addOutput("cat: missing operand");
     return;
   }
-  const targetPathString = args[1];
+  const fileName = args[1];
 
-  const resolvedPathSegments = resolvePath(currentPath, targetPathString);
-  const file = findFileByPath(filesystem, resolvedPathSegments);
-  const path = `/${resolvedPathSegments.join("/")}`;
+  let filePathSegments = [...currentPath];
+  const parts = fileName.split("/").filter(Boolean);
+  for (const part of parts) {
+    if (part === "..") {
+      if (filePathSegments.length > 0) filePathSegments.pop();
+    } else if (part !== ".") {
+      filePathSegments.push(part);
+    }
+  }
 
-  if (file) {
-    const content = await readFile(path);
-    const enc = new TextDecoder();
-    addOutput(enc.decode(content));
-  } else {
-    addOutput(`cat: ${targetPathString}: No such file or directory`);
+  const fullApiPath = `/${filePathSegments.join("/")}`;
+
+  try {
+    const dirCheckResponse = await fetchDirectoryContents(
+      `/${filePathSegments.slice(0, 1).join("/")}`
+    );
+    const fileExistsAsFolder = dirCheckResponse.contents.some(
+      //@ts-expect-error
+      (item) =>
+        item.name === filePathSegments[filePathSegments.length - 1] &&
+        item.type === "folder"
+    );
+
+    if (fileExistsAsFolder) {
+      addOutput(`cat: ${fileName}: Is a directory`);
+      return;
+    }
+
+    const content = await fetchFileContent(fullApiPath);
+    const dec = new TextDecoder();
+    addOutput(dec.decode(content));
+  } catch (error: any) {
+    addOutput(`cat: ${fileName}: No such file or directory: ${error.message}`);
   }
 };
