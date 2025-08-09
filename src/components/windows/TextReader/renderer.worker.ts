@@ -7,6 +7,10 @@ import remarkMath from "remark-math";
 import remarkDirective from "remark-directive";
 import remarkRehype from "remark-rehype";
 import { visit } from "unist-util-visit";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+import { VFile } from "vfile";
+import rehypeHighlight from "rehype-highlight";
 
 function customDirectivesPlugin() {
   return (tree: any) => {
@@ -76,7 +80,7 @@ const processor = unified()
   .use(remarkRehype, {
     allowDangerousHtml: true,
     passThrough: ["html", "math", "inlineMath"],
-  });
+  })
 
 self.onmessage = async (
   event: MessageEvent<{
@@ -93,7 +97,7 @@ self.onmessage = async (
     const tree = currentProcessor.parse(markdown);
     const hastTree = await currentProcessor.run(tree);
 
-    const clonedTree = JSON.parse(JSON.stringify(hastTree));
+    let clonedTree = JSON.parse(JSON.stringify(hastTree));
 
     visit(clonedTree, ["math", "inlineMath"], (node, index, parent) => {
       const isInline = node.type == "inlineMath";
@@ -109,6 +113,12 @@ self.onmessage = async (
       //@ts-ignore
       node.children = node.data.hChildren;
     });
+
+    const file = new VFile("")
+
+    clonedTree = rehypeRaw()(clonedTree, file)
+    if (renderMath) rehypeKatex({ trust: true })(clonedTree, file);
+    rehypeHighlight()(clonedTree, file);
 
     self.postMessage({ hast: clonedTree, requestId });
   } catch (error: any) {
