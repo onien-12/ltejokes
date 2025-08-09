@@ -54,23 +54,25 @@ export const useSystemStore = create<SystemStore>((set) => ({
   openWindow: (window) =>
     set((state) =>
       state.openWindows.includes(window)
-        ? state
-        : { openWindows: [...state.openWindows, window] }
+        ?
+        {
+          openWindows: [
+            ...state.openWindows.filter((ow) => ow != window),
+            window,
+          ],
+        } : { openWindows: [...state.openWindows, window] }
     ),
   closeWindow: (window) =>
     set((state) => ({
       openWindows: state.openWindows.filter((ow) => ow != window),
     })),
   focusWindow: (window) =>
-    set((state) => {
-      console.log("focus");
-      return {
-        openWindows: [
-          ...state.openWindows.filter((ow) => ow != window),
-          window,
-        ],
-      };
-    }),
+    set((state) => ({
+      openWindows: [
+        ...state.openWindows.filter((ow) => ow != window),
+        window,
+      ],
+    })),
 
   setNetworkConnected: (connected) =>
     set((state) => ({ networkConnected: connected })),

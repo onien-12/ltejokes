@@ -39,6 +39,12 @@ code {
   height: calc(100% - 20px);
 }
 
+@-moz-document url-prefix() {
+  .window-content {
+    position: sticky
+  }
+}
+
 .react-terminal-line {
   overflow-wrap: normal;
   text-wrap: auto;

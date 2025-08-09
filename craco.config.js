@@ -13,6 +13,16 @@ module.exports = {
           }
         )
       );
+      webpackConfig.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /^hast-util-from-html-isomorphic$/,
+          (resource) => {
+            resource.request = require.resolve(
+              "hast-util-from-html-isomorphic"
+            );
+          }
+        )
+      );
       return webpackConfig;
     },
   },

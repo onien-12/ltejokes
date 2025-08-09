@@ -218,7 +218,7 @@ export default function TerminalWindow() {
     <div className="h-full text-start">
       <Terminal
         colorMode={ColorMode.Dark}
-        onInput={isLoading ? () => {} : onInput}
+        onInput={isLoading ? () => { } : onInput}
         prompt={isLoading ? "_" : `/${path.join("/")} $`}
         TopButtonsPanel={() => null}
         height="100%"
