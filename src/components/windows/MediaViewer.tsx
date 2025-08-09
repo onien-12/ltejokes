@@ -115,7 +115,7 @@ const MediaViewer: React.FC<MediaViewerProps> = ({ path }) => {
         <div className="flex flex-col items-center justify-center w-full h-full relative">
           {mediaType === "image" ? (
             <TransformWrapper>
-              <TransformComponent>
+              <TransformComponent wrapperClass="cursor-grab">
                 <img
                   src={mediaUrl}
                   alt="Media Viewer Content"

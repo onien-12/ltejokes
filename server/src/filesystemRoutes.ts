@@ -20,6 +20,37 @@ interface FileSystemResponse {
   options?: DirectoryOptions;
 }
 
+async function findNearestOptionsJson(
+  currentDirPath: string,
+  baseFsRoot: string
+): Promise<DirectoryOptions | undefined> {
+  let searchPath = currentDirPath;
+
+  while (searchPath.startsWith(baseFsRoot)) {
+    const optionsFilePath = path.join(searchPath, "options.json");
+
+    try {
+      const optionsFileContent = await fs.readFile(optionsFilePath, "utf-8");
+      return JSON.parse(optionsFileContent);
+    } catch (readError: any) {
+      if (readError.code === "ENOENT") {
+        const parentPath = path.dirname(searchPath);
+        if (parentPath === searchPath) {
+          break;
+        }
+        searchPath = parentPath;
+      } else {
+        console.warn(
+          `Failed to read or parse options.json in ${searchPath}: ${readError.message}`
+        );
+        break;
+      }
+    }
+  }
+
+  return undefined;
+}
+
 const sanitizePath = (baseDir: string, reqPath: string): string => {
   const normalizedReqPath = path.normalize(reqPath);
 
@@ -72,19 +103,10 @@ export const getFilesystemRoute =
           return a.name.localeCompare(b.name);
         });
 
-      let options: DirectoryOptions | undefined;
-      const optionsFilePath = path.join(currentDirectoryPath, "options.json");
-
-      try {
-        const optionsFileContent = await fs.readFile(optionsFilePath, "utf-8");
-        options = JSON.parse(optionsFileContent);
-      } catch (readError: any) {
-        if (readError.code !== "ENOENT") {
-          console.warn(
-            `Failed to read or parse options.json in ${currentDirectoryPath}: ${readError.message}`
-          );
-        }
-      }
+      const options = await findNearestOptionsJson(
+        currentDirectoryPath,
+        baseFsRoot
+      );
 
       const response: FileSystemResponse = {
         currentPath: requestedRelativePath,
