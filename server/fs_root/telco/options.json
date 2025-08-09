@@ -1,0 +1,4 @@
+{
+    "groupName": "telco",
+    "relatedGroups": ["LTE", "5gNR", "3gpp"]
+}

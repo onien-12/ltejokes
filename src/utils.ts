@@ -1,6 +1,6 @@
 import { FileItem } from "./store/useFilesystemStore";
 
-const API = process.env.REACT_APP_API_URL as string;
+export const API = process.env.REACT_APP_API_URL as string;
 
 export function formatTime(date: Date): string {
   const pad = (n: number) => n.toString().padStart(2, "0");

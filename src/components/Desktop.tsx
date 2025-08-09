@@ -47,9 +47,9 @@ export default function Desktop() {
           {
             id: "2",
             icon: <Icon icon="wpf:books" width="32" height="32" />,
-            label: "Projects",
+            label: "Files",
             defaultPosition: { x: 0, y: 80 },
-            handleClick: () => openWindow("projects"),
+            handleClick: () => openWindow("file manager"),
           },
           {
             id: "3",
@@ -76,10 +76,10 @@ export default function Desktop() {
       />
 
       <ManagedWindow
-        id="projects"
+        id="file manager"
         content={<ProjectsWindow />}
-        label="Projects"
-        defaultPosition={{ x: 100, y: 100 }}
+        label="Files"
+        defaultPosition={{ x: 160, y: 160 }}
         className="w-[650px] h-[400px]"
       />
 
@@ -87,7 +87,7 @@ export default function Desktop() {
         id="terminal"
         content={<TerminalWindow />}
         label="Terminal"
-        defaultPosition={{ x: 100, y: 100 }}
+        defaultPosition={{ x: 220, y: 220 }}
         className="w-[650px] h-[400px]"
       />
 

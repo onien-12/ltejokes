@@ -5,8 +5,9 @@ import React, {
   useTransition,
   useMemo,
   useRef,
+  useCallback,
 } from "react";
-import { readFile } from "../../../utils";
+import { API, readFile } from "../../../utils";
 import { ClipLoader } from "react-spinners";
 
 import "highlight.js/styles/atom-one-dark.css";
@@ -23,10 +24,108 @@ import RenderIfVisible from "../../utils/RenderIfVisible";
 import { useUIOptionsStore } from "../../../store/useUIOptionsStore";
 
 import clsx from "clsx";
+import { handleOpen } from "../FileManager";
+import { useSystemStore } from "../../../store/useSystemStore";
+import rehypeRaw from "rehype-raw";
 
 const markdownWorker = new Worker(
   new URL("./renderer.worker.ts", import.meta.url)
 );
+
+const GlossaryTermRenderer: React.FC<any> = ({ node, children, ...props }) => {
+  const glossaryTerm =
+    node.value ||
+    (children && Array.isArray(children)
+      ? children
+          .map((c) =>
+            typeof c === "string" ? c : c.props?.value || c.props?.children
+          )
+          .join("")
+      : String(children || ""));
+
+  const handleClick = useCallback(() => {}, [glossaryTerm]);
+
+  return (
+    <span
+      onClick={handleClick}
+      className="markdown-glossary-term cursor-pointer px-1 py-0.5 rounded-sm 
+               bg-blue-700/30 text-blue-300 hover:bg-blue-600/50 hover:text-blue-200 
+                transition-all duration-150 ease-in-out whitespace-nowrap"
+      title={`Click to open glossary for "${glossaryTerm}"`}
+    >
+      {children}
+    </span>
+  );
+};
+
+const FsImageRenderer: React.FC<any> = ({
+  node,
+  children,
+  addCustomWindow,
+  ...props
+}) => {
+  const path = node["data-path"];
+  const alt = node["data-alt"];
+  const name = node["data-name"];
+  const width = node["data-width"] || undefined;
+  const height = node["data-height"] || undefined;
+
+  const maxWidth = node["data-max-width"] || undefined;
+  const maxHeight = node["data-max-height"] || undefined;
+  const color = node["data-color"] || "white";
+
+  const imageUrl = path
+    ? `${API}/api/filesystem/file?path=${encodeURIComponent(path)}`
+    : "";
+
+  if (!imageUrl) {
+    return (
+      <span className="text-red-500">
+        Error: Image path not specified for fs-image.
+      </span>
+    );
+  }
+
+  return (
+    <figure
+      className="my-4 flex flex-col items-center justify-center text-center cursor-pointer"
+      style={{
+        maxWidth: width,
+        maxHeight: height,
+      }}
+      onClick={() =>
+        handleOpen({
+          file: {
+            name: path.split("/").at(-1),
+            type: "file",
+          },
+          currentRelativePathSegments: path.split("/").slice(0, -1),
+          addCustomWindow,
+        })
+      }
+    >
+      <img
+        src={imageUrl}
+        alt={alt || name || "Custom image from filesystem"}
+        className="max-w-full h-auto rounded-md shadow-md"
+        style={{
+          width: width ? width : "100%",
+          height: height ? height : "auto",
+          maxWidth: maxWidth ? maxWidth : "auto",
+          maxHeight: maxHeight ? maxHeight : "auto",
+          boxShadow: color == "white" ? "#686868 0px 1px 30px 0px" : undefined,
+        }}
+      />
+      {(name || alt || children) && (
+        <figcaption className="mt-2 text-sm text-gray-400">
+          {name && <span>{name}</span>}
+          {name && alt && <span className="mx-1">•</span>}
+          {!name && !alt ? children : null}
+        </figcaption>
+      )}
+    </figure>
+  );
+};
 
 const CustomDirectiveRenderer: React.FC<any> = ({
   node,
@@ -98,11 +197,13 @@ const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
         jsxs,
       });
 
-      rehypeHighlight()(tree, file);
-      if (mathEnabled) rehypeKatex({ trust: true })(tree, file);
+      const reparsedTree = rehypeRaw()(tree, file);
+
+      rehypeHighlight()(reparsedTree, file);
+      if (mathEnabled) rehypeKatex({ trust: true })(reparsedTree, file);
 
       //@ts-ignore
-      return jsxCompiler.compiler(tree, file);
+      return jsxCompiler.compiler(reparsedTree, file);
     }
 
     return unified().use(function () {
@@ -126,6 +227,8 @@ const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
 
 export default function TextReader({ path }: { path: string }) {
   const { optimizeUI, renderMath } = useUIOptionsStore();
+  const addCustomWindow = useSystemStore((store) => store.addCustomWindow);
+
   const [rawContent, setRawContent] = useState<string | null>(null);
   const [hastTree, setHastTree] = useState<any>(null);
   const [loadingPhase, setLoadingPhase] = useState<
@@ -220,64 +323,81 @@ export default function TextReader({ path }: { path: string }) {
   }, [rawContent, deferredRenderMath]);
 
   const memoizedMainThreadCustomComponents = useMemo(() => {
+    const Optimize = ({
+      children,
+      type,
+      props,
+    }: {
+      children: React.ReactNode;
+      type: string;
+      props: any;
+    }) => {
+      return optimizeUI ? (
+        <RenderIfVisible key={`riw-${type}-${props.key || Date.now()}`}>
+          {children}
+        </RenderIfVisible>
+      ) : (
+        <>{children}</>
+      );
+    };
+
     return {
       p: (props: any) => {
         const paragraph = <p key={props.key}>{props.children}</p>;
-        return optimizeUI ? (
-          <RenderIfVisible key={`riw-p-${props.key || Date.now()}`}>
+        return (
+          <Optimize type="p" props={props}>
             {paragraph}
-          </RenderIfVisible>
-        ) : (
-          paragraph
+          </Optimize>
         );
       },
       h1: (props: any) => {
         const heading = <h1 key={props.key}>{props.children}</h1>;
-        return optimizeUI ? (
-          <RenderIfVisible key={`riw-h1-${props.key || Date.now()}`}>
+        return (
+          <Optimize type="h1" props={props}>
             {heading}
-          </RenderIfVisible>
-        ) : (
-          heading
+          </Optimize>
         );
       },
       div: (props: any) => {
-        if (props.className && props.className.includes("math-display")) {
-          const mathDisplay = (
+        if (props["data-directive-name"]) {
+          const directiveName = props["data-directive-name"];
+          if (directiveName === "fs-image") {
+            return (
+              <Optimize type="fs" props={props}>
+                <FsImageRenderer
+                  {...props}
+                  node={props}
+                  addCustomWindow={addCustomWindow}
+                />
+              </Optimize>
+            );
+          } else {
+            return (
+              <Optimize type="directive" props={props}>
+                <CustomDirectiveRenderer {...props} node={props} />
+              </Optimize>
+            );
+          }
+        }
+        return (
+          <Optimize type="div" props={props}>
             <div key={props.key} {...props}>
               {props.children}
             </div>
-          );
-          return optimizeUI ? (
-            <RenderIfVisible key={`riw-math-${props.key || Date.now()}`}>
-              {mathDisplay}
-            </RenderIfVisible>
-          ) : (
-            mathDisplay
-          );
-        }
-        if (props["data-directive-name"]) {
-          const directiveName = props["data-directive-name"];
-          const directiveComponent = (
-            <CustomDirectiveRenderer {...props} node={props} />
-          );
-          return optimizeUI ? (
-            <RenderIfVisible
-              key={`riw-directive-${directiveName}-${props.key || Date.now()}`}
-            >
-              {directiveComponent}
-            </RenderIfVisible>
-          ) : (
-            directiveComponent
-          );
-        }
-        return (
-          <div key={props.key} {...props}>
-            {props.children}
-          </div>
+          </Optimize>
         );
       },
       span: (props: any) => {
+        if (props["data-directive-name"]) {
+          const directiveName = props["data-directive-name"];
+          if (directiveName === "glossary") {
+            return (
+              <Optimize type="glossary" props={props}>
+                <GlossaryTermRenderer {...props} node={props} />
+              </Optimize>
+            );
+          }
+        }
         return (
           <span key={props.key} {...props}>
             {props.children}

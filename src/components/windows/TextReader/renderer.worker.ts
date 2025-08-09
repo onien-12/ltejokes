@@ -7,7 +7,6 @@ import remarkMath from "remark-math";
 import remarkDirective from "remark-directive";
 import remarkRehype from "remark-rehype";
 import { visit } from "unist-util-visit";
-import rehypeHighlight from "rehype-highlight";
 
 function customDirectivesPlugin() {
   return (tree: any) => {
@@ -17,12 +16,50 @@ function customDirectivesPlugin() {
       (node: any) => {
         const data = node.data || (node.data = {});
         const tagName = node.name;
-        data.hName = "div";
-        data.hProperties = {
-          className: `markdown-directive markdown-directive-${tagName}`,
-          "data-directive-name": tagName,
-          ...node.attributes,
-        };
+
+        if (tagName === "fs-image") {
+          data.hName = "div";
+          data.hProperties = {
+            className: ["custom-fs-image", "markdown-directive"],
+            "data-directive-name": tagName,
+            "data-path": node.attributes.path,
+            "data-name": node.attributes.name || "",
+            "data-alt": node.attributes.alt || node.value || "",
+            "data-width": node.attributes.width || "",
+            "data-height": node.attributes.height || "",
+            "data-max-width": node.attributes.maxWidth || "",
+            "data-max-height": node.attributes.maxHeight || "",
+            "data-color": node.attributes.color || "",
+            ...node.attributes,
+          };
+          if (node.value) {
+            data.hChildren = [{ type: "text", value: node.value }];
+          }
+
+          if (node.children) {
+            data.hChildren = node.children;
+          } else if (node.value) {
+            data.hChildren = [{ type: "text", value: node.value }];
+          }
+        } else if (tagName === "glossary") {
+          data.hName = "span";
+          data.hProperties = {
+            className: ["markdown-glossary-term"],
+            "data-directive-name": tagName,
+          };
+          if (node.children) {
+            data.hChildren = node.children;
+          } else if (node.value) {
+            data.hChildren = [{ type: "text", value: node.value }];
+          }
+        } else {
+          data.hName = "div";
+          data.hProperties = {
+            className: `markdown-directive markdown-directive-${tagName}`,
+            "data-directive-name": tagName,
+            ...node.attributes,
+          };
+        }
       }
     );
   };
@@ -63,6 +100,7 @@ self.onmessage = async (
 
       node.type = "element";
       if (!renderMath) node.tagName = isInline ? "code" : "pre";
+      else node.tagName = isInline ? "span" : "div";
 
       //@ts-ignore
       node.properties = {
