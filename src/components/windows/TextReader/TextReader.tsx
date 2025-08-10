@@ -127,11 +127,7 @@ const FsImageRenderer: React.FC<any> = ({
   );
 };
 
-const CustomDirectiveRenderer: React.FC<any> = ({
-  node,
-  children,
-  ...props
-}) => {
+const MarginRenderer: React.FC<any> = ({ node, children, ...props }) => {
   const title = props.title || "";
   const variant = props.variant || "invisible";
 
@@ -371,10 +367,22 @@ export default function TextReader({ path }: { path: string }) {
                 />
               </Optimize>
             );
-          } else {
+          } else if (directiveName === "center") {
+            return (
+              <Optimize type="center" props={props}>
+                <div
+                  key={props.key}
+                  {...props}
+                  className="text-center flex flex-col justify-center items-center"
+                >
+                  {props.children}
+                </div>
+              </Optimize>
+            );
+          } else if (directiveName === "margin") {
             return (
               <Optimize type="directive" props={props}>
-                <CustomDirectiveRenderer {...props} node={props} />
+                <MarginRenderer {...props} node={props} />
               </Optimize>
             );
           }

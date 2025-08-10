@@ -32,15 +32,19 @@ function customDirectivesPlugin() {
             "data-color": node.attributes.color || "",
             ...node.attributes,
           };
-          if (node.value) {
-            data.hChildren = [{ type: "text", value: node.value }];
-          }
 
           if (node.children) {
             data.hChildren = node.children;
           } else if (node.value) {
             data.hChildren = [{ type: "text", value: node.value }];
           }
+        } else if (tagName === "center") {
+          data.hName = "div";
+          data.hProperties = {
+            className: ["markdown-center-block", "markdown-directive"],
+            "data-directive-name": tagName,
+            ...node.attributes,
+          };
         } else if (tagName === "glossary") {
           data.hName = "span";
           data.hProperties = {
