@@ -27,6 +27,8 @@ import clsx from "clsx";
 import { handleOpen } from "../FileManager";
 import { useSystemStore } from "../../../store/useSystemStore";
 import rehypeRaw from "rehype-raw";
+import { RenderingCancelledException } from "pdfjs-dist";
+import { render } from "katex";
 
 const markdownWorker = new Worker(
   new URL("./renderer.worker.ts", import.meta.url)
@@ -37,13 +39,13 @@ const GlossaryTermRenderer: React.FC<any> = ({ node, children, ...props }) => {
     node.value ||
     (children && Array.isArray(children)
       ? children
-          .map((c) =>
-            typeof c === "string" ? c : c.props?.value || c.props?.children
-          )
-          .join("")
+        .map((c) =>
+          typeof c === "string" ? c : c.props?.value || c.props?.children
+        )
+        .join("")
       : String(children || ""));
 
-  const handleClick = useCallback(() => {}, [glossaryTerm]);
+  const handleClick = useCallback(() => { }, [glossaryTerm]);
 
   return (
     <span
@@ -171,14 +173,15 @@ const MarginRenderer: React.FC<any> = ({ node, children, ...props }) => {
 interface InnerRehypeRendererProps {
   hastTree: any;
   components: RehypeReactOptions["components"];
-  mathEnabled: boolean;
+  renderId: number | null
 }
 
 const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
   hastTree,
   components,
-  mathEnabled,
+  renderId
 }) => {
+
   const renderProcessor = useMemo(() => {
     function compiler(tree: any, file: any) {
       const jsxCompiler: any = {};
@@ -193,13 +196,8 @@ const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
         jsxs,
       });
 
-      const reparsedTree = rehypeRaw()(tree, file);
-
-      rehypeHighlight()(reparsedTree, file);
-      if (mathEnabled) rehypeKatex({ trust: true })(reparsedTree, file);
-
       //@ts-ignore
-      return jsxCompiler.compiler(reparsedTree, file);
+      return jsxCompiler.compiler(tree, file);
     }
 
     return unified().use(function () {
@@ -209,14 +207,16 @@ const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
 
   const renderedJsx = useMemo(() => {
     if (!hastTree) return null;
+    if (!renderId) return null;
+
     try {
-      console.log(hastTree);
+      console.log(hastTree, renderId);
       return renderProcessor.stringify(hastTree);
     } catch (error) {
       console.error("Error rendering HAST to JSX:", error);
       return <p className="text-red-500">Error rendering content.</p>;
     }
-  }, [hastTree, renderProcessor]);
+  }, [renderId]);
 
   return <>{renderedJsx}</>;
 };
@@ -230,6 +230,7 @@ export default function TextReader({ path }: { path: string }) {
   const [loadingPhase, setLoadingPhase] = useState<
     "idle" | "fetching" | "processing"
   >("idle");
+  const [renderId, setRenderId] = useState<number | null>(null)
 
   const [isPending, startTransition] = useTransition();
   const deferredPath = useDeferredValue(path);
@@ -253,8 +254,7 @@ export default function TextReader({ path }: { path: string }) {
       .catch((error) => {
         console.error("Error reading file:", error);
         setRawContent(
-          `<p class="text-red-500">Error reading file: ${
-            error.message || "Unknown error"
+          `<p class="text-red-500">Error reading file: ${error.message || "Unknown error"
           }</p>`
         );
         setLoadingPhase("idle");
@@ -266,6 +266,9 @@ export default function TextReader({ path }: { path: string }) {
 
     setLoadingPhase("processing");
     setHastTree(null);
+    setRenderId(null);
+
+    console.log("processing")
 
     const requestId = ++currentRequestRef.current;
 
@@ -279,6 +282,7 @@ export default function TextReader({ path }: { path: string }) {
       if (event.data.hast !== undefined) {
         startTransition(() => {
           setHastTree(event.data.hast);
+          setRenderId(requestId);
           setLoadingPhase("idle");
         });
       } else if (event.data.error) {
@@ -301,6 +305,7 @@ export default function TextReader({ path }: { path: string }) {
             ],
           });
           setLoadingPhase("idle");
+          setRenderId(0)
         });
       }
     };
@@ -318,18 +323,20 @@ export default function TextReader({ path }: { path: string }) {
     };
   }, [rawContent, deferredRenderMath]);
 
-  const memoizedMainThreadCustomComponents = useMemo(() => {
+  const components = useMemo(() => {
     const Optimize = ({
       children,
       type,
       props,
+      isInline = false
     }: {
       children: React.ReactNode;
       type: string;
       props: any;
+      isInline?: boolean
     }) => {
       return optimizeUI ? (
-        <RenderIfVisible key={`riw-${type}-${props.key || Date.now()}`}>
+        <RenderIfVisible key={`riw-${type}-${props.key || Date.now()}`} rootElementClass={isInline ? "inline" : undefined}>
           {children}
         </RenderIfVisible>
       ) : (
@@ -400,7 +407,7 @@ export default function TextReader({ path }: { path: string }) {
           const directiveName = props["data-directive-name"];
           if (directiveName === "glossary") {
             return (
-              <Optimize type="glossary" props={props}>
+              <Optimize type="glossary" props={props} isInline>
                 <GlossaryTermRenderer {...props} node={props} />
               </Optimize>
             );
@@ -427,10 +434,11 @@ export default function TextReader({ path }: { path: string }) {
       ) : hastTree !== null ? (
         <InnerRehypeRenderer
           hastTree={hastTree}
-          components={memoizedMainThreadCustomComponents}
-          mathEnabled={renderMath}
+          components={components}
+          renderId={renderId}
         />
       ) : (
+
         <p className="text-red-500">No content available. ({loadingPhase})</p>
       )}
     </div>
