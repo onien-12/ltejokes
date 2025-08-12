@@ -12,6 +12,8 @@ import { shallow } from "zustand/shallow";
 import React from "react";
 import ManagedWindow from "./utils/ManagedWindow";
 import ManagedCustomWindow from "./utils/ManagedCustomWindow";
+import GlossaryWindow from "./windows/GlossaryWindow";
+import { handleOpen } from "./windows/FileManager";
 
 const MemoizedHeader = React.memo(Header);
 const MemoizedStartMenu = React.memo(StartMenu);
@@ -19,6 +21,8 @@ const MemoizedStartMenu = React.memo(StartMenu);
 export default function Desktop() {
   const background = useSystemStore((state) => state.background);
   const openWindow = useSystemStore((state) => state.openWindow);
+
+  const addCustomWindow = useSystemStore((state) => state.addCustomWindow);
   const customWindows = useSystemStore<CustomWindow[]>(
     (state) => state.customWindows,
     //@ts-expect-error
@@ -63,6 +67,26 @@ export default function Desktop() {
             label: "Terminal",
             defaultPosition: { x: 0, y: 160 },
             handleClick: () => openWindow("terminal"),
+          },
+          {
+            id: "4",
+            icon: (
+              <Icon icon="material-symbols:book-2" width="32" height="32" />
+            ),
+            label: "Glossary",
+            defaultPosition: { x: 0, y: 250 },
+            handleClick: () =>
+              handleOpen({
+                file: {
+                  name: "glossary",
+                  type: "exec",
+                  data: {
+                    term: "",
+                  },
+                },
+                addCustomWindow,
+                currentRelativePathSegments: [],
+              }),
           },
         ]}
       />

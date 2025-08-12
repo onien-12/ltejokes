@@ -6,10 +6,12 @@ import MediaViewer from "./MediaViewer";
 import PDFReader from "./PDFReader";
 import clsx from "clsx";
 import { readDirectory } from "../../utils";
+import GlossaryWindow from "./GlossaryWindow";
 
 interface FileItem {
   name: string;
-  type: "file" | "folder";
+  type: "file" | "folder" | "exec";
+  data?: any;
 }
 
 interface DirectoryOptions {
@@ -29,6 +31,22 @@ export function handleOpen({
   console.log(file, currentRelativePathSegments, addCustomWindow);
 
   const fullApiPath = `/${currentRelativePathSegments.join("/")}/${file.name}`;
+
+  if (file.type === "exec") {
+    if (file.name === "glossary") {
+      const term = file.data.term;
+      return addCustomWindow({
+        id: `glossary-${term || "main"}`,
+        name: `Glossary${term ? `: ${term}` : ""}`,
+        window: (
+          <GlossaryWindow
+            initialTerm={term}
+            currentContextGroup={file.data.group}
+          />
+        ),
+      });
+    }
+  }
 
   if (file.name.endsWith(".md") || file.name.endsWith(".txt")) {
     return addCustomWindow({
@@ -57,8 +75,8 @@ export function handleOpen({
       window: <PDFReader path={fullApiPath} />,
     });
   }
+
   console.warn(`No viewer configured for file type: ${file.name}`);
-  alert(`Cannot open file: ${file.name}. No viewer configured for this type.`);
 }
 
 type FileManagerProps = {

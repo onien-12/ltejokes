@@ -13,8 +13,6 @@ import { ClipLoader } from "react-spinners";
 import "highlight.js/styles/atom-one-dark.css";
 import "katex/dist/katex.min.css";
 
-import rehypeHighlight from "rehype-highlight";
-import rehypeKatex from "rehype-katex";
 import rehypeReact from "rehype-react";
 import { unified } from "unified";
 import type { Options as RehypeReactOptions } from "rehype-react";
@@ -26,26 +24,38 @@ import { useUIOptionsStore } from "../../../store/useUIOptionsStore";
 import clsx from "clsx";
 import { handleOpen } from "../FileManager";
 import { useSystemStore } from "../../../store/useSystemStore";
-import rehypeRaw from "rehype-raw";
-import { RenderingCancelledException } from "pdfjs-dist";
-import { render } from "katex";
 
 const markdownWorker = new Worker(
   new URL("./renderer.worker.ts", import.meta.url)
 );
 
-const GlossaryTermRenderer: React.FC<any> = ({ node, children, ...props }) => {
+const GlossaryTermRenderer: React.FC<any> = ({
+  node,
+  children,
+  addCustomWindow,
+  ...props
+}) => {
   const glossaryTerm =
     node.value ||
     (children && Array.isArray(children)
       ? children
-        .map((c) =>
-          typeof c === "string" ? c : c.props?.value || c.props?.children
-        )
-        .join("")
+          .map((c) =>
+            typeof c === "string" ? c : c.props?.value || c.props?.children
+          )
+          .join("")
       : String(children || ""));
 
-  const handleClick = useCallback(() => { }, [glossaryTerm]);
+  const handleClick = useCallback(() => {
+    handleOpen({
+      file: {
+        name: "glossary",
+        type: "exec",
+        data: { term: glossaryTerm },
+      },
+      currentRelativePathSegments: [],
+      addCustomWindow,
+    });
+  }, [glossaryTerm]);
 
   return (
     <span
@@ -173,15 +183,16 @@ const MarginRenderer: React.FC<any> = ({ node, children, ...props }) => {
 interface InnerRehypeRendererProps {
   hastTree: any;
   components: RehypeReactOptions["components"];
-  renderId: number | null
+  renderId: number | null;
+  optimizeUI: boolean;
 }
 
 const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
   hastTree,
   components,
-  renderId
+  renderId,
+  optimizeUI,
 }) => {
-
   const renderProcessor = useMemo(() => {
     function compiler(tree: any, file: any) {
       const jsxCompiler: any = {};
@@ -216,7 +227,7 @@ const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
       console.error("Error rendering HAST to JSX:", error);
       return <p className="text-red-500">Error rendering content.</p>;
     }
-  }, [renderId]);
+  }, [renderId, optimizeUI]);
 
   return <>{renderedJsx}</>;
 };
@@ -230,7 +241,7 @@ export default function TextReader({ path }: { path: string }) {
   const [loadingPhase, setLoadingPhase] = useState<
     "idle" | "fetching" | "processing"
   >("idle");
-  const [renderId, setRenderId] = useState<number | null>(null)
+  const [renderId, setRenderId] = useState<number | null>(null);
 
   const [isPending, startTransition] = useTransition();
   const deferredPath = useDeferredValue(path);
@@ -254,7 +265,8 @@ export default function TextReader({ path }: { path: string }) {
       .catch((error) => {
         console.error("Error reading file:", error);
         setRawContent(
-          `<p class="text-red-500">Error reading file: ${error.message || "Unknown error"
+          `<p class="text-red-500">Error reading file: ${
+            error.message || "Unknown error"
           }</p>`
         );
         setLoadingPhase("idle");
@@ -268,7 +280,7 @@ export default function TextReader({ path }: { path: string }) {
     setHastTree(null);
     setRenderId(null);
 
-    console.log("processing")
+    console.log("processing");
 
     const requestId = ++currentRequestRef.current;
 
@@ -305,7 +317,7 @@ export default function TextReader({ path }: { path: string }) {
             ],
           });
           setLoadingPhase("idle");
-          setRenderId(0)
+          setRenderId(0);
         });
       }
     };
@@ -328,15 +340,18 @@ export default function TextReader({ path }: { path: string }) {
       children,
       type,
       props,
-      isInline = false
+      isInline = false,
     }: {
       children: React.ReactNode;
       type: string;
       props: any;
-      isInline?: boolean
+      isInline?: boolean;
     }) => {
       return optimizeUI ? (
-        <RenderIfVisible key={`riw-${type}-${props.key || Date.now()}`} rootElementClass={isInline ? "inline" : undefined}>
+        <RenderIfVisible
+          key={`riw-${type}-${props.key || Date.now()}`}
+          rootElementClass={isInline ? "inline" : undefined}
+        >
           {children}
         </RenderIfVisible>
       ) : (
@@ -408,7 +423,11 @@ export default function TextReader({ path }: { path: string }) {
           if (directiveName === "glossary") {
             return (
               <Optimize type="glossary" props={props} isInline>
-                <GlossaryTermRenderer {...props} node={props} />
+                <GlossaryTermRenderer
+                  {...props}
+                  node={props}
+                  addCustomWindow={addCustomWindow}
+                />
               </Optimize>
             );
           }
@@ -436,9 +455,9 @@ export default function TextReader({ path }: { path: string }) {
           hastTree={hastTree}
           components={components}
           renderId={renderId}
+          optimizeUI={optimizeUI}
         />
       ) : (
-
         <p className="text-red-500">No content available. ({loadingPhase})</p>
       )}
     </div>

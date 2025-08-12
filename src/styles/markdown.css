@@ -16,6 +16,10 @@
   scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
 }
 
+.katex .mspace.newline {
+  height: 4px;
+}
+
 .markdown hr {
   margin-top: 16px;
   margin-bottom: 16px;

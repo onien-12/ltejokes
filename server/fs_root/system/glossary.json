@@ -1,0 +1,524 @@
+{
+    "glossary": [
+        {
+            "word": "LTE",
+            "definitions": [
+                { "context": ["telco"], "text": "Long Term Evolution - a 4g wireless communication standard." }
+            ]
+        },
+            {
+            "word": "5gNR",
+            "definitions": [
+                { "context": ["telco"], "text": "5G New Radio - a 5g wireless communication standard." }
+            ]
+        },
+        {
+            "word": "PHY",
+            "definitions": [
+                { "context": ["telco"], "text": "Physical Layer: The lowest layer in the OSI model, responsible for transmitting raw bit streams over a physical medium (for example radio or electrical signals in a wire)." }
+            ]
+        },
+        {
+            "word": "gNB",
+            "definitions": [
+                { "context": ["5gNR"], "text": "Next Generation Node B: The base station in 5G NR networks." }
+            ]
+       },
+       {
+            "word": "Uplink",
+            "definitions": [
+                { "context": ["telco"], "text": "The communication link from a *UE* to a *base station* in a wireless communication system." }
+            ]
+        },
+        {
+            "word": "Downlink",
+            "definitions": [
+                { "context": ["telco"], "text": "The communication link from a *base station* to a *UE* in a wireless communication system." }
+            ]
+        },
+        {
+            "word": "MIMO",
+            "definitions": [
+                { "context": ["telco"], "text": "Technology that increases the capacity of a radio link using multiple RX and TX antennas. It is the core idea for LTE, 5gNR, WIFI, WiMAX" }
+            ]
+        },
+        {
+            "word": "Carrier Aggregation",
+            "definitions": [
+                { "context": ["telco"], "text": "Technique used in LTE and 5gNR to increase the capacity of a radio link by utilizing multiple frequency blocks (component carriers). It combines multiple frequency bands into a single, wider channel." }
+            ]
+        },
+        {
+            "word": "Transmit Diversity",
+            "definitions": [
+                { "context": ["telco"], "text": "Technique used in wireless communications where a transmitter uses multiple antennas to send the same signal, improving reliability." }
+            ]
+        },
+        {
+            "word": "PCFICH",
+            "definitions": [
+                { "context": ["LTE"], "text": "Physical Control Frame Indicator Channel - An LTE channel that carries the number of symbols that can be used for control channels (PDCCH and PHICH). Mapped to the first OFDM symbol in each subframe. PCFICH data is carried by 4 REGs, which are evenly distributed across the whole bandwith. The subcarrier position $$ k $$ depends on a cell id $$ N^{cell}_{ID} $$: $$ \\bar{k} = \\frac{1}{2} N^{RB}_{sc} \\cdot (N^{cell}_{ID} \\mod 2N^{DL}_{RB}) $$ " }
+            ]
+        },
+        {
+            "word": "PDCCH",
+            "definitions": [
+                { "context": ["LTE", "5gNR"], "text": "Physical Downlink Control Channel - An LTE or 5gNR channel that carries DCI. Mapped to the first $$ l \\in {1, 2, 3} $$ OFDM symbols in every downlink subframe, where $$ l $$ is informed by PCFICH." }
+            ]
+        },
+        {
+            "word": "PHICH",
+            "definitions": [
+                { "context": ["LTE"], "text": "Physical HARQ Indicator Channel - An LTE channel that carries ACK/NACK for the PUSCH received by the network. Mapped to the first OFDM symbol in every downlink subframe. Multiple PHICH can be carried by the same set of REG using Orthogonal Codes, this is called PHICH group. " }
+            ]
+        },
+        {
+            "word": "PDSCH",
+            "definitions": [
+                { "context": ["LTE", "5gNR"], "text": "Physical Downlink Shared Channel - An LTE or 5gNR channel that carries user data from gNB or eNB to UE. In LTE, it also carries RAR Message in case of PDSCH mapped to RACH channel." }
+            ]
+        },
+        {
+            "word": "PRACH",
+            "definitions": [
+                { "context": ["LTE", "5gNR"], "text": "Physical Random Access Channel - An LTE or 5gNR channel that is used by UEs to initiate a connection with the base station." }
+            ]
+        },
+        {
+            "word": "PUSCH",
+            "definitions": [
+                { "context": ["LTE", "5gNR"], "text": "Physical Uplink Shared Channel - An uplink LTE or 5gNR channel that is used by UEs to transmit user data up to the base station." }
+            ]
+        },
+        {
+            "word": "PUCCH",
+            "definitions": [
+                { "context": ["LTE", "5gNR"], "text": "Physical Uplink Control Channel - An uplink LTE or 5gNR channel that carrier UCI. There are 5 different types of PUCCH (0, 1, 2, 3, 4 in 5G and 1, 2, 3, 4, 5 in LTE). In LTE, PUCCH is placed at an extreme side of the channel bandwidth. In 5gNR, PUCCH is placed anywhere in a slot at usually takes only a few REs of a slot." }
+            ]
+        },
+        {
+            "word": "DCI",
+            "definitions": [
+                { "context": ["LTE", "5gNR"], "text": "Downlink Control Information - protocol unit that carries information about resource allocations: which RB carry the data, what demodulation scheme to use, which precoding scheme to use, etc." }
+            ]
+        },
+        {
+            "word": "HARQ",
+            "definitions": [
+                {
+                    "context": ["telco"],
+                    "text": "Hybrid Automatic Repeat Request - A mechanism that combines ARQ with FEC (error correction). It is used to guarantee reliable data transmission over noisy channels by retransmitting data blocks that were received with errors, while also utilizing error-correcting codes."
+                }
+            ]
+        },
+        {
+            "word": "UCI",
+            "definitions": [
+                {
+                    "context": ["LTE", "5gNR"],
+                    "text": "Uplink Control Information - protocol unit that carries control information from the UE to the base station: HARQ-ACK/NACK, CSI, SR."
+                }
+            ]
+        },
+        {
+            "word": "EPC",
+            "definitions": [
+                {
+                    "context": ["telco", "LTE"],
+                    "text": "Evolved Packet Core - The core network for LTE."
+                }
+            ]
+        },
+        {
+            "word": "PBCH",
+            "definitions": [
+                {
+                    "context": ["LTE", "5gNR"],
+                    "text": "Physical Broadcast Channel - A downlink channel that carries only MIB, which is required by UEs to access the network. In LTE, it is mapped to the central 72 subcarriers in the first 4 OFDM symbols of the first subframe in each frame. In 5G NR, it is part of the SSB."
+                }
+            ]
+        },
+        {
+            "word": "PMCH",
+            "definitions": [
+                {
+                    "context": ["LTE"],
+                    "text": "Physical Multicast Channel - An LTE downlink channel used for transmitting MBSFN. It carries data for multiple UEs simultaneously."
+                }
+            ]
+        },
+        {
+            "word": "Scrambling",
+            "definitions": [
+                {
+                    "context": ["telco"],
+                    "text": "A process in wireless communication where a pseudorandom sequence is combined with the data symbols to randomize the signal. This helps to reduce interference, improve signal detection, and enable cell identification by decorrelating signals from different cells."
+                }
+            ]
+        },
+        {
+            "word": "Modulation",
+            "definitions": [
+                {
+                    "context": ["telco"],
+                    "text": "The process of converting digital data (a sequence of bits) into analog waveforms for transmission over a physical medium. In wireless systems common schemes are: QPSK, 16QAM, 64QAM."
+                }
+            ]
+        },
+        {
+            "word": "Precoding",
+            "definitions": [
+                {
+                    "context": ["telco", "MIMO"],
+                    "text": "A technique used in MIMO systems where a signal is product multiplied with a precoding matrix before transmission from multiple antennas. This optimizes the signal for the specific channel conditions, improving efficiency and reception quality at the receiver."
+                }
+            ]
+        },
+        {
+            "word": "MME",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "Mobility Management Entity - A main control plane element in the EPC. It is responsible for performing handover, handling authentication, bearer management."
+              }
+            ]
+          },
+          {
+            "word": "S-GW",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "Serving Gateway - A user plane element in the EPC. Routes and forwards user data packets from the eNB to the PDN-GW, acting as a local mobility anchor for inter-eNB handovers."
+              }
+            ]
+          },
+          {
+            "word": "PDN-GW",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "Packet Data Network Gateway - The main user plane element in the EPC. It serves as the interface between the EPC and operator PDNs (like the internet or IMS). It assigns IP addresses to UEs, enforces policies, and performs DPI analysis."
+              }
+            ]
+          },
+          {
+            "word": "PCRF",
+            "definitions": [
+              {
+                "context": ["telco", "EPC"],
+                "text": "Policy and Charging Rules Function - A **logical** entity in the EPC that creates policy rules. It makes realtime decisions on QoS and charging based on subscriber profiles, network conditions, and application requirements."
+              }
+            ]
+          },
+          {
+            "word": "PCEF",
+            "definitions": [
+              {
+                "context": ["telco", "EPC"],
+                "text": "Policy and Charging Enforcement Function - A **logical** entity in the core network that is responsible for enforcing policy and charging rules received from the PCRF. In the EPC, the functionality of the PCEF is located within the PDN-GW, where it applies QoS, charging, and traffic management rules."
+              }
+            ]
+          },
+          {
+            "word": "OFDM",
+            "definitions": [
+              {
+                "context": ["telco"],
+                "text": "Orthogonal Frequency Division Multiplexing - A digital modulation scheme that divides a single high rate data stream into several lower rate data streams, which are then transmitted simultaneously over multiple orthogonal subcarriers. This technique is highly efficient because it is resistant to multipath fading and is used for downlink in LTE and both uplink and downlink in 5G NR, Wi-Fi, and WiMAX. The formula is: $$ s^{(p)}_l(t) = \\sum_{k=-\\lfloor N^{DL}_{RB} N^{RB}_{sc} /2 \\rfloor}^{-1}{a^{(p)}_{k^{(-)},l} \\cdot e^{j2\\pi k \\Delta f(t - N_{cp,l}T_s)}} + \\sum_{k=1}^{\\lceil N^{DL}_{RB} N^{RB}_{sc} /2 \\rceil}{a^{(p)}_{k^{(+)},l} \\cdot e^{j2\\pi k \\Delta f(t - N_{cp,l}T_s)}} $$"
+              }
+            ]
+          },
+          {
+            "word": "SC-FDMA",
+            "definitions": [
+              {
+                "context": ["telco"],
+                "text": "Single-Carrier Frequency-Division Multiple Access - A multiple access scheme that combines the advantages of single carrier systems (low PAPR) with the flexibility of OFDMA, which is efficient for mobile devices because it extends battery life. The formula is: $$ s^{(p)}_l(t) = \\sum_{k=\\lfloor N^{DL}_{RB} N^{RB}_{sc} /2 \\rfloor}^{\\lceil N^{DL}_{RB} N^{RB}_{sc} /2 \\rceil - 1}{a^{(p)}_{k^{(-)},l} \\cdot e^{j2\\pi (k + 1/2) \\Delta f(t - N_{cp,l}T_s)}} $$"
+              }
+            ]
+          },
+          {
+            "word": "Handover",
+            "definitions": [
+              {
+                "context": ["telco"],
+                "text": "The process of transferring one cell to another without interrupting the data transmission. This guarantees continuous connectivity as a mobile device moves across the network."
+              }
+            ]
+          },
+          {
+            "word": "X2 Interface",
+            "definitions": [
+              {
+                "context": ["EPC", "LTE"],
+                "text": "A direct interface between two eNBs. It is used for efficient handover procedures and load management, allowing eNBs to coordinate directly without involving the core network."
+              }
+            ]
+          },
+          {
+            "word": "S5 Interface",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "An interface within the EPC that connects the S-GW and the PDN-GW. It carries user plane data and control plane signaling for local mobility anchoring."
+              }
+            ]
+          },
+          {
+            "word": "S8 Interface",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "The inter-PLMN variant of the S5 interface, used when the S-GW and PDN-GW are in different networks. Used when roaming."
+              }
+            ]
+          },
+          {
+            "word": "PDN",
+            "definitions": [
+              {
+                "context": ["telco", "EPC"],
+                "text": "Packet Data Network - An external network that provides services to the end users via the mobile network. For example: the Internet, IMS. The PDN-GW acts as the interface between the EPC and these external networks."
+              }
+            ]
+          },
+          {
+            "word": "IMS",
+            "definitions": [
+              {
+                "context": ["telco"],
+                "text": "IP Multimedia Subsystem - A standardized framework for delivering multimedia services over IP. It allows to transfer a voice, video, and general data  over a single IP network, used for services like VoLTE and RCS."
+              }
+            ]
+          },
+          {
+            "word": "IP",
+            "definitions": [
+              {
+                "context": ["networking"],
+                "text": "Internet Protocol - The fundamental protocol for communicating data across packet switched networks. It defines how data is addressed for transmission, enabling devices to send and receive information across interconnected networks."
+              }
+            ]
+          },
+          {
+            "word": "EPS Bearer",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "Evolved Packet System Bearer - A logical connection from UE to external PDNs."
+              }
+            ]
+          },
+          {
+            "word": "ePDG",
+            "definitions": [
+              {
+                "context": ["telco", "EPC"],
+                "text": "Evolved Packet Data Gateway - An entity in the core network that allows UEs to access EPC via non-3GPP networks, such as WIFI. It establishes a IPsec tunnel between the UE and the EPC, allowing secure and seamless access to mobile services."
+              }
+            ]
+          },
+          {
+            "word": "AAA",
+            "definitions": [
+              {
+                "context": ["security", "networking"],
+                "text": "Authentication, Authorization, and Accounting - A framework for controlling access to networks. Authentication verifies the user's identity, authorization determines what resources the user can access, and accounting tracks the user's actions."
+              }
+            ]
+          },
+          {
+            "word": "PLMN",
+            "definitions": [
+              {
+                "context": ["telco"],
+                "text": "Public Land Mobile Network - A network established and operated by a telecommunications company for the purpose of providing mobile telecommunication services to the public. Each PLMN is uniquely identified by a combination of Mobile Country Code (MCC) and Mobile Network Code (MNC)."
+              }
+            ]
+          },
+          {
+            "word": "HSS",
+            "definitions": [
+              {
+                "context": ["LTE", "EPC"],
+                "text": "Home Subscriber Server - A database in the EPC that contains subscriber information. Plays a central role in authentication, authorization, and mobility management. It stores subscriber profiles, including services subscribed to, QoS parameters, and current location information, which is retrieved by the MME."
+              }
+            ]
+          },
+          {
+            "word": "MIB",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "Master Information Block - Essential system information broadcasted by the base station on the PBCH. The MIB provides important parameters for a UE to access the cell, such as system bandwidth (`dl-Bandwidth`), PHICH configuration (for LTE, `phich-Config`), and details necessary to decode the SIBs (`schedulingInfoSIB1-BR`)."
+              }
+            ]
+          },
+          {
+            "word": "SIB",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "System Information Block - Detailed system information broadcasted by the base station on the PDSCH. SIBs carry various types of information, including cell reselection parameters (`SystemInformationBlockType1/3`), neighboring cell information (`SystemInformationBlockType1/4/5/6/7/8`), common channel configurations (`RadioResourceConfigCommonSIB`), and emergency service details (`ims-EmergencySupport`, `ac-BarringForEmergency`, `ac-BarringEmg`), all necessary for a UE's operation within the network."
+              }
+            ]
+          },
+
+          {
+            "word": "Resource Grid",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "A time-frequency representation of the radio resources. In other words, it is a two-dimensional grid where one dimension represents time (OFDM symbols/slots/subframes) and the other represents frequency (subcarriers/resource blocks). Data and control channels are mapped onto specific REs within this grid."
+              }
+            ]
+          },
+          {
+            "word": "Sample Rate",
+            "definitions": [
+              {
+                "context": ["telco", "signal processing"],
+                "text": "The number of samples per second taken from a continuous analog signal to convert it into a discrete digital signal, or a number of samples per second calculated from digital signal to send using physical antenna circuit."
+              }
+            ]
+          },
+          {
+            "word": "ISI",
+            "definitions": [
+              {
+                "context": ["telco", "signal processing"],
+                "text": "A form of distortion where a transmitted symbol's spreads over time and interferes with other symbols. Occurs in multipath environments."
+              }
+            ]
+          },
+          {
+            "word": "Cyclic Prefix",
+            "definitions": [
+              {
+                "context": ["telco", "signal processing", "OFDM"],
+                "text": "A copy of the end of the symbol added to the beginning of OFDM symbol. Its purpose is mitigate ISI caused by multipath propagation."
+              }
+            ]
+          },
+          {
+            "word": "FDD",
+            "definitions": [
+              {
+                "context": ["telco", "duplexing"],
+                "text": "Frequency Division Duplexing - A duplexing method in wireless communications where uplink and downlink transmissions occur simultaneously on different frequency bands. This enables continuous two way communication without interference between transmit and receive paths, but requires two distinct frequency allocations."
+              },
+              {
+                "context": ["LTE"],
+                "text": "A separate frame structure (type one), in which each radio frame is $$ T_f = 307200 \\cdot T_s = 10 \\text{ms} $$ long and consists of 10 subframes of length $$ 30720 \\cdot T_s = 1 \\text{ms} $$, numbered from 0 to 9. For subframes using $$ \\Delta f = 7.5 \\text{kHz} $$ or $$ \\Delta f = 15 \\text{kHz} $$, subframe $$ i $$ consists of two slots of length $$ T_{slot} = 15360 \\cdot T_s = 0.5 \\text{ms} $$. For subframes using $$ \\Delta f = 1.25 \\text{kHz} $$, subframe consists of one slot of length $$ T_{slot} = 30720 \\cdot T_s = 1 \\text{ms} $$."
+              }
+            ]
+          },
+          {
+            "word": "TDD",
+            "definitions": [
+              {
+                "context": ["telco", "duplexing"],
+                "text": "Time Division Duplexing - A duplexing method where uplink and downlink transmissions share the same frequency band but are separated in time. When performing communication it switches between transmission and reception."
+              },  
+              {
+                "context": ["LTE"],
+                "text": "A separate frame structure (type two), in which each radio frame is $$ T_f = 307200 \\cdot T_s = 10 \\text{ms} $$ long and consists of two half-frames of length $$ 153600 \\cdot T_s = 5 \\text{ms} $$ each. Each half-frame consists of 5 subframes of length $$ 30720 \\cdot T_s = 1 \\text{ms} $$. Each subframe consists of two slots of length $$ T_{slot} = 15360 \\cdot T_s = 0.5 \\text{ms} $$ each. Switching between downlink and uplink is done by including DwPTS, GP and UpPTS symbols."
+              }
+            ]
+          },
+          {
+            "word": "QAM",
+            "definitions": [
+              {
+                "context": ["telco", "modulation"],
+                "text": "Quadrature Amplitude Modulation - A digital modulation scheme that encodes data by modulating the amplitude of two carrier waves, which are orthogonal to each other (which is called IQ data). Various orders of QAM allow for different numbers of bits per symbol, increasing data rates but requiring better signal-to-noise ratio."
+              }
+            ]
+          },
+          {
+            "word": "CRS",
+            "definitions": [
+              {
+                "context": ["LTE"],
+                "text": "Cell-specific Reference Signal - Downlink reference signal transmitted across the entire cell bandwidth in LTE, used by UEs for channel estimation, for cell search and measurement procedures. CRS are transmitted from each of {0, 1, 2, 3} antenna port of the eNB."
+              }
+            ]
+          },
+          {
+            "word": "DMRS",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "Demodulation Reference Signal - Reference signal used for channel estimation, primarily for demodulation of data channels (PDSCH/PUSCH). In 5G NR, DMRS are much more flexible than in LTE, because they are typically transmitted only in the resource blocks where data is scheduled, enabling more efficient channel estimation for beamforming."
+              }
+            ]
+          },
+          {
+            "word": "PSS",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "Primary Synchronization Signal - A signal transmitted by the base station that allows a UE to synchronize and identify the cell ID ($$ N^{cell}_{ID} $$ within a cell group. It is one of the first signals a UE detects when searching for a network."
+              }
+            ]
+          },
+          {
+            "word": "SSS",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "Secondary Synchronization Signal - A signal transmitted by the base station that, in combination with the PSS, allows a UE to achieve frame synchronization and determine the complete $$ N^{cell}_{ID} $$."
+              }
+            ]
+          },
+          {
+            "word": "RRC",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR", "protocol stack"],
+                "text": "Radio Resource Control - A control plane protocol in the RAN that handles the configuration of the radio interface, which includes establishing, maintaining, and releasing radio bearers, managing handovers, and controlling system information broadcasting. It operates above the MAC and RLC layers."
+              }
+            ]
+          },
+          {
+            "word": "RLC",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR", "protocol stack"],
+                "text": "Radio Link Control - A protocol sublayer in the radio interface that provides segmentation, concatenation, error correction, and reordering of data units to ensure reliable data transfer over the radio link. It operates between the MAC layer and the PDCP layer."
+              }
+            ]
+          },
+          {
+            "word": "PDCP",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR", "protocol stack"],
+                "text": "Packet Data Convergence Protocol - A protocol sublayer in the radio interface that provides IP header compression and encryption. It operates above the RLC layer and provides services to higher layers, such as IP."
+              }
+            ]
+          },
+          {
+            "word": "SVD",
+            "definitions": [
+              {
+                "context": ["mathematics"],
+                "text": "Singular Value Decomposition - A matrix factorization technique that decomposes a matrix into three other matrices: $$ A = U \\Sigma V^H $$."
+              },
+              {
+                "context": ["MIMO"],
+                "text": "In the context of MIMO and precoding, SVD can be used to decompose the wireless channel matrix, enabling the transmission of independent data streams over parallel spatial channels."
+              }
+            ]
+          },
+          {
+            "word": "Hermitian Transpose",
+            "definitions": [
+              {
+                "context": ["mathematics", "linear algebra"],
+                "text": "Also known as conjugate transpose, for a complex matrix $$ A $$, its Hermitian transpose $$ A^H $$ is obtained by taking the transpose of the matrix and then taking the complex conjugate of each element."
+              }
+            ]
+          }
+    ]
+}
