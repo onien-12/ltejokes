@@ -21,3 +21,12 @@ export const compareVersions = (v1: string, v2: string): number => {
 
   return 0;
 };
+
+export const sanitizeSearchString = (inputString: string): string => {
+  if (!inputString) return "";
+  return inputString
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+};

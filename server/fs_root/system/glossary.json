@@ -332,7 +332,7 @@
             "definitions": [
               {
                 "context": ["telco"],
-                "text": "Public Land Mobile Network - A network established and operated by a telecommunications company for the purpose of providing mobile telecommunication services to the public. Each PLMN is uniquely identified by a combination of Mobile Country Code (MCC) and Mobile Network Code (MNC)."
+                "text": "Public Land Mobile Network - A network established and operated by a company for the purpose of providing mobile services to the end users. Each PLMN is uniquely identified by a combination of MCC and MNC."
               }
             ]
           },

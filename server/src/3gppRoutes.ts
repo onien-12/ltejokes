@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Request, Response, Router } from "express";
 import fs from "fs/promises";
-import { compareVersions } from "./utils";
+import { compareVersions, sanitizeSearchString } from "./utils";
 
 export interface Revision {
   code: string;
@@ -72,55 +72,55 @@ export const get3GPPDataRoute = (_3gppSpecsFilePath: string) => async (req: Requ
     const releasesToFilter = req.query.releases as string;
     const searchTerm = req.query.searchTerm as string;
 
-    let filteredReleaseCodes: string[] | undefined;
+    let releases: string[] | undefined;
     if (releasesToFilter) {
-      filteredReleaseCodes = releasesToFilter.split(",").map((code) => code.trim());
+      releases = releasesToFilter.split(",").map((code) => code.trim());
     }
 
     const allReleases = await loadAndCache3GPPData(_3gppSpecsFilePath);
 
-    let responseReleases: Release[] = [];
+    let result: Release[] = [];
 
     allReleases.forEach((release) => {
-      if (filteredReleaseCodes && !filteredReleaseCodes.includes(release.code)) {
+      if (releases && !releases.includes(release.code)) {
         return;
       }
 
-      const filteredDocuments: Document[] = [];
+      const documents: Document[] = [];
       release.documents.forEach((doc) => {
-        const filteredRevisions: Revision[] = [];
+        const revisions: Revision[] = [];
         doc.revisions.forEach((rev) => {
-          const lowerSearchTerm = searchTerm ? searchTerm.toLowerCase() : "";
-          const matchesSearch =
-            !lowerSearchTerm ||
-            release.code.toLowerCase().includes(lowerSearchTerm) ||
-            release.name.toLowerCase().includes(lowerSearchTerm) ||
-            doc.code.toLowerCase().includes(lowerSearchTerm) ||
-            doc.name.toLowerCase().includes(lowerSearchTerm) ||
-            rev.code.toLowerCase().includes(lowerSearchTerm) ||
-            rev.file.toLowerCase().includes(lowerSearchTerm);
+          const term = searchTerm ? searchTerm.toLowerCase() : "";
+          const matches =
+            !term ||
+            sanitizeSearchString(release.code).includes(term) ||
+            sanitizeSearchString(release.name).includes(term) ||
+            sanitizeSearchString(doc.code).includes(term) ||
+            sanitizeSearchString(doc.name).includes(term) ||
+            sanitizeSearchString(rev.code).includes(term) ||
+            sanitizeSearchString(rev.file).includes(term);
 
-          if (matchesSearch) {
-            filteredRevisions.push(rev);
+          if (matches) {
+            revisions.push(rev);
           }
         });
 
-        if (filteredRevisions.length > 0) {
-          filteredDocuments.push({ ...doc, revisions: filteredRevisions });
+        if (revisions.length > 0) {
+          documents.push({ ...doc, revisions: revisions });
         }
       });
 
-      if (filteredDocuments.length > 0) {
-        responseReleases.push({ ...release, documents: filteredDocuments });
+      if (documents.length > 0) {
+        result.push({ ...release, documents: documents });
       }
     });
 
     console.log(
-      `[Server] Responding with ${responseReleases.length} releases (filtered by releases query: ${
+      `[Server] Responding with ${result.length} releases (filtered by releases query: ${
         releasesToFilter || "all"
       }, and search term: "${searchTerm || "none"}")`
     );
-    res.json({ releases: responseReleases });
+    res.json({ releases: result });
   } catch (error: any) {
     if (error.code === "ENOENT") {
       return res.status(404).json({ error: "3GPP specs file not found." });
