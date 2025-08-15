@@ -1,23 +1,14 @@
-import React, {
-  useEffect,
-  useState,
-  useDeferredValue,
-  useTransition,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useDeferredValue, useTransition, useMemo, useRef, useCallback } from "react";
 import { API, readFile } from "../../../utils";
 import { ClipLoader } from "react-spinners";
 
 import "highlight.js/styles/atom-one-dark.css";
 import "katex/dist/katex.min.css";
 
-import rehypeReact from "rehype-react";
-import { unified } from "unified";
+//@ts-expect-error
+import { deserialize } from "react-serialize";
 import type { Options as RehypeReactOptions } from "rehype-react";
 
-import { jsx, jsxs } from "react/jsx-runtime";
 import RenderIfVisible from "../../utils/RenderIfVisible";
 import { useUIOptionsStore } from "../../../store/useUIOptionsStore";
 
@@ -25,32 +16,22 @@ import clsx from "clsx";
 import { handleOpen } from "../FileManager";
 import { useSystemStore } from "../../../store/useSystemStore";
 
-const markdownWorker = new Worker(
-  new URL("./renderer.worker.ts", import.meta.url)
-);
+const markdownWorker = new Worker(new URL("./renderer.worker.tsx", import.meta.url));
 
-const GlossaryTermRenderer: React.FC<any> = ({
-  node,
-  children,
-  addCustomWindow,
-  ...props
-}) => {
+const GlossaryTermRenderer: React.FC<any> = ({ node, children, addCustomWindow, ...props }) => {
   const glossaryTerm =
     node.value ||
     (children && Array.isArray(children)
-      ? children
-          .map((c) =>
-            typeof c === "string" ? c : c.props?.value || c.props?.children
-          )
-          .join("")
+      ? children.map((c) => (typeof c === "string" ? c : c.props?.value || c.props?.children)).join("")
       : String(children || ""));
+  const tab = node?.["data-glossary-tab"] || ("glossary" as "glossary" | "protocols" | undefined);
 
   const handleClick = useCallback(() => {
     handleOpen({
       file: {
         name: "glossary",
         type: "exec",
-        data: { term: glossaryTerm },
+        data: { term: glossaryTerm, tab },
       },
       currentRelativePathSegments: [],
       addCustomWindow,
@@ -70,12 +51,7 @@ const GlossaryTermRenderer: React.FC<any> = ({
   );
 };
 
-const FsImageRenderer: React.FC<any> = ({
-  node,
-  children,
-  addCustomWindow,
-  ...props
-}) => {
+const FsImageRenderer: React.FC<any> = ({ node, children, addCustomWindow, ...props }) => {
   const path = node["data-path"];
   const alt = node["data-alt"];
   const name = node["data-name"];
@@ -86,16 +62,10 @@ const FsImageRenderer: React.FC<any> = ({
   const maxHeight = node["data-max-height"] || undefined;
   const color = node["data-color"] || "white";
 
-  const imageUrl = path
-    ? `${API}/api/filesystem/file?path=${encodeURIComponent(path)}`
-    : "";
+  const imageUrl = path ? `${API}/api/filesystem/file?path=${encodeURIComponent(path)}` : "";
 
   if (!imageUrl) {
-    return (
-      <span className="text-red-500">
-        Error: Image path not specified for fs-image.
-      </span>
-    );
+    return <span className="text-red-500">Error: Image path not specified for fs-image.</span>;
   }
 
   return (
@@ -157,11 +127,7 @@ const MarginRenderer: React.FC<any> = ({ node, children, ...props }) => {
     alert: "bg-red-800 text-red-100 border border-red-600",
   };
 
-  const containerClassName = clsx(
-    variant != "invisible" ? baseClasses : "",
-    variantClasses[variant],
-    props.className
-  );
+  const containerClassName = clsx(variant != "invisible" ? baseClasses : "", variantClasses[variant], props.className);
 
   const customStyles: React.CSSProperties = {};
   if (!isNaN(marginLeft)) customStyles.marginLeft = `${marginLeft}px`;
@@ -169,11 +135,7 @@ const MarginRenderer: React.FC<any> = ({ node, children, ...props }) => {
   if (!isNaN(marginBottom)) customStyles.marginBottom = `${marginBottom}px`;
 
   return (
-    <div
-      className={containerClassName}
-      style={customStyles}
-      data-variant={variant}
-    >
+    <div className={containerClassName} style={customStyles} data-variant={variant}>
       {title && <h4 className="text-lg font-bold mb-2">{title}</h4>}
       {children}
     </div>
@@ -181,48 +143,22 @@ const MarginRenderer: React.FC<any> = ({ node, children, ...props }) => {
 };
 
 interface InnerRehypeRendererProps {
-  hastTree: any;
+  nodes: any;
   components: RehypeReactOptions["components"];
   renderId: number | null;
   optimizeUI: boolean;
 }
 
-const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({
-  hastTree,
-  components,
-  renderId,
-  optimizeUI,
-}) => {
-  const renderProcessor = useMemo(() => {
-    function compiler(tree: any, file: any) {
-      const jsxCompiler: any = {};
-      rehypeReact.call(jsxCompiler, {
-        //@ts-ignore
-        createElement: React.createElement,
-        Fragment: React.Fragment,
-        components: components,
-        // @ts-ignore
-        jsx,
-        // @ts-ignore
-        jsxs,
-      });
-
-      //@ts-ignore
-      return jsxCompiler.compiler(tree, file);
-    }
-
-    return unified().use(function () {
-      this.compiler = compiler;
-    });
-  }, [components]);
-
+const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({ nodes, components, renderId, optimizeUI }) => {
   const renderedJsx = useMemo(() => {
-    if (!hastTree) return null;
+    if (!nodes) return null;
     if (!renderId) return null;
 
     try {
-      console.log(hastTree, renderId);
-      return renderProcessor.stringify(hastTree);
+      console.log(nodes, renderId);
+      return deserialize(nodes, {
+        components,
+      });
     } catch (error) {
       console.error("Error rendering HAST to JSX:", error);
       return <p className="text-red-500">Error rendering content.</p>;
@@ -237,10 +173,8 @@ export default function TextReader({ path }: { path: string }) {
   const addCustomWindow = useSystemStore((store) => store.addCustomWindow);
 
   const [rawContent, setRawContent] = useState<string | null>(null);
-  const [hastTree, setHastTree] = useState<any>(null);
-  const [loadingPhase, setLoadingPhase] = useState<
-    "idle" | "fetching" | "processing"
-  >("idle");
+  const [nodes, setNodes] = useState<any>(null);
+  const [loadingPhase, setLoadingPhase] = useState<"idle" | "fetching" | "processing">("idle");
   const [renderId, setRenderId] = useState<number | null>(null);
 
   const [isPending, startTransition] = useTransition();
@@ -264,11 +198,7 @@ export default function TextReader({ path }: { path: string }) {
       })
       .catch((error) => {
         console.error("Error reading file:", error);
-        setRawContent(
-          `<p class="text-red-500">Error reading file: ${
-            error.message || "Unknown error"
-          }</p>`
-        );
+        setRawContent(`<p class="text-red-500">Error reading file: ${error.message || "Unknown error"}</p>`);
         setLoadingPhase("idle");
       });
   }, [deferredPath]);
@@ -277,30 +207,28 @@ export default function TextReader({ path }: { path: string }) {
     if (rawContent === null) return;
 
     setLoadingPhase("processing");
-    setHastTree(null);
+    setNodes(null);
     setRenderId(null);
 
     console.log("processing");
 
     const requestId = ++currentRequestRef.current;
 
-    const handleWorkerMessage = (
-      event: MessageEvent<{ hast?: any; error?: string; requestId: number }>
-    ) => {
+    const handleWorkerMessage = (event: MessageEvent<{ nodes?: any; error?: string; requestId: number }>) => {
       console.log(event.data.requestId, requestId);
       if (event.data.requestId !== requestId) {
         return;
       }
-      if (event.data.hast !== undefined) {
+      if (event.data.nodes !== undefined) {
         startTransition(() => {
-          setHastTree(event.data.hast);
+          setNodes(event.data.nodes);
           setRenderId(requestId);
           setLoadingPhase("idle");
         });
       } else if (event.data.error) {
         console.error("Worker error:", event.data.error);
         startTransition(() => {
-          setHastTree({
+          setNodes({
             type: "root",
             children: [
               {
@@ -360,6 +288,9 @@ export default function TextReader({ path }: { path: string }) {
     };
 
     return {
+      "<fragment>": (props: any) => {
+        return <>{props.children}</>;
+      },
       p: (props: any) => {
         const paragraph = <p key={props.key}>{props.children}</p>;
         return (
@@ -382,21 +313,19 @@ export default function TextReader({ path }: { path: string }) {
           if (directiveName === "fs-image") {
             return (
               <Optimize type="fs" props={props}>
-                <FsImageRenderer
-                  {...props}
-                  node={props}
-                  addCustomWindow={addCustomWindow}
-                />
+                <FsImageRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
               </Optimize>
+            );
+          } else if (directiveName === "optimize-section") {
+            return (
+              <RenderIfVisible key={`riw-section-${props.key || Date.now()}`}>
+                <section>{props.children}</section>
+              </RenderIfVisible>
             );
           } else if (directiveName === "center") {
             return (
               <Optimize type="center" props={props}>
-                <div
-                  key={props.key}
-                  {...props}
-                  className="text-center flex flex-col justify-center items-center"
-                >
+                <div key={props.key} {...props} className="text-center flex flex-col justify-center items-center">
                   {props.children}
                 </div>
               </Optimize>
@@ -423,11 +352,7 @@ export default function TextReader({ path }: { path: string }) {
           if (directiveName === "glossary") {
             return (
               <Optimize type="glossary" props={props} isInline>
-                <GlossaryTermRenderer
-                  {...props}
-                  node={props}
-                  addCustomWindow={addCustomWindow}
-                />
+                <GlossaryTermRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
               </Optimize>
             );
           }
@@ -442,21 +367,14 @@ export default function TextReader({ path }: { path: string }) {
   }, [optimizeUI]);
 
   return (
-    <div className="markdown p-2 bg-[#101010]/80 h-full overflow-y-auto select-text">
+    <div className="markdown scrollable p-2 bg-[#101010]/80 h-full overflow-y-auto select-text">
       {loadingPhase !== "idle" || isPending ? (
         <div className="flex flex-col justify-center items-center h-full">
           <ClipLoader className="text-white" color="#fff" />
-          <span className="ml-2 text-gray-400">
-            {loadingPhase === "fetching" ? "Fetching..." : "Processing..."}
-          </span>
+          <span className="ml-2 text-gray-400">{loadingPhase === "fetching" ? "Fetching..." : "Processing..."}</span>
         </div>
-      ) : hastTree !== null ? (
-        <InnerRehypeRenderer
-          hastTree={hastTree}
-          components={components}
-          renderId={renderId}
-          optimizeUI={optimizeUI}
-        />
+      ) : nodes !== null ? (
+        <InnerRehypeRenderer nodes={nodes} components={components} renderId={renderId} optimizeUI={optimizeUI} />
       ) : (
         <p className="text-red-500">No content available. ({loadingPhase})</p>
       )}

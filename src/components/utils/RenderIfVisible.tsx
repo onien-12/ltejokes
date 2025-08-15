@@ -1,6 +1,4 @@
-// src/components/utils/RenderIfVisible.tsx
-
-import React, { useState, useRef, useEffect, useCallback } from "react"; // Added useCallback
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 type Props = {
   initialVisible?: boolean;
@@ -60,12 +58,15 @@ const RenderIfVisible = ({
           setShouldRender((prev) => {
             if (entry.isIntersecting) {
               return true;
+            } else if (prev && stayRendered) {
+              return true;
             } else if (prev) {
               if (localRef.offsetHeight > 0) {
                 elementHeight.current = localRef.offsetHeight;
               }
+              return false;
             }
-            return stayRendered ? prev : false;
+            return false;
           });
         },
         { root, rootMargin: `${visibleOffset}px 0px ${visibleOffset}px 0px` }
@@ -81,8 +82,7 @@ const RenderIfVisible = ({
     return () => {};
   }, [root, visibleOffset, stayRendered]);
 
-  const isCurrentlyRendered =
-    shouldRender || (stayRendered && elementHeight.current > 0);
+  const isCurrentlyRendered = shouldRender || (stayRendered && elementHeight.current > 0);
 
   const contentToRender = isCurrentlyRendered ? (
     <>{children}</>
@@ -90,8 +90,7 @@ const RenderIfVisible = ({
     React.createElement(placeholderElement, {
       className: placeholderElementClass,
       style: {
-        height:
-          elementHeight.current > 0 ? elementHeight.current : defaultHeight,
+        height: elementHeight.current > 0 ? elementHeight.current : defaultHeight,
       },
     })
   );
@@ -99,6 +98,7 @@ const RenderIfVisible = ({
   return React.createElement(rootElement, {
     ref: intersectionRef,
     className: `renderIfVisible-root ${rootElementClass}`,
+    style: !isCurrentlyRendered && elementHeight.current === 0 ? { height: defaultHeight } : undefined,
     children: contentToRender,
   });
 };

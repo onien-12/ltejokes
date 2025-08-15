@@ -74,7 +74,7 @@ export default function Desktop() {
               <Icon icon="material-symbols:book-2" width="32" height="32" />
             ),
             label: "Glossary",
-            defaultPosition: { x: 0, y: 250 },
+            defaultPosition: { x: 80, y: 0 },
             handleClick: () =>
               handleOpen({
                 file: {
@@ -83,6 +83,22 @@ export default function Desktop() {
                   data: {
                     term: "",
                   },
+                },
+                addCustomWindow,
+                currentRelativePathSegments: [],
+              }),
+          },
+          {
+            id: "5",
+            icon: <Icon icon="mdi:wireless" width="32" height="32" />,
+            label: "3gpp nav",
+            defaultPosition: { x: 80, y: 80 },
+            handleClick: () =>
+              handleOpen({
+                file: {
+                  name: "3gpp_navigator",
+                  type: "exec",
+                  data: {},
                 },
                 addCustomWindow,
                 currentRelativePathSegments: [],

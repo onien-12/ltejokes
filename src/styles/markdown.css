@@ -4,8 +4,6 @@
   font-size: 16px;
   color: #f0f0f0;
   text-align: start;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
 }
 
 .katex-display,

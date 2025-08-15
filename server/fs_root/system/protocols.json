@@ -1,0 +1,86 @@
+{
+  "protocols": [
+    {
+      "name": "rrc",
+      "elements": [
+        {
+          "name": "SystemInformationBlockType2",
+          "elements": [
+            {
+              "name": "radioResourceConfigCommon",
+              "type": "RadioResourceConfigCommonSIB",
+              "elements": [
+                {
+                  "name": "pucch-ConfigCommon",
+                  "type": "PUCCH-ConfigCommon",
+                  "description": "Specifies the common PUCCH configuration",
+                  "elements": [
+                    {
+                      "name": "deltaPUCCH-Shift",
+                      "type": "ENUMERATED {ds1, ds2, ds3}",
+                      "description": "Parameter $$ \\Delta^{PUCCH}_{shift} $$, where ds1 corresponds to value 1, ds2 to value 2, etc."
+                    },
+                    {
+                      "name": "nRB-CQI",
+                      "type": "INTEGER (0..98)",
+                      "description": "Parameter $$ N^{(2)}_{RB} $$ for PUCCH format 2."
+                    },
+                    {
+                      "name": "nCS-AN",
+                      "type": "INTEGER (0..7)",
+                      "description": "Parameter $$ N^{(1)}_{cs} $$ for PUCCH format 1."
+                    },
+                    {
+                      "name": "n1PUCCH-AN",
+                      "type": "INTEGER (0..2047)",
+                      "description": "Parameter $$ N^{(1)}_{PUCCH} $$ (36.213)"
+                    }
+                  ]
+                },
+                {
+                  "name": "pusch-ConfigCommon",
+                  "type": "PUSCH-ConfigCommon",
+                  "description": "Specifies the common PUSCH configuration",
+                  "elements": [
+                    {
+                      "name": "ul-ReferenceSignalsPUSCH",
+                      "type": "UL-ReferenceSignalsPUSCH",
+                      "description": "Used to specify parameters needed for the transmission on PUSCH (or PUCCH).",
+                      "elements": [
+                        {
+                          "name": "groupHoppingEnabled",
+                          "type": "BOOLEAN",
+                          "description": "Indicates if group hopping is enabled for PUSCH DMRS."
+                        },
+                        {
+                          "name": "groupAssignmentPUSCH",
+                          "type": "INTEGER (0..29)",
+                          "description": "Parameter $$ \\delta_{ss} $$ for PUSCH DMRS sequence hopping."
+                        },
+                        {
+                          "name": "sequenceHoppingEnabled",
+                          "type": "BOOLEAN",
+                          "description": "Indicates if sequence hopping is enabled for PUSCH DMRS."
+                        },
+                        {
+                          "name": "cyclicShift",
+                          "type": "INTEGER (0..7)",
+                          "description": "Cyclic shift for PUSCH DMRS (applicable when sequence hopping is disabled)."
+                        }
+                      ]
+                    },
+                    {
+                      "name": "enable64QAM",
+                      "type": "BOOLEAN",
+                      "description": "Indicates if 64QAM modulation is enabled for PUSCH."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

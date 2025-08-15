@@ -41,7 +41,7 @@ code {
 
 @-moz-document url-prefix() {
   .window-content {
-    position: sticky
+    position: sticky;
   }
 }
 
@@ -54,4 +54,9 @@ code {
 .react-transform-wrapper {
   height: 100%;
   width: 100%;
+}
+
+.scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
 }

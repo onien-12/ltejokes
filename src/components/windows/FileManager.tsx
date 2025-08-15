@@ -7,6 +7,8 @@ import PDFReader from "./PDFReader";
 import clsx from "clsx";
 import { readDirectory } from "../../utils";
 import GlossaryWindow from "./GlossaryWindow";
+import HTMLViewer from "./HTMLViewer";
+import Navigator3GPP from "./utilities/Navigator3GPP";
 
 interface FileItem {
   name: string;
@@ -23,16 +25,19 @@ export function handleOpen({
   file,
   currentRelativePathSegments,
   addCustomWindow,
+  fullPath,
 }: {
   file: FileItem;
-  currentRelativePathSegments: string[];
+  currentRelativePathSegments?: string[];
   addCustomWindow: SystemStore["addCustomWindow"];
+  fullPath?: string;
 }) {
   console.log(file, currentRelativePathSegments, addCustomWindow);
 
-  const fullApiPath = `/${currentRelativePathSegments.join("/")}/${file.name}`;
+  const fullApiPath =
+    fullPath ?? `/${currentRelativePathSegments!.join("/")}/${file.name}`;
 
-  if (file.type === "exec") {
+  if (file && file.type === "exec") {
     if (file.name === "glossary") {
       const term = file.data.term;
       return addCustomWindow({
@@ -42,8 +47,16 @@ export function handleOpen({
           <GlossaryWindow
             initialTerm={term}
             currentContextGroup={file.data.group}
+            initialTab={file.data.tab || "glossary"}
           />
         ),
+      });
+    }
+    if (file.name === "3gpp_navigator") {
+      return addCustomWindow({
+        id: `3gpp-navigator`,
+        name: `3gpp navigator`,
+        window: <Navigator3GPP />,
       });
     }
   }
@@ -53,6 +66,14 @@ export function handleOpen({
       id: file.name,
       name: `Reader - ${file.name}`,
       window: <TextReader path={fullApiPath} />,
+    });
+  }
+
+  if (file.name.endsWith(".html") || file.name.endsWith(".htm")) {
+    return addCustomWindow({
+      id: file.name,
+      name: `HTML Viewer - ${file.name}`,
+      window: <HTMLViewer path={fullApiPath} />,
     });
   }
 

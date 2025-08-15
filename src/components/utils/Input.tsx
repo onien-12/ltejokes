@@ -1,4 +1,5 @@
 import React from "react";
+import { twMerge } from "tailwind-merge";
 
 type InputProps = {
   label?: string;
@@ -6,6 +7,7 @@ type InputProps = {
   value: string;
   onChange: (value: string) => void;
   type?: "text" | "password" | "email" | "search";
+  className?: string;
 };
 
 export default function Input({
@@ -14,6 +16,7 @@ export default function Input({
   value,
   onChange,
   type = "text",
+  className = "",
 }: InputProps) {
   return (
     <div className="flex flex-col gap-1 items-start w-full">
@@ -25,7 +28,10 @@ export default function Input({
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-[#2a2a2a] text-white border border-[#444] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5c5c5c] focus:border-[#5c5c5c] transition-all placeholder-gray-500 w-full"
+        className={twMerge(
+          "bg-[#2a2a2a] text-white border border-[#444] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#5c5c5c] focus:border-[#5c5c5c] transition-all placeholder-gray-500 w-full",
+          className
+        )}
       />
     </div>
   );

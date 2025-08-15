@@ -1,5 +1,5 @@
 {
-    "glossary": [
+  "glossary": [
         {
             "word": "LTE",
             "definitions": [
@@ -475,7 +475,7 @@
             "word": "RRC",
             "definitions": [
               {
-                "context": ["LTE", "5gNR", "protocol stack"],
+                "context": ["LTE", "5gNR", "protocol"],
                 "text": "Radio Resource Control - A control plane protocol in the RAN that handles the configuration of the radio interface, which includes establishing, maintaining, and releasing radio bearers, managing handovers, and controlling system information broadcasting. It operates above the MAC and RLC layers."
               }
             ]
@@ -484,7 +484,7 @@
             "word": "RLC",
             "definitions": [
               {
-                "context": ["LTE", "5gNR", "protocol stack"],
+                "context": ["LTE", "5gNR", "protocol"],
                 "text": "Radio Link Control - A protocol sublayer in the radio interface that provides segmentation, concatenation, error correction, and reordering of data units to ensure reliable data transfer over the radio link. It operates between the MAC layer and the PDCP layer."
               }
             ]
@@ -493,7 +493,7 @@
             "word": "PDCP",
             "definitions": [
               {
-                "context": ["LTE", "5gNR", "protocol stack"],
+                "context": ["LTE", "5gNR", "protocol"],
                 "text": "Packet Data Convergence Protocol - A protocol sublayer in the radio interface that provides IP header compression and encryption. It operates above the RLC layer and provides services to higher layers, such as IP."
               }
             ]
@@ -503,7 +503,7 @@
             "definitions": [
               {
                 "context": ["mathematics"],
-                "text": "Singular Value Decomposition - A matrix factorization technique that decomposes a matrix into three other matrices: $$ A = U \\Sigma V^H $$."
+                "text": "Singular Value Decomposition - A matrix factorization technique that decomposes a matrix into three other matrices: $$ A = U \\Sigma V^H $$. Specifically, the SVD of an $$ m \\times n $$ matrix $$ M $$ results in $$ M = U \\Sigma V^H $$, where $$ U $$ is $$ m \\times m $$ *unitary matrix*, $$ \\Sigma $$ is $$ m \\times n $$ *diagonal matrix* and $$ V $$ is $$ n \\times n $$ *unitary matrix*."
               },
               {
                 "context": ["MIMO"],
@@ -517,6 +517,70 @@
               {
                 "context": ["mathematics", "linear algebra"],
                 "text": "Also known as conjugate transpose, for a complex matrix $$ A $$, its Hermitian transpose $$ A^H $$ is obtained by taking the transpose of the matrix and then taking the complex conjugate of each element."
+              }
+            ]
+          },
+
+          {
+            "word": "Layer Mapping",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR"],
+                "text": "The process in LTE and 5gNR where modulated data symbols are mapped onto multiple streams before precoding. The number of layers corresponds to the number of data streams transmitted simultaneously."
+              }
+            ]
+          },
+          {
+            "word": "Rate Matching",
+            "definitions": [
+              {
+                "context": ["LTE", "5gNR", "coding"],
+                "text": "A mechanism in the transport layer that changes the code rate of the transmitted data to match the available physical layer resources and desired QoS. It involves either removing bits to increase the code rate or adding redundant bits to decrease the code rate."
+              }
+            ]
+          },
+          {
+            "word": "TCP",
+            "definitions": [
+              {
+                "context": ["networking", "protocol"],
+                "text": "Transmission Control Protocol - A one of the most used protocols in computer networks. TCP provides reliable, ordered, and error checked delivery of packets between 2 communicating nodes (this process is called ARQ). It also controls the rate of the stream for Congestion Control purposes. It is connection oriented, meaning a connection is established before the data is sent. The process of connecting is called handshake. In TCP, handshake is done by communicating exactly 3 packets: SYN, SYN+ACK and ACK."
+              }
+            ]
+          },
+          {
+            "word": "UDP",
+            "definitions": [
+              {
+                "context": ["networking", "protocol"],
+                "text": "User Datagram Protocol - A simple connectionless protocol widely used in computer networks. UDP provides a simple way to separate packets by port number and does not provide any ARQ or Congestion Control functions."
+              }
+            ]
+          },
+          {
+            "word": "ARP",
+            "definitions": [
+              {
+                "context": ["networking", "protocol"],
+                "text": "Address Resolution Protocol - A protocol used to determine a MAC address by an IP address within a LAN. When a device wants to communicate with another device on the same network, it uses ARP to discover the MAC address associated with the target's IP address."
+              }
+            ]
+          },
+          {
+            "word": "GTP",
+            "definitions": [
+              {
+                "context": ["telco", "EPC", "protocol"],
+                "text": "GPRS Tunnelling Protocol - A group of protocols used in GSM, UMTS and LTE networks. GTP is used to transfer user plane data (GTP-U) and control plane data (GTP-C) between different network elements in the core network."
+              }
+            ]
+          },
+          {
+            "word": "Fourier Transform (FT)",
+            "definitions": [
+              {
+                "context": ["mathematics"],
+                "text": "Fourier Transform - a mathematical transform that decomposes a function (a waveform) into its frequencies. In other words, in converts a function from time domain to frequency domain, which is needed to determine what frequencies the input signal is made of. A specific form of FT is DFT (Discrete Fourier Transform) that operates on a finite sequence of time samples. It converts a finite sequence of data points into a finite sequence of frequency components of same length. DFT is a core concept in digital signal processing and is computed using FFT algorithm."
               }
             ]
           }

@@ -13,20 +13,13 @@ export default function DesktopGridCard({ item }: { item: DesktopItem }) {
   const nodeRef = useRef(null);
 
   return (
-    <Draggable
-      key={item.id}
-      defaultPosition={item.defaultPosition}
-      grid={[20, 20]}
-      bounds="parent"
-      nodeRef={nodeRef}
-    >
+    <Draggable key={item.id} defaultPosition={item.defaultPosition} grid={[20, 20]} bounds="parent" nodeRef={nodeRef}>
       <div
         ref={nodeRef}
         className="absolute flex flex-col items-center cursor-pointer w-24 text-center select-none text-white
                    hover:shadow-2xl hover:backdrop-blur-xl hover:rounded-xl"
         style={{
-          transition:
-            "box-shadow 300ms, backdrop-filter 300ms, border-radius 300ms",
+          transition: "box-shadow 300ms, backdrop-filter 300ms, border-radius 300ms",
         }}
         onClick={item.handleClick}
       >

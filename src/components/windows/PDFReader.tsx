@@ -65,14 +65,13 @@ const PDFReader: React.FC<PDFReaderProps> = ({ path }) => {
 
     loadPdf();
 
-    // Cleanup: Revoke object URL when component unmounts or path changes
     return () => {
       if (objectUrlRef.current) {
         URL.revokeObjectURL(objectUrlRef.current);
         objectUrlRef.current = null;
       }
     };
-  }, [path]); // Effect runs when 'path' changes
+  }, [path]);
 
   if (loading) {
     return (
@@ -99,17 +98,9 @@ const PDFReader: React.FC<PDFReaderProps> = ({ path }) => {
   }
 
   return (
-    <Worker
-      workerUrl={`https://unpkg.com/pdfjs-dist@${
-        (pdfjs as any).version
-      }/build/pdf.worker.min.js`}
-    >
+    <Worker workerUrl={`https://unpkg.com/pdfjs-dist@${(pdfjs as any).version}/build/pdf.worker.min.js`}>
       <div className="pdf-viewer-container w-full h-full">
-        <Viewer
-          fileUrl={fileUrl}
-          plugins={[defaultLayoutPluginInstance]}
-          theme="dark"
-        />
+        <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} theme="dark" />
       </div>
     </Worker>
   );

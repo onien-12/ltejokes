@@ -31,8 +31,7 @@ export function Network() {
   const { networkConnected, setNetworkConnected, setModule } = useSystemStore();
 
   const [ip, setIp] = useState("fetching...");
-  const conn = (navigator as unknown as { connection: NetworkInformation })
-    .connection as NetworkInformation;
+  const conn = (navigator as unknown as { connection: NetworkInformation }).connection as NetworkInformation;
 
   useEffect(() => {
     if (networkConnected)
@@ -57,19 +56,11 @@ export function Network() {
       </div>
       <div>
         <span className="font-medium text-white">Downlink:</span>{" "}
-        {networkConnected
-          ? conn?.downlink
-            ? `${conn.downlink} Mbps`
-            : "unknown"
-          : "disconnected"}
+        {networkConnected ? (conn?.downlink ? `${conn.downlink} Mbps` : "unknown") : "disconnected"}
       </div>
       <div>
         <span className="font-medium text-white">RTT:</span>{" "}
-        {networkConnected
-          ? conn?.rtt
-            ? `${conn.rtt} ms`
-            : "unknown"
-          : "disconnected"}
+        {networkConnected ? (conn?.rtt ? `${conn.rtt} ms` : "unknown") : "disconnected"}
       </div>
       <div>
         <span className="font-medium text-white">Save Data:</span>{" "}
@@ -107,32 +98,19 @@ export function Network() {
 
 export function Appearance() {
   const { background, setBackground } = useSystemStore();
-  const { optimizeUI, setOptimizeUI, renderMath, setRenderMath } =
-    useUIOptionsStore();
+  const { optimizeUI, setOptimizeUI, renderMath, setRenderMath } = useUIOptionsStore();
 
   return (
     <div>
       <h2 className="text-xl font-medium mb-4 text-white">Appearance</h2>
       <div className="flex flex-col gap-2">
-        <Input
-          label="Background: "
-          value={background}
-          onChange={setBackground}
-        />
-        <WithTooltip tooltipContent="Enables/disables UI elements off-screen for performance.">
-          <Toggle
-            label="Optimize UI"
-            isOn={optimizeUI}
-            onToggle={setOptimizeUI}
-          />
+        <Input label="Background: " value={background} onChange={setBackground} />
+        <WithTooltip tooltipContent="Enables/disables aggressive UI optimizations (bugs may appear).">
+          <Toggle label="Aggressive UI optimizations" isOn={optimizeUI} onToggle={setOptimizeUI} />
         </WithTooltip>
 
         <WithTooltip tooltipContent="Enables/disables rendering of LaTeX math formulas.">
-          <Toggle
-            label="Render math"
-            isOn={renderMath}
-            onToggle={setRenderMath}
-          />
+          <Toggle label="Render math" isOn={renderMath} onToggle={setRenderMath} />
         </WithTooltip>
       </div>
     </div>
@@ -148,21 +126,18 @@ export function Kernel() {
 
       <div className=" text-gray-300 text-md text-start">
         <div>
-          <span className="font-medium text-white">Platform:</span>{" "}
-          {navigator.platform}
+          <span className="font-medium text-white">Platform:</span> {navigator.platform}
         </div>
         <div>
           <span className="font-medium text-white">Hardware Concurrency:</span>{" "}
           {navigator.hardwareConcurrency ?? "unknown"} logical cores
         </div>
         <div>
-          <span className="font-medium text-white">Memory:</span>{" "}
-          {/* @ts-ignore */}
+          <span className="font-medium text-white">Memory:</span> {/* @ts-ignore */}
           {navigator.deviceMemory ? `${navigator.deviceMemory} GB` : "unknown"}
         </div>
         <div>
-          <span className="font-medium text-white">Architecture:</span>{" "}
-          {/* @ts-ignore */}
+          <span className="font-medium text-white">Architecture:</span> {/* @ts-ignore */}
           {navigator.userAgentData?.platform ?? "unknown"}
         </div>
       </div>
@@ -181,14 +156,7 @@ export function Kernel() {
             {modules.map((mod, i) => (
               <tr key={i}>
                 <td className="py-2 px-3">{mod.name}</td>
-                <td
-                  className={clsx(
-                    "py-2 px-3",
-                    mod.status === "loaded"
-                      ? "text-green-400"
-                      : "text-yellow-400"
-                  )}
-                >
+                <td className={clsx("py-2 px-3", mod.status === "loaded" ? "text-green-400" : "text-yellow-400")}>
                   {mod.status}
                 </td>
                 <td className="py-2 px-3">{mod.size}</td>
@@ -207,9 +175,7 @@ export default function SettingsWindow() {
   return (
     <div className="flex w-full h-full bg-[#1e1e1e]/80 overflow-hidden text-white font-code">
       <div className="w-52 bg-[#2a2a2a]/50 border-r border-[#333] p-4">
-        <h1 className="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-wide">
-          Settings
-        </h1>
+        <h1 className="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-wide">Settings</h1>
         <ul className="space-y-1">
           {settingsSections.map((section) => (
             <li
