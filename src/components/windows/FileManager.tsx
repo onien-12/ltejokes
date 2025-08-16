@@ -264,7 +264,18 @@ export default function FileManager({ startPath = "", onFileOpen }: FileManagerP
               {item.type === "folder" ? (
                 <Icon icon="material-symbols:folder" width="48" height="48" />
               ) : (
-                <Icon icon="mdi-light:file" width="48" height="48" />
+                <>
+                  {
+                    //prettier-ignore
+                    item.name.endsWith(".pdf") ? <Icon icon="proicons:pdf-2" width="48" height="48" /> :
+                    item.name.endsWith(".md") ? <Icon icon="proicons:file-text" width="48" height="48" /> :
+                    item.name.endsWith(".json") ? <Icon icon="si:json-duotone" width="48" height="48" /> :
+                    item.name.endsWith(".png") || item.name.endsWith(".jpg") ? <Icon icon="humbleicons:image" width="48" height="48" /> :
+                    item.name.endsWith(".csv") ? <Icon icon="gala:file-csv" width="44" height="48" /> :
+                    item.name.endsWith(".py") ? <Icon icon="fluent:document-py-16-regular" width="48" height="48" /> :
+                        <Icon icon="mdi-light:file" width="48" height="48" />
+                  }
+                </>
               )}
               <span className="text-xs mt-2 truncate w-full px-1">{item.name}</span>
             </div>

@@ -89,7 +89,7 @@ export default function Window({
         style={styles}
         onPointerDown={(event) =>
           !(event.target as HTMLDivElement).matches(".close-button") &&
-          openWindows.indexOf(id) != openWindows.length - 1
+            openWindows.indexOf(id) != openWindows.length - 1
             ? focusWindow(id)
             : null
         }
@@ -98,10 +98,10 @@ export default function Window({
           className={`h-5 w-full border-b border-b-neutral-200 overflow-hidden font-code text-sm cursor-move absolute window-${handleId}`}
         >
           <div className="flex flex-row items-center bg-neutral-800 px-2">
-            <div>{label}</div>
+            <div className="overflow-hidden text-nowrap text-ellipsis">{label}</div>
             <div className="flex-1"></div>
             <div
-              className="cursor-pointer close-button"
+              className="cursor-pointer close-button ml-1"
               onClick={() => {
                 onClose();
               }}
