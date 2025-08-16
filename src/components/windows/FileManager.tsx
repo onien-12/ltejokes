@@ -5,10 +5,11 @@ import TextReader from "./TextReader/TextReader";
 import MediaViewer from "./MediaViewer";
 import PDFReader from "./PDFReader";
 import clsx from "clsx";
-import { readDirectory } from "../../utils";
+import { API, readDirectory } from "../../utils";
 import GlossaryWindow from "./GlossaryWindow";
 import HTMLViewer from "./HTMLViewer";
 import Navigator3GPP from "./utilities/Navigator3GPP";
+import ContextMenu, { ContextMenuItem } from "../utils/ContextMenu";
 
 interface FileItem {
   name: string;
@@ -34,8 +35,7 @@ export function handleOpen({
 }) {
   console.log(file, currentRelativePathSegments, addCustomWindow);
 
-  const fullApiPath =
-    fullPath ?? `/${currentRelativePathSegments!.join("/")}/${file.name}`;
+  const fullApiPath = fullPath ?? `/${currentRelativePathSegments!.join("/")}/${file.name}`;
 
   if (file && file.type === "exec") {
     if (file.name === "glossary") {
@@ -77,11 +77,7 @@ export function handleOpen({
     });
   }
 
-  if (
-    file.name.endsWith(".png") ||
-    file.name.endsWith(".jpg") ||
-    file.name.endsWith(".jpeg")
-  ) {
+  if (file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
     return addCustomWindow({
       id: file.name,
       name: `Media - ${file.name}`,
@@ -105,20 +101,19 @@ type FileManagerProps = {
   onFileOpen?: (currentRelativePathSegments: string[], file: FileItem) => void;
 };
 
-export default function FileManager({
-  startPath = "",
-  onFileOpen,
-}: FileManagerProps) {
-  const [currentPathSegments, setCurrentPathSegments] = useState<string[]>(
-    startPath.split("/").filter((p) => p)
-  );
+export default function FileManager({ startPath = "", onFileOpen }: FileManagerProps) {
+  const [currentPathSegments, setCurrentPathSegments] = useState<string[]>(startPath.split("/").filter((p) => p));
   const [currentDirContents, setCurrentDirContents] = useState<FileItem[]>([]);
-  const [currentDirOptions, setCurrentDirOptions] = useState<
-    DirectoryOptions | undefined
-  >(undefined);
+  const [currentDirOptions, setCurrentDirOptions] = useState<DirectoryOptions | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedItems, setSelectedItems] = useState<FileItem[]>([]);
+  const [contextMenu, setContextMenu] = useState<{
+    isOpen: boolean;
+    x: number;
+    y: number;
+    item: FileItem | null;
+  }>({ isOpen: false, x: 0, y: 0, item: null });
 
   const updateCurrentDirectory = useCallback(
     async (newPathSegments: string[]) => {
@@ -164,11 +159,10 @@ export default function FileManager({
   }, [currentPathSegments]);
 
   const handleItemClick = (event: React.MouseEvent, item: FileItem) => {
+    setContextMenu({ isOpen: false, x: 0, y: 0, item: null });
     if (event.metaKey || event.ctrlKey) {
       setSelectedItems((prevSelected) =>
-        prevSelected.includes(item)
-          ? prevSelected.filter((i) => i !== item)
-          : [...prevSelected, item]
+        prevSelected.includes(item) ? prevSelected.filter((i) => i !== item) : [...prevSelected, item]
       );
     } else if (event.shiftKey) {
       if (selectedItems.length > 0) {
@@ -180,9 +174,7 @@ export default function FileManager({
           const start = Math.min(lastIndex, currentIndex);
           const end = Math.max(lastIndex, currentIndex);
           const newSelection = currentDirContents.slice(start, end + 1);
-          setSelectedItems(
-            Array.from(new Set([...selectedItems, ...newSelection]))
-          );
+          setSelectedItems(Array.from(new Set([...selectedItems, ...newSelection])));
         } else {
           setSelectedItems([item]);
         }
@@ -195,12 +187,44 @@ export default function FileManager({
   };
 
   const handleDoubleClick = (item: FileItem) => {
+    setContextMenu({ isOpen: false, x: 0, y: 0, item: null });
     if (item.type === "folder") {
       navigateTo(item);
     } else if (item.type === "file" && onFileOpen) {
       onFileOpen(currentPathSegments, item);
     }
   };
+
+  const handleContextMenu = useCallback((event: React.MouseEvent, item: FileItem) => {
+    event.preventDefault();
+    setContextMenu({
+      isOpen: true,
+      x: event.clientX,
+      y: event.clientY,
+      item: item,
+    });
+    setSelectedItems([item]);
+  }, []);
+
+  const handleCloseContextMenu = useCallback(() => {
+    setContextMenu({ isOpen: false, x: 0, y: 0, item: null });
+  }, []);
+
+  const handleDownloadClick = useCallback(() => {
+    if (!contextMenu.item || contextMenu.item.type === "folder") return;
+
+    const fullFilePath = `/${currentPathSegments.join("/")}/${contextMenu.item.name}`;
+    const downloadUrl = `${API}/api/filesystem/file?path=${encodeURIComponent(fullFilePath)}&download=true`;
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.download = contextMenu.item.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    handleCloseContextMenu();
+  }, [contextMenu.item, currentPathSegments, handleCloseContextMenu]);
 
   return (
     <div className="bg-[#1e1e1e]/80 p-6 w-full h-full flex flex-col text-white font-sans">
@@ -223,20 +247,17 @@ export default function FileManager({
 
       <div className="grid grid-cols-5 gap-4 overflow-y-auto flex-1 pr-2">
         {currentDirContents.length === 0 && !loading && !error ? (
-          <div className="col-span-5 text-gray-500 text-center py-4">
-            This folder is empty.
-          </div>
+          <div className="col-span-5 text-gray-500 text-center py-4">This folder is empty.</div>
         ) : (
           currentDirContents.map((item) => (
             <div
               key={item.name}
               onClick={(e) => handleItemClick(e, item)}
               onDoubleClick={() => handleDoubleClick(item)}
+              onContextMenu={(e) => handleContextMenu(e, item)}
               className={clsx(
                 `h-fit flex flex-col items-center text-center p-3 rounded-lg transition-all select-none`,
-                loading || error
-                  ? "cursor-not-allowed opacity-50"
-                  : "cursor-pointer hover:bg-gray-700/50",
+                loading || error ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-gray-700/50",
                 selectedItems.includes(item) ? "bg-blue-600/70" : ""
               )}
             >
@@ -245,9 +266,7 @@ export default function FileManager({
               ) : (
                 <Icon icon="mdi-light:file" width="48" height="48" />
               )}
-              <span className="text-xs mt-2 truncate w-full px-1">
-                {item.name}
-              </span>
+              <span className="text-xs mt-2 truncate w-full px-1">{item.name}</span>
             </div>
           ))
         )}
@@ -263,13 +282,9 @@ export default function FileManager({
                   Group: <b>{currentDirOptions.groupName}</b>
                 </div>
               )}
-              {currentDirOptions.relatedGroups &&
-                currentDirOptions.relatedGroups.length > 0 && (
-                  <div>
-                    Related:{" "}
-                    {currentDirOptions.relatedGroups.slice(0, 3).join(", ")}
-                  </div>
-                )}
+              {currentDirOptions.relatedGroups && currentDirOptions.relatedGroups.length > 0 && (
+                <div>Related: {currentDirOptions.relatedGroups.slice(0, 3).join(", ")}</div>
+              )}
             </div>
           )}
         </div>
@@ -280,6 +295,17 @@ export default function FileManager({
           </span>
         )}
       </div>
+
+      <ContextMenu isOpen={contextMenu.isOpen} onClose={handleCloseContextMenu} x={contextMenu.x} y={contextMenu.y}>
+        <ContextMenuItem onClick={handleDownloadClick} disabled={contextMenu.item?.type === "folder"}>
+          <Icon icon="material-symbols-light:download-rounded" width="24" height="24" />
+          Download
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => null}>
+          <Icon icon="circum:view-table" width="24" height="24" />
+          Properties
+        </ContextMenuItem>
+      </ContextMenu>
     </div>
   );
 }
