@@ -70,7 +70,6 @@ def download_file(url):
 
 def main():
     start = time.time()
-    print("[*] Crawling ETSI TS directory tree...")
     crawl_directory(BASE_URL)
 
     print(f"[*] Found {len(file_links)} files. Starting downloads...")

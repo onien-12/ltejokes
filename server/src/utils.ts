@@ -22,6 +22,23 @@ export const compareVersions = (v1: string, v2: string): number => {
   return 0;
 };
 
+export const formatTime = (time: number): string => {
+  if (isNaN(time) || time < 0) return "0:00";
+
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time % 3600) / 60);
+  const seconds = Math.floor(time % 60);
+
+  const paddedSeconds = seconds < 10 ? "0" + seconds : seconds;
+  const paddedMinutes = minutes < 10 && hours > 0 ? "0" + minutes : minutes;
+
+  if (hours > 0) {
+    return `${hours}:${paddedMinutes}:${paddedSeconds}`;
+  } else {
+    return `${minutes}:${paddedSeconds}`;
+  }
+};
+
 export const sanitizeSearchString = (inputString: string): string => {
   if (!inputString) return "";
   return inputString

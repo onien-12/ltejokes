@@ -138,20 +138,66 @@ export const getFileContentRoute = (baseFsRoot: string) => async (req: Request, 
 
     const contentType = mime.lookup(filePath) || "application/octet-stream";
 
-    res.setHeader("Content-Type", contentType);
+    const fileSize = stats.size;
+    const range = req.headers.range;
 
-    if (download) res.setHeader("Content-Disposition", `attachment; filename="${relativePath.split("/").at(-1)}"`);
+    if (range) {
+      const parts = range.replace(/bytes=/, "").split("-");
+      const start = parseInt(parts[0], 10);
+      const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
 
-    const stream = createReadStream(filePath);
-    stream.pipe(res);
-    stream.on("error", (streamError: any) => {
-      console.error(`Error streaming file ${filePath}:`, streamError);
-      if (!res.headersSent) {
-        res.status(500).json({ error: "Internal server error while streaming file." });
-      } else {
-        res.end();
+      const chunksize = end - start + 1;
+
+      if (start >= fileSize || end >= fileSize || start < 0 || start > end) {
+        res
+          .status(416)
+          .set({
+            "Content-Range": `bytes */${fileSize}`,
+          })
+          .end();
+        return;
       }
-    });
+
+      const stream = createReadStream(filePath, { start, end });
+
+      res.writeHead(206, {
+        "Content-Range": `bytes ${start}-${end}/${fileSize}`,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunksize,
+        "Content-Type": contentType,
+      });
+
+      stream.pipe(res);
+
+      stream.on("error", (streamError: any) => {
+        console.error(`Error streaming partial file ${filePath}:`, streamError);
+        if (!res.headersSent) {
+          res.status(500).json({ error: "Internal server error while streaming partial file." });
+        } else {
+          res.end();
+        }
+      });
+    } else {
+      const stream = createReadStream(filePath);
+
+      res.writeHead(200, {
+        "Content-Length": fileSize,
+        "Content-Type": contentType,
+        "Accept-Ranges": "bytes",
+        ...(download ? { "Content-Disposition": `attachment; filename="${relativePath.split("/").at(-1)}"` } : {}),
+      });
+
+      stream.pipe(res);
+
+      stream.on("error", (streamError: any) => {
+        console.error(`Error streaming full file ${filePath}:`, streamError);
+        if (!res.headersSent) {
+          res.status(500).json({ error: "Internal server error while streaming full file." });
+        } else {
+          res.end();
+        }
+      });
+    }
   } catch (error: any) {
     if (error.code === "ENOENT") {
       return res.status(404).json({ error: "File not found." });

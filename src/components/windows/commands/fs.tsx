@@ -1,16 +1,10 @@
 import { CommandHandler } from "./types";
 
-export const pwdCommand: CommandHandler = (
-  args,
-  { currentPath, addOutput }
-) => {
+export const pwdCommand: CommandHandler = (args, { currentPath, addOutput }) => {
   addOutput(`/${currentPath.join("/")}`);
 };
 
-export const lsCommand: CommandHandler = async (
-  args,
-  { currentPath, addOutput, fetchDirectoryContents }
-) => {
+export const lsCommand: CommandHandler = async (args, { currentPath, addOutput, fetchDirectoryContents }) => {
   let targetPathSegments = [...currentPath];
   let displayPath = "";
 
@@ -42,7 +36,6 @@ export const lsCommand: CommandHandler = async (
       addOutput(` (empty directory)${displayPath} `);
     } else {
       const listOutput = contents
-        //@ts-expect-error
         .map((item) => {
           if (item.type === "folder") {
             return `<span style="color:#8be9fd;">${item.name}/</span>`;
@@ -59,13 +52,7 @@ export const lsCommand: CommandHandler = async (
 
 export const cdCommand: CommandHandler = async (
   args,
-  {
-    currentPath,
-    setPath,
-    addOutput,
-    fetchDirectoryContents,
-    setCurrentDirItems,
-  }
+  { currentPath, setPath, addOutput, fetchDirectoryContents, setCurrentDirItems }
 ) => {
   if (args.length < 2) {
     addOutput("cd: missing operand");
@@ -119,14 +106,9 @@ export const catCommand: CommandHandler = async (
   const fullApiPath = `/${filePathSegments.join("/")}`;
 
   try {
-    const dirCheckResponse = await fetchDirectoryContents(
-      `/${filePathSegments.slice(0, 1).join("/")}`
-    );
+    const dirCheckResponse = await fetchDirectoryContents(`/${filePathSegments.slice(0, 1).join("/")}`);
     const fileExistsAsFolder = dirCheckResponse.contents.some(
-      //@ts-expect-error
-      (item) =>
-        item.name === filePathSegments[filePathSegments.length - 1] &&
-        item.type === "folder"
+      (item) => item.name === filePathSegments[filePathSegments.length - 1] && item.type === "folder"
     );
 
     if (fileExistsAsFolder) {

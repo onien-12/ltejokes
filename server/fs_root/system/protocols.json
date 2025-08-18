@@ -75,7 +75,1294 @@
                       "description": "Indicates if 64QAM modulation is enabled for PUSCH."
                     }
                   ]
+                },
+                {
+                  "name": "rach-ConfigCommon",
+                  "type": "RACH-ConfigCommon",
+                  "description": "",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "preambleInfo",
+                      "type": "SEQUENCE",
+                      "description": "",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "numberOfRA-Preambles",
+                          "type": "ENUMERATED {n4, n8, n12, n16, n20, n24, n28, n32, n36, n40, n44, n48, n52, n56, n60, n64}",
+                          "description": "Number of non-dedicated random access preambles in 36.321. Value n4 corresponds to 4, n8 corresponds to 8 and so on.",
+                          "optional": false
+                        },
+                        {
+                          "name": "preamblesGroupAConfig",
+                          "type": "SEQUENCE",
+                          "description": "Configuration of RA preambles group A in 36.321.",
+                          "optional": true,
+                          "elements": [
+                            {
+                              "name": "sizeOfRA-PreamblesGroupA",
+                              "type": "ENUMERATED {n4, n8, n12, n16, n20, n24, n28, n32, n36, n40, n44, n48, n52, n56, n60}",
+                              "description": "Size of the random access preambles group A in 36.321.",
+                              "optional": false
+                            },
+                            {
+                              "name": "messageSizeGroupA",
+                              "type": "ENUMERATED {b56, b144, b208, b256}",
+                              "description": "Threshold for preamble selection in 36.321. Value b56 corresponds to 56 bits, b144 corresponds to 144 bits and so on.",
+                              "optional": false
+                            },
+                            {
+                              "name": "messagePowerOffsetGroupB",
+                              "type": "ENUMERATED {minusinfinity, dB0, dB5, dB8, dB10, dB12, dB15, dB18}",
+                              "description": "Threshold for preamble selection in 36.321. Value minusinfinity corresponds to –infinity. Value dB0 corresponds to 0 dB, dB5 corresponds to 5 dB and so on.",
+                              "optional": false
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "powerRampingParameters",
+                      "type": "PowerRampingParameters",
+                      "description": "Parameters for power ramping in 36.321",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "powerRampingStep",
+                          "type": "ENUMERATED {dB0, dB2, dB4, dB6}",
+                          "description": "Power ramping factor in 36.321. Value in dB. Value dB0 corresponds to 0 dB, dB2 corresponds to 2 dB and so on.",
+                          "optional": false
+                        },
+                        {
+                          "name": "preambleInitialReceivedTargetPower",
+                          "type": "ENUMERATED {dBm-120, dBm-118, dBm-116, dBm-114, dBm-112, dBm-110, dBm-108, dBm-106, dBm-104, dBm-102, dBm-100, dBm-98, dBm-96, dBm-94, dBm-92, dBm-90}",
+                          "description": "Initial preamble power in TS 36.321. Value in dBm. Value dBm-120 corresponds to -120 dBm, dBm-118 corresponds to -118 dBm and so on.",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "ra-SupervisionInfo",
+                      "type": "ra-SupervisionInfo",
+                      "description": "",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "preambleTransMax",
+                          "type": "ENUMERATED {n3, n4, n5, n6, n7, n8, n10, n20, n50, n100, n200}",
+                          "description": "Maximum number of preamble retransmissions (TS 36.321).",
+                          "optional": false
+                        },
+                        {
+                          "name": "ra-ResponseWindowSize",
+                          "type": "ENUMERATED {sf2, sf3, sf4, sf5, sf6, sf7, sf8, sf10}",
+                          "description": "Size of the Random Access Response window in subframes (TS 36.321). The same value applies for each serving cell (although the associated functionality is performed independently for each cell)",
+                          "optional": false
+                        },
+                        {
+                          "name": "mac-ContentionResolutionTimer",
+                          "type": "ENUMERATED {sf8, sf16, sf24, sf32, sf40, sf48, sf56, sf64}",
+                          "description": "Timer for MAC contention resolution in subframes (TS 36.321).",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "maxHARQ-Msg3Tx",
+                      "type": "INTEGER (1..8)",
+                      "description": "Maximum number of HARQ retransmissions for Msg3 in contention based random access procedure (TS 36.321).",
+                      "optional": false
+                    },
+                    {
+                      "name": "preambleTransMax-CE-r13",
+                      "type": "ENUMERATED {n3, n4, n5, n6, n7, n8, n10, n20, n50, n100, n200}",
+                      "description": "Maximum number of preamble retransmissions for Coverage Enhancement (CE) mode.",
+                      "optional": true
+                    },
+                    {
+                      "name": "rach-CE-LevelInfoList-r13",
+                      "type": "SEQUENCE (SIZE (1..maxCE-Level-r13)) OF RACH-CE-LevelInfo-r13",
+                      "description": "Provides RACH information for each coverage level. The first entry in the list contains RACH information of CE level 0, the second entry in the list contains RACH information of CE level 1, and so on. ",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "preambleMappingInfo-r13",
+                          "type": "SEQUENCE",
+                          "description": "",
+                          "elements": [
+                            {
+                              "name": "firstPreamble-r13",
+                              "type": "INTEGER (0..63)",
+                              "description": ""
+                            },
+                            {
+                              "name": "lastPreamble-r13",
+                              "type": "INTEGER (0..63)",
+                              "description": ""
+                            }
+                          ]
+                        },
+                        {
+                          "name": "ra-ResponseWindowSize-r13",
+                          "type": "ENUMERATED {sf20, sf50, sf80, sf120, sf180, sf240, sf320, sf400}",
+                          "description": ""
+                        },
+                        {
+                          "name": "mac-ContentionResolutionTimer-r13",
+                          "type": " ENUMERATED {sf80, sf100, sf120, sf160, sf200, sf240, sf480, sf960}",
+                          "description": ""
+                        },
+                        {
+                          "name": "rar-HoppingConfig-r13",
+                          "type": "ENUMERATED {on, off}",
+                          "description": ""
+                        }
+                      ]
+                    },
+                    {
+                      "name": "edt-SmallTBS-Subset-r15",
+                      "type": "ENUMERATED {true}",
+                      "description": "Presence indicates if the small TBS (Transport Block Size) subset is used for EDT (Early Data Transmission) in RACH (Release 15).",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "bcch-Config",
+                  "type": "BCCH-Config",
+                  "description": "Common configuration for the BCCH.",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "modificationPeriodCoeff",
+                      "type": "ENUMERATED {n2, n4, n8, n16}",
+                      "description": "Coefficient for the modification period of system information (TS 36.331). Relates to the SFN boundary at which SIB changes take effect.",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "pcch-Config",
+                  "type": "PCCH-Config",
+                  "description": "Common configuration for the PCCH.",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "defaultPagingCycle",
+                      "type": "ENUMERATED {rf32, rf64, rf128, rf256}",
+                      "description": "Default paging cycle, used to derive 'T' in TS 36.304. rf32 corresponds to 32 radio frames, etc.",
+                      "optional": false
+                    },
+                    {
+                      "name": "nB",
+                      "type": "ENUMERATED {fourT, twoT, oneT, halfT, quarterT, oneEighthT, oneSixteenthT, oneThirtySecondT}",
+                      "description": "Used in paging frame and paging occasion calculation (TS 36.304). Value in multiples or fractions of the default paging cycle 'T'.",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "prach-Config",
+                  "type": "PRACH-ConfigSIB",
+                  "description": "Common configuration for the Physical Random Access Channel (PRACH).",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "rootSequenceIndex",
+                      "type": "INTEGER (0..837)",
+                      "description": "Root Zadoff-Chu sequence index for PRACH preamble generation (RACH_ROOT_SEQUENCE) (TS 36.211).",
+                      "optional": false
+                    },
+                    {
+                      "name": "prach-ConfigInfo",
+                      "type": "PRACH-ConfigInfo",
+                      "description": "Detailed configuration parameters for PRACH.",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "prach-ConfigIndex",
+                          "type": "INTEGER (0..63)",
+                          "description": "Number representing the index of the PRACH configuration to use (prach-ConfigurationIndex) (TS 36.211).",
+                          "optional": false
+                        },
+                        {
+                          "name": "highSpeedFlag",
+                          "type": "BOOLEAN",
+                          "description": "Indicates if high-speed specific PRACH configuration should be used.",
+                          "optional": false
+                        },
+                        {
+                          "name": "zeroCorrelationZoneConfig",
+                          "type": "INTEGER (0..15)",
+                          "description": "Parameter $$ N_{cs} $$ (TS 36.211).",
+                          "optional": false
+                        },
+                        {
+                          "name": "prach-FreqOffset",
+                          "type": "INTEGER (0..94)",
+                          "description": "PRACH frequency offset, in resource blocks (TS 36.211).",
+                          "optional": false
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "pdsch-ConfigCommon",
+                  "type": "PDSCH-ConfigCommon",
+                  "description": "Common configuration for the Physical Downlink Shared Channel (PDSCH).",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "referenceSignalPower",
+                      "type": "INTEGER (-60..50)",
+                      "description": "Power of the downlink reference signal in dBm (TS 36.213).",
+                      "optional": false
+                    },
+                    {
+                      "name": "p-b",
+                      "type": "INTEGER (0..3)",
+                      "description": "Parameter $$ P_B $$ used for PDSCH power allocation (TS 36.213).",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "soundingRS-UL-ConfigCommon",
+                  "type": "SoundingRS-UL-ConfigCommon",
+                  "description": "Common configuration for Uplink Sounding Reference Signals (SRS).",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "release",
+                      "type": "NULL",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "setup",
+                      "type": "setup",
+                      "description": "Parameters for configuring SRS.",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "srs-BandwidthConfig",
+                          "type": "ENUMERATED {bw0, bw1, bw2, bw3, bw4, bw5, bw6, bw7}",
+                          "description": "Configuration for SRS transmission bandwidth (TS 36.211).",
+                          "optional": false
+                        },
+                        {
+                          "name": "srs-SubframeConfig",
+                          "type": "ENUMERATED {sc0, sc1, sc2, sc3, sc4, sc5, sc6, sc7, sc8, sc9, sc10, sc11, sc12, sc13, sc14, sc15}",
+                          "description": "Configuration for SRS subframe periodicity and offset (TS 36.213).",
+                          "optional": false
+                        },
+                        {
+                          "name": "ackNackSRS-SimultaneousTransmission",
+                          "type": "BOOLEAN",
+                          "description": "Indicates if simultaneous transmission of ACK/NACK and SRS is enabled.",
+                          "optional": false
+                        },
+                        {
+                          "name": "srs-MaxUpPts",
+                          "type": "ENUMERATED {true}",
+                          "description": "Configures maximum number of SRS transmissions in an UpPTS subframe (TDD only).",
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "uplinkPowerControlCommon",
+                  "type": "UplinkPowerControlCommon",
+                  "description": "Common parameters for uplink power control.",
+                  "optional": false,
+                  "elements": [
+                    {
+                      "name": "p0-NominalPUSCH",
+                      "type": "INTEGER (-126..24)",
+                      "description": "Parameter $$ P_{O_NOMINAL_PUSCH} $$",
+                      "optional": false
+                    },
+                    {
+                      "name": "alpha",
+                      "type": "ENUMERATED {al0, al04, al05, al06, al07, al08, al09, al1}",
+                      "description": "Parameter $$ \\alpha $$",
+                      "optional": false
+                    },
+                    {
+                      "name": "p0-NominalPUCCH",
+                      "type": "INTEGER (-127..-96)",
+                      "description": "Parameter $$ P_{O_NOMINAL_PUSCH} $$ in dBm (TS 36.213). Applicable for non-persistent scheduling only.",
+                      "optional": false
+                    },
+                    {
+                      "name": "deltaFList-PUCCH",
+                      "type": "DeltaFList-PUCCH",
+                      "description": "List of power offsets ($$ \\Delta_{F_PUCCH} $$) for various PUCCH formats (TS 36.213).",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "deltaF-PUCCH-Format1",
+                          "type": "ENUMERATED {deltaF-2, deltaF0, deltaF2}",
+                          "description": "Power offset for PUCCH Format 1.",
+                          "optional": false
+                        },
+                        {
+                          "name": "deltaF-PUCCH-Format1b",
+                          "type": "ENUMERATED {deltaF1, deltaF3, deltaF5}",
+                          "description": "Power offset for PUCCH Format 1b.",
+                          "optional": false
+                        },
+                        {
+                          "name": "deltaF-PUCCH-Format2",
+                          "type": "ENUMERATED {deltaF-2, deltaF0, deltaF1, deltaF2}",
+                          "description": "Power offset for PUCCH Format 2.",
+                          "optional": false
+                        },
+                        {
+                          "name": "deltaF-PUCCH-Format2a",
+                          "type": "ENUMERATED {deltaF-2, deltaF0, deltaF2}",
+                          "description": "Power offset for PUCCH Format 2a.",
+                          "optional": false
+                        },
+                        {
+                          "name": "deltaF-PUCCH-Format2b",
+                          "type": "ENUMERATED {deltaF-2, deltaF0, deltaF2}",
+                          "description": "Power offset for PUCCH Format 2b.",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "deltaPreambleMsg3",
+                      "type": "INTEGER (-1..6)",
+                      "description": "Parameter $$ \\Delta_{PREAMBLE\\_Msg3} / 2 $$",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "ul-CyclicPrefixLength",
+                  "type": "ENUMERATED {len1, len2}",
+                  "description": "Length of the uplink cyclic prefix (normal or extended) (TS 36.211). len1 corresponds to normal cyclic prefix, len2 to extended.",
+                  "optional": false
+                },
+                {
+                  "name": "uplinkPowerControlCommon-v1020",
+                  "type": "UplinkPowerControlCommon-v1020",
+                  "description": "Common uplink power control parameters, Release 10 additions.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "deltaF-PUCCH-Format3-r10",
+                      "type": "ENUMERATED {deltaF-1, deltaF0, deltaF1, deltaF2, deltaF3, deltaF4, deltaF5, deltaF6}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "deltaF-PUCCH-Format1bCS-r10",
+                      "type": "ENUMERATED {deltaF1, deltaF2, spare2, spare1}",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "rach-ConfigCommon-v1250",
+                  "type": "RACH-ConfigCommon-v1250",
+                  "description": "Common RACH configuration, Release 12 additions.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "txFailParams-r12",
+                      "type": "txFailParams-r12",
+                      "description": "",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "connEstFailCount-r12",
+                          "type": "ENUMERATED {n1, n2, n3, n4}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "connEstFailOffsetValidity-r12",
+                          "type": "ENUMERATED {s30, s60, s120, s240, s300, s420, s600, s900}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "connEstFailOffset-r12",
+                          "type": "INTEGER (0..15)",
+                          "description": "",
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "pusch-ConfigCommon-v1270",
+                  "type": "PUSCH-ConfigCommon-v1270",
+                  "description": "Common PUSCH configuration, Release 12 additions.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "enable64QAM-v1270",
+                      "type": "ENUMERATED {true}",
+                      "description": "Enables 64QAM modulation for PUSCH.",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "bcch-Config-v1310",
+                  "type": "BCCH-Config-v1310",
+                  "description": "Common BCCH configuration, Release 13 additions.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "modificationPeriodCoeff-v1310",
+                      "type": "ENUMERATED {n64}",
+                      "description": "Extended modification period coefficient for system information (Release 13).",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "pcch-Config-v1310",
+                  "type": "PCCH-Config-v1310",
+                  "description": "Common PCCH configuration, Release 13 additions for MTC/NB-IoT.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "paging-narrowBands-r13",
+                      "type": "INTEGER (1..16)",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "mpdcch-NumRepetition-Paging-r13",
+                      "type": "ENUMERATED {r1, r2, r4, r8, r16, r32, r64, r128, r256}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "nB-v1310",
+                      "type": "ENUMERATED {one64thT, one128thT, one256thT}",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "freqHoppingParameters-r13",
+                  "type": "FreqHoppingParameters-r13",
+                  "description": "Frequency hopping parameters for PUSCH (Release 13).",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "dummy",
+                      "type": "ENUMERATED {nb2, nb4}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "dummy2",
+                      "type": "dummy2",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "interval-FDD-r13",
+                          "type": "ENUMERATED {int1, int2, int4, int8}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "interval-TDD-r13",
+                          "type": "ENUMERATED {int1, int5, int10, int20}",
+                          "description": "",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "dummy3",
+                      "type": "dummy3",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "interval-FDD-r13",
+                          "type": "ENUMERATED {int2, int4, int8, int16}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "interval-TDD-r13",
+                          "type": "ENUMERATED {int5, int10, int20, int40}",
+                          "description": "",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "interval-ULHoppingConfigCommonModeA-r13",
+                      "type": "interval-ULHoppingConfigCommonModeA-r13",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "interval-FDD-r13",
+                          "type": "ENUMERATED {int1, int2, int4, int8}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "interval-TDD-r13",
+                          "type": "ENUMERATED {int1, int5, int10, int20}",
+                          "description": "",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "interval-ULHoppingConfigCommonModeB-r13",
+                      "type": "interval-ULHoppingConfigCommonModeB-r13",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "interval-FDD-r13",
+                          "type": "ENUMERATED {int2, int4, int8, int16}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "interval-TDD-r13",
+                          "type": "ENUMERATED {int5, int10, int20, int40}",
+                          "description": "",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "dummy4",
+                      "type": "INTEGER (1..16)",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "pdsch-ConfigCommon-v1310",
+                  "type": "PDSCH-ConfigCommon-v1310",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "pdsch-maxNumRepetitionCEmodeA-r13",
+                      "type": "ENUMERATED {r16, r32}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "pdsch-maxNumRepetitionCEmodeB-r13",
+                      "type": "ENUMERATED {r192, r256, r384, r512, r768, r1024, r1536, r2048}",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "pusch-ConfigCommon-v1310",
+                  "type": "PUSCH-ConfigCommon-v1310",
+                  "description": "Common PDSCH configuration, Release 13 additions for Coverage Enhancement.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "pusch-maxNumRepetitionCEmodeA-r13",
+                      "type": "ENUMERATED {r8, r16, r32}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "pusch-maxNumRepetitionCEmodeB-r13",
+                      "type": "ENUMERATED {r192, r256, r384, r512, r768, r1024, r1536, r2048}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "pusch-HoppingOffset-v1310",
+                      "type": "INTEGER (1..16)",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "prach-ConfigCommon-v1310",
+                  "type": "PRACH-ConfigSIB-v1310",
+                  "description": "Common PRACH configuration, Release 13 additions.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "rsrp-ThresholdsPrachInfoList-r13",
+                      "type": "RSRP-ThresholdsPrachInfoList-r13",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "mpdcch-startSF-CSS-RA-r13",
+                      "type": "mpdcch-startSF-CSS-RA-r13",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "fdd-r13",
+                          "type": "ENUMERATED {v1, v1dot5, v2, v2dot5, v4, v5, v8, v10}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "tdd-r13",
+                          "type": "ENUMERATED {v1, v2, v4, v5, v8, v10, v20, spare}",
+                          "description": "",
+                          "optional": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "prach-HoppingOffset-r13",
+                      "type": "INTEGER (0..94)",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "prach-ParametersListCE-r13",
+                      "type": "PRACH-ParametersListCE-r13",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "pucch-ConfigCommon-v1310",
+                  "type": "PUCCH-ConfigCommon-v1310",
+                  "description": "Common PUCCH configuration, Release 13 additions.",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "n1PUCCH-AN-InfoList-r13",
+                      "type": "N1PUCCH-AN-InfoList-r13",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "pucch-NumRepetitionCE-Msg4-Level0-r13",
+                      "type": "ENUMERATED {n1, n2, n4, n8}",
+                      "description": "Number of repetitions for PUCCH in Msg4 for CE Level 0 (Release 13).",
+                      "optional": true
+                    },
+                    {
+                      "name": "pucch-NumRepetitionCE-Msg4-Level1-r13",
+                      "type": "ENUMERATED {n1, n2, n4, n8}",
+                      "description": "Number of repetitions for PUCCH in Msg4 for CE Level 1 (Release 13).",
+                      "optional": true
+                    },
+                    {
+                      "name": "pucch-NumRepetitionCE-Msg4-Level2-r13",
+                      "type": "ENUMERATED {n4, n8, n16, n32}",
+                      "description": "Number of repetitions for PUCCH in Msg4 for CE Level 2 (Release 13).",
+                      "optional": true
+                    },
+                    {
+                      "name": "pucch-NumRepetitionCE-Msg4-Level3-r13",
+                      "type": "ENUMERATED {n4, n8, n16, n32}",
+                      "description": "Number of repetitions for PUCCH in Msg4 for CE Level 3 (Release 13).",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "highSpeedConfig-r14",
+                  "type": "HighSpeedConfig-r14",
+                  "description": "Configuration parameters for high-speed scenarios (Release 14).",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "highSpeedEnhancedMeasFlag-r14",
+                      "type": "ENUMERATED {true}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "highSpeedEnhancedDemodulationFlag-r14",
+                      "type": "ENUMERATED {true}",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "prach-Config-v1430",
+                  "type": "PRACH-Config-v1430",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "rootSequenceIndexHighSpeed-r14",
+                      "type": "INTEGER (0..837)",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "zeroCorrelationZoneConfigHighSpeed-r14",
+                      "type": "INTEGER (0..12)",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "prach-ConfigIndexHighSpeed-r14",
+                      "type": "INTEGER (0..63)",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "prach-FreqOffsetHighSpeed-r14",
+                      "type": "INTEGER (0..94)",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "pucch-ConfigCommon-v1430",
+                  "type": "PUCCH-ConfigCommon-v1430",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "pucch-NumRepetitionCE-Msg4-Level3-r14",
+                      "type": "ENUMERATED {n64, n128}",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "prach-Config-v1530",
+                  "type": "PRACH-ConfigSIB-v1530",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "edt-PRACH-ParametersListCE-r15",
+                      "type": "edt-PRACH-ParametersListCE-r15",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "ce-RSS-Config-r15",
+                  "type": "RSS-Config-r15",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "duration-r15",
+                      "type": "ENUMERATED {sf8, sf16, sf32, sf40}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "freqLocation-r15",
+                      "type": "INTEGER (0..98)",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "periodicity-r15",
+                      "type": "ENUMERATED {ms160, ms320, ms640, ms1280}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "powerBoost-r15",
+                      "type": "ENUMERATED {dB0, dB3, dB4dot8, dB6}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "timeOffset-r15",
+                      "type": "INTEGER (0..31)",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "wus-Config-r15",
+                  "type": "WUS-Config-r15",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "maxDurationFactor-r15",
+                      "type": "ENUMERATED {one32th, one16th, one8th, one4th}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "numPOs-r15",
+                      "type": "ENUMERATED {n1, n2, n4, spare1}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "freqLocation-r15",
+                      "type": "ENUMERATED {n0, n2, n4, spare1}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "timeOffsetDRX-r15",
+                      "type": "ENUMERATED {ms40, ms80, ms160, ms240}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "timeOffset-eDRX-Short-r15",
+                      "type": "ENUMERATED {ms40, ms80, ms160, ms240}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "timeOffset-eDRX-Long-r15",
+                      "type": "ENUMERATED {ms1000, ms2000}",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "highSpeedConfig-v1530",
+                  "type": "HighSpeedConfig-v1530",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "highSpeedMeasGapCE-ModeA-r15",
+                      "type": "ENUMERATED {true}",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "uplinkPowerControlCommon-v1540",
+                  "type": "UplinkPowerControlCommon-v1530",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "deltaFList-SPUCCH-r15",
+                      "type": "DeltaFList-SPUCCH-r15",
+                      "description": "",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "release",
+                          "type": "release",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "setup",
+                          "type": "setup",
+                          "description": "",
+                          "optional": false,
+                          "elements": [
+                            {
+                              "name": "deltaF-slotSPUCCH-Format1-r15",
+                              "type": "ENUMERATED {deltaF-1, deltaF0, deltaF1, deltaF2, deltaF3, deltaF4, deltaF5, deltaF6}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-slotSPUCCH-Format1a-r15",
+                              "type": "ENUMERATED {deltaF1, deltaF2, deltaF3, deltaF4, deltaF5, deltaF6, deltaF7, deltaF8}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-slotSPUCCH-Format1b-r15",
+                              "type": "ENUMERATED {deltaF3, deltaF4, deltaF5, deltaF6, deltaF7, deltaF8, deltaF9, deltaF10}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-slotSPUCCH-Format3-r15",
+                              "type": "ENUMERATED {deltaF4, deltaF5, deltaF6, deltaF7, deltaF8, deltaF9, deltaF10, deltaF11}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-slotSPUCCH-RM-Format4-r15",
+                              "type": "ENUMERATED {deltaF13, deltaF14, deltaF15, deltaF16, deltaF17, deltaF18, deltaF19, deltaF20}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-slotSPUCCH-TBCC-Format4-r15",
+                              "type": "ENUMERATED {deltaF10, deltaF11, deltaF12, deltaF13, deltaF14, deltaF15, deltaF16, deltaF17}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-subslotSPUCCH-Format1and1a-r15",
+                              "type": "ENUMERATED {deltaF5, deltaF6, deltaF7, deltaF8, deltaF9, deltaF10, deltaF11, deltaF12}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-subslotSPUCCH-Format1b-r15",
+                              "type": "ENUMERATED {deltaF6, deltaF7, deltaF8, deltaF9, deltaF10, deltaF11, deltaF12, deltaF13}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-subslotSPUCCH-RM-Format4-r15",
+                              "type": "ENUMERATED {deltaF15, deltaF16, deltaF17, deltaF18, deltaF19, deltaF20, deltaF21, deltaF22}",
+                              "description": "",
+                              "optional": true
+                            },
+                            {
+                              "name": "deltaF-subslotSPUCCH-TBCC-Format4-r15",
+                              "type": "ENUMERATED {deltaF10, deltaF11, deltaF12, deltaF13, deltaF14, deltaF15, deltaF16, deltaF17}",
+                              "description": "",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "wus-Config-v1560",
+                  "type": "WUS-Config-v1560",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "powerBoost-r15",
+                      "type": "ENUMERATED {dB0, dB1dot8, dB3, dB4dot8}",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "wus-Config-v1610",
+                  "type": "WUS-Config-v1610",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "numDRX-CyclesRelaxed-r16",
+                      "type": "ENUMERATED {n1, n2, n4, n8}",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "highSpeedConfig-v1610",
+                  "type": "HighSpeedConfig-v1610",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "highSpeedEnhMeasFlag2-r16",
+                      "type": "ENUMERATED {true}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "highSpeedEnhDemodFlag2-r16",
+                      "type": "ENUMERATED {true}",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "crs-ChEstMPDCCH-ConfigCommon-r16",
+                  "type": "CRS-ChEstMPDCCH-ConfigCommon-r16",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "powerRatio-r16",
+                      "type": "ENUMERATED {dB-4dot77, dB-3, dB-1dot77, dB0, dB1, dB2, dB3, dB4dot77}",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "gwus-Config-r16",
+                  "type": "GWUS-Config-r16",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "groupAlternation-r16",
+                      "type": "ENUMERATED {true}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "commonSequence-r16",
+                      "type": "ENUMERATED {g0, g126}",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "timeParameters-r16",
+                      "type": "GWUS-TimeParameters-r16",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "maxDurationFactor-r16",
+                          "type": "ENUMERATED {one32th, one16th, one8th, one4th}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "numPOs-r16",
+                          "type": "ENUMERATED {n1, n2, n4, spare1}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "timeOffsetDRX-r16",
+                          "type": "ENUMERATED {ms40, ms80, ms160, ms240}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "timeOffset-eDRX-Short-r16",
+                          "type": "ENUMERATED {ms40, ms80, ms160, ms240}",
+                          "description": "",
+                          "optional": false
+                        },
+                        {
+                          "name": "timeOffset-eDRX-Long-r16",
+                          "type": "ENUMERATED {ms1000, ms2000}",
+                          "description": "",
+                          "optional": true
+                        },
+                        {
+                          "name": "numDRX-CyclesRelaxed-r16",
+                          "type": "ENUMERATED {n1, n2, n4, n8}",
+                          "description": "",
+                          "optional": true
+                        },
+                        {
+                          "name": "powerBoost-r16",
+                          "type": "ENUMERATED {dB0, dB1dot8, dB3, dB4dot8}",
+                          "description": "",
+                          "optional": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "resourceConfigDRX-r16",
+                      "type": "GWUS-ResourceConfig-r16",
+                      "description": "",
+                      "optional": false,
+                      "elements": [
+                        {
+                          "name": "resourceMappingPattern-r16",
+                          "type": "resourceMappingPattern-r16",
+                          "description": "",
+                          "optional": false,
+                          "elements": [
+                            {
+                              "name": "resourceLocationWithWUS",
+                              "type": "ENUMERATED {primary, secondary, primary3FDM}",
+                              "description": "",
+                              "optional": false
+                            },
+                            {
+                              "name": "resourceLocationWithoutWUS",
+                              "type": "ENUMERATED {n0, n2}",
+                              "description": "",
+                              "optional": false
+                            }
+                          ]
+                        },
+                        {
+                          "name": "numGroupsList-r16",
+                          "type": "GWUS-NumGroupsList-r16",
+                          "description": "",
+                          "optional": true
+                        },
+                        {
+                          "name": "groupsForServiceList-r16",
+                          "type": "GWUS-GroupsForServiceList-r16",
+                          "description": "",
+                          "optional": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "resourceConfig-eDRX-Short-r16",
+                      "type": "GWUS-ResourceConfig-r16",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "resourceMappingPattern-r16",
+                          "type": "resourceMappingPattern-r16",
+                          "description": "",
+                          "optional": false,
+                          "elements": [
+                            {
+                              "name": "resourceLocationWithWUS",
+                              "type": "ENUMERATED {primary, secondary, primary3FDM}",
+                              "description": "",
+                              "optional": false
+                            },
+                            {
+                              "name": "resourceLocationWithoutWUS",
+                              "type": "ENUMERATED {n0, n2}",
+                              "description": "",
+                              "optional": false
+                            }
+                          ]
+                        },
+                        {
+                          "name": "numGroupsList-r16",
+                          "type": "GWUS-NumGroupsList-r16",
+                          "description": "",
+                          "optional": true
+                        },
+                        {
+                          "name": "groupsForServiceList-r16",
+                          "type": "GWUS-GroupsForServiceList-r16",
+                          "description": "",
+                          "optional": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "resourceConfig-eDRX-Long-r16",
+                      "type": "GWUS-ResourceConfig-r16",
+                      "description": "",
+                      "optional": true,
+                      "elements": [
+                        {
+                          "name": "resourceMappingPattern-r16",
+                          "type": "resourceMappingPattern-r16",
+                          "description": "",
+                          "optional": false,
+                          "elements": [
+                            {
+                              "name": "resourceLocationWithWUS",
+                              "type": "ENUMERATED {primary, secondary, primary3FDM}",
+                              "description": "",
+                              "optional": false
+                            },
+                            {
+                              "name": "resourceLocationWithoutWUS",
+                              "type": "ENUMERATED {n0, n2}",
+                              "description": "",
+                              "optional": false
+                            }
+                          ]
+                        },
+                        {
+                          "name": "numGroupsList-r16",
+                          "type": "GWUS-NumGroupsList-r16",
+                          "description": "",
+                          "optional": true
+                        },
+                        {
+                          "name": "groupsForServiceList-r16",
+                          "type": "GWUS-GroupsForServiceList-r16",
+                          "description": "",
+                          "optional": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "probThreshList-r16",
+                      "type": "GWUS-ProbThreshList-r16",
+                      "description": "",
+                      "optional": true
+                    },
+                    {
+                      "name": "groupNarrowBandList-r16",
+                      "type": "GWUS-GroupNarrowBandList-r16",
+                      "description": "",
+                      "optional": true
+                    }
+                  ]
+                },
+                {
+                  "name": "uplinkPowerControlCommon-v1610",
+                  "type": "UplinkPowerControlCommon-v1610",
+                  "description": "",
+                  "optional": true,
+                  "elements": [
+                    {
+                      "name": "alphaSRS-Add-r16",
+                      "type": "ENUMERATED {al0, al04, al05, al06, al07, al08, al09, al1}",
+                      "description": "",
+                      "optional": false
+                    },
+                    {
+                      "name": "p0-NominalSRS-Add-r16",
+                      "type": "INTEGER (-126..24)",
+                      "description": "",
+                      "optional": false
+                    }
+                  ]
+                },
+                {
+                  "name": "rss-MeasConfig-r16",
+                  "type": "ENUMERATED {enabled}",
+                  "description": "",
+                  "optional": true
+                },
+                {
+                  "name": "rss-MeasNonNCL-r16",
+                  "type": "ENUMERATED {enabled}",
+                  "description": "",
+                  "optional": true
+                },
+                {
+                  "name": "puncturedSubcarriersDL-r16",
+                  "type": "puncturedSubcarriersDL-r16",
+                  "description": "",
+                  "optional": true
+                },
+                {
+                  "name": "highSpeedInterRAT-NR-r16",
+                  "type": "BOOLEAN",
+                  "description": "",
+                  "optional": true
                 }
+    
               ]
             }
           ]

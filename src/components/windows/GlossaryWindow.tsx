@@ -9,6 +9,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { ProtocolDefinition, ProtocolElement, useProtocolsStore } from "../../store/useProtocolsStore";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import RenderIfVisible from "../utils/RenderIfVisible";
 
 interface GlossaryWindowProps {
   initialTerm?: string;
@@ -33,6 +34,13 @@ const ProtocolElementRenderer: React.FC<{
 
   const Tag = (level === 0 ? "h3" : level === 1 ? "h4" : level === 2 ? "h5" : "div") as keyof JSX.IntrinsicElements;
   const paddingLeft = level * 16;
+
+  const Optimize = useMemo(
+    () =>
+      ({ children }: { children: React.ReactNode }) =>
+        level == 2 ? <RenderIfVisible>{children}</RenderIfVisible> : <>{children}</>,
+    [searchTermLower]
+  );
 
   const DefinitionMarkdownRenderer: React.FC<{ markdown: string }> = React.memo(({ markdown }) => {
     const markdownComponents = {
@@ -61,6 +69,7 @@ const ProtocolElementRenderer: React.FC<{
       className={clsx(
         "py-2 px-3 rounded-md",
         "border border-transparent",
+        "transition-colors",
         "hover:border-white/10",
         { "bg-white/5": isMatch && searchTermLower },
         {
@@ -70,35 +79,40 @@ const ProtocolElementRenderer: React.FC<{
       )}
       style={{ marginLeft: `${paddingLeft}px` }}
     >
-      <Tag
-        className={clsx("flex items-center font-semibold", {
-          "text-lg text-white": level === 0,
-          "text-base text-white/90": level === 1,
-          "text-sm text-white/80": level >= 2,
-        })}
-      >
-        {level === 0 && <Icon icon="material-symbols:folder" className="mx-2 text-gray-400" />}
-        {level === 1 && <Icon icon="material-symbols:insert-page-break" className="mr-2 text-gray-500" />}
-        {level >= 2 && <Icon icon="material-symbols:chevron-right" className="mr-1 text-gray-600" />}
-        <span className={clsx({ "text-blue-400 font-bold": isMatch })}>{element.name}</span>
-        {element.type && <span className="ml-2 text-gray-500 font-normal text-xs">{element.type}</span>}
-      </Tag>
+      <Optimize>
+        <Tag
+          className={clsx("flex items-center font-semibold", {
+            "text-lg text-white": level === 0,
+            "text-base text-white/90": level === 1,
+            "text-sm text-white/80": level >= 2,
+          })}
+        >
+          {level === 0 && <Icon icon="material-symbols:folder" className="mx-2 text-gray-400" />}
+          {level === 1 && <Icon icon="material-symbols:insert-page-break" className="mr-2 text-gray-500" />}
+          {level >= 2 && <Icon icon="material-symbols:chevron-right" className="mr-1 text-gray-600" />}
+          <span className={clsx({ "text-blue-400 font-bold": isMatch })}>{element.name}</span>
+          {element.type && <span className="ml-2 text-gray-500 font-normal text-xs">{element.type}</span>}
+          {element.optional && (
+            <span className="ml-2 text-gray-300 font-normal text-xs p-1 bg-gray-800 rounded-md">optional</span>
+          )}
+        </Tag>
 
-      {showDescription && (
-        <div className="mt-1 ml-6 text-gray-400 text-sm">
-          <DefinitionMarkdownRenderer markdown={element.description!} />
-        </div>
-      )}
+        {showDescription && (
+          <div className="mt-1 ml-6 text-gray-400 text-sm">
+            <DefinitionMarkdownRenderer markdown={element.description!} />
+          </div>
+        )}
 
-      {element.elements &&
-        element.elements.map((childElement) => (
-          <ProtocolElementRenderer
-            key={childElement.name}
-            element={childElement}
-            level={level + 1}
-            searchTermLower={searchTermLower}
-          />
-        ))}
+        {element.elements &&
+          element.elements.map((childElement) => (
+            <ProtocolElementRenderer
+              key={childElement.name}
+              element={childElement}
+              level={level + 1}
+              searchTermLower={searchTermLower}
+            />
+          ))}
+      </Optimize>
     </div>
   );
 };

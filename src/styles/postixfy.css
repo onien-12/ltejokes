@@ -1,0 +1,26 @@
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default styling */
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+  border-radius: 9999px; /* rounded-full */
+  background: #22c55e; /* bg-green-500 */
+  transition: all 100ms ease-in-out; /* transition-all duration-100 ease-in-out */
+  cursor: pointer;
+  margin-top: -0.125rem; /* Vertically center the thumb on the track */
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+  border-radius: 9999px; /* rounded-full */
+  background: #22c55e; /* bg-green-500 */
+  transition: all 100ms ease-in-out; /* transition-all duration-100 ease-in-out */
+  cursor: pointer;
+}
+
+/* Ensure the track doesn't have default appearance */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent; /* Makes the default background transparent */
+}

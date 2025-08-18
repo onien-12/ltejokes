@@ -13,18 +13,18 @@ export default function Button({
   onClick,
   className,
   variant = "default",
-}: ButtonProps) {
+  ...other
+}: ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       onClick={onClick}
       className={clsx(
         "px-4 py-1.5 rounded-md text-sm transition-all select-none",
-        variant === "default" &&
-          "bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white border border-[#555]",
-        variant === "ghost" &&
-          "bg-transparent hover:bg-[#2a2a2a] text-gray-300 border border-transparent",
+        variant === "default" && "bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white border border-[#555]",
+        variant === "ghost" && "bg-transparent hover:bg-[#2a2a2a] text-gray-300 border border-transparent",
         className
       )}
+      {...other}
     >
       {children}
     </button>

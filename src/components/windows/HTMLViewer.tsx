@@ -71,14 +71,11 @@ const HTMLViewer: React.FC<HTMLViewerProps> = ({ path }) => {
           if (targetElement) {
             const targetRect = targetElement.getBoundingClientRect();
             const containerRect = viewerContainer.getBoundingClientRect();
-            const scrollOffset =
-              targetRect.top - containerRect.top + viewerContainer.scrollTop;
+            const scrollOffset = targetRect.top - containerRect.top + viewerContainer.scrollTop;
 
             viewerContainer.scrollTo({ top: scrollOffset, behavior: "smooth" });
           } else {
-            console.warn(
-              `HTMLViewer: Target element with ID '${id}' not found for anchor link.`
-            );
+            console.warn(`HTMLViewer: Target element with ID '${id}' not found for anchor link.`);
           }
         }
       }
@@ -92,7 +89,7 @@ const HTMLViewer: React.FC<HTMLViewerProps> = ({ path }) => {
   }, [htmlContent]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full bg-[#060606]/80 p-4 text-start">
+    <div className="flex flex-col items-center justify-center w-full h-full bg-[#060606]/80 p-4 text-start select-text">
       {loading ? (
         <ClipLoader className="text-white" color="#fff" />
       ) : error ? (

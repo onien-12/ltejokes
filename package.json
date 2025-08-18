@@ -18,7 +18,10 @@
     "@types/pdf-viewer-reactjs": "^2.2.5",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
+    "axios": "^1.11.0",
+    "buffer": "^6.0.3",
     "highlight.js": "^11.11.1",
+    "jsmediatags": "^3.9.7",
     "katex": "^0.16.22",
     "marked": "^16.1.2",
     "pdfjs-dist": "^3.11.174",
@@ -71,6 +74,7 @@
   "devDependencies": {
     "@craco/craco": "^7.1.0",
     "@iconify-icon/react": "^3.0.0",
+    "@types/jsmediatags": "^3.9.6",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17"

@@ -99,7 +99,7 @@ const PDFReader: React.FC<PDFReaderProps> = ({ path }) => {
 
   return (
     <Worker workerUrl={`https://unpkg.com/pdfjs-dist@${(pdfjs as any).version}/build/pdf.worker.min.js`}>
-      <div className="pdf-viewer-container w-full h-full">
+      <div className="pdf-viewer-container w-full h-full select-text">
         <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} theme="dark" />
       </div>
     </Worker>

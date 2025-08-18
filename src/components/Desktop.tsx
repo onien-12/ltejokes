@@ -14,6 +14,7 @@ import ManagedWindow from "./utils/ManagedWindow";
 import ManagedCustomWindow from "./utils/ManagedCustomWindow";
 import GlossaryWindow from "./windows/GlossaryWindow";
 import { handleOpen } from "./windows/FileManager";
+import Postixfy from "./windows/apps/Postixfy/Postixfy";
 
 const MemoizedHeader = React.memo(Header);
 const MemoizedStartMenu = React.memo(StartMenu);
@@ -57,22 +58,14 @@ export default function Desktop() {
           },
           {
             id: "3",
-            icon: (
-              <Icon
-                icon="material-symbols-light:terminal"
-                width="40"
-                height="40"
-              />
-            ),
+            icon: <Icon icon="material-symbols-light:terminal" width="40" height="40" />,
             label: "Terminal",
             defaultPosition: { x: 0, y: 160 },
             handleClick: () => openWindow("terminal"),
           },
           {
             id: "4",
-            icon: (
-              <Icon icon="material-symbols:book-2" width="32" height="32" />
-            ),
+            icon: <Icon icon="material-symbols:book-2" width="32" height="32" />,
             label: "Glossary",
             defaultPosition: { x: 80, y: 0 },
             handleClick: () =>
@@ -102,6 +95,18 @@ export default function Desktop() {
                 },
                 addCustomWindow,
                 currentRelativePathSegments: [],
+              }),
+          },
+          {
+            id: "6",
+            icon: <Icon icon="simple-icons:spotify" width="32" height="32" />,
+            label: "postixfy",
+            defaultPosition: { x: 160, y: 0 },
+            handleClick: () =>
+              addCustomWindow({
+                id: `postixfy-${Date.now()}`,
+                name: "Postixfy",
+                window: <Postixfy />,
               }),
           },
         ]}
@@ -140,13 +145,7 @@ export default function Desktop() {
         items={{
           Main: [
             {
-              icon: (
-                <Icon
-                  icon="material-symbols-light:terminal"
-                  width="28"
-                  height="28"
-                />
-              ),
+              icon: <Icon icon="material-symbols-light:terminal" width="28" height="28" />,
               label: "Terminal",
             },
             {

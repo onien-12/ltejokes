@@ -6,6 +6,7 @@ export interface ProtocolElement {
   type?: string;
   description?: string;
   elements?: ProtocolElement[];
+  optional?: boolean;
 }
 
 export interface ProtocolDefinition {
@@ -27,9 +28,7 @@ export const useProtocolsStore = create<ProtocolsState>((set) => ({
   fetchProtocols: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await readFile("/system/protocols.json").catch(
-        () => null
-      );
+      const response = await readFile("/system/protocols.json").catch(() => null);
       if (!response) {
         throw new Error(`Failed to fetch protocols`);
       }

@@ -1,6 +1,11 @@
 import { FileItem } from "./store/useFilesystemStore";
 
 export const API = process.env.REACT_APP_API_URL as string;
+interface FileSystemApiResponse {
+  currentPath: string;
+  contents: FileItem[];
+  options?: { groupName?: string; relatedGroups?: string[] };
+}
 
 export function formatTime(date: Date): string {
   const pad = (n: number) => n.toString().padStart(2, "0");
@@ -16,15 +21,10 @@ export function formatTime(date: Date): string {
   return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
 }
 
-export const findFolderByPath = (
-  fileSystem: FileItem[],
-  pathSegments: string[]
-): FileItem[] | null => {
+export const findFolderByPath = (fileSystem: FileItem[], pathSegments: string[]): FileItem[] | null => {
   let currentLevel = fileSystem;
   for (const segment of pathSegments) {
-    const next = currentLevel.find(
-      (f) => f.name === segment && f.type === "folder"
-    );
+    const next = currentLevel.find((f) => f.name === segment && f.type === "folder");
     if (next?.contents) {
       currentLevel = next.contents;
     } else {
@@ -34,10 +34,7 @@ export const findFolderByPath = (
   return currentLevel;
 };
 
-export const findFileByPath = (
-  filesystem: FileItem[],
-  resolvedPathSegments: string[]
-): FileItem | null => {
+export const findFileByPath = (filesystem: FileItem[], resolvedPathSegments: string[]): FileItem | null => {
   if (resolvedPathSegments.length === 0) return null;
 
   const fileName = resolvedPathSegments[resolvedPathSegments.length - 1];
@@ -46,19 +43,12 @@ export const findFileByPath = (
   const parentFolderContents = findFolderByPath(filesystem, dirPathSegments);
 
   if (parentFolderContents) {
-    return (
-      parentFolderContents.find(
-        (item) => item.name === fileName && item.type === "file"
-      ) || null
-    );
+    return parentFolderContents.find((item) => item.name === fileName && item.type === "file") || null;
   }
   return null;
 };
 
-export const resolvePath = (
-  currentPathSegments: string[],
-  targetPathString: string
-): string[] => {
+export const resolvePath = (currentPathSegments: string[], targetPathString: string): string[] => {
   const pathParts = targetPathString.split("/").filter(Boolean);
 
   let resolvedSegments: string[] = [];
@@ -85,14 +75,12 @@ export const resolvePath = (
 export const readFile = async (path: string) => {
   console.log(path);
   return fetch(
-    `${API}/api/filesystem/file?path=` +
-      encodeURIComponent(path.startsWith("/") ? path.slice(1) : path)
+    `${API}/api/filesystem/file?path=` + encodeURIComponent(path.startsWith("/") ? path.slice(1) : path)
   ).then((rsp) => rsp.arrayBuffer());
 };
 
-export const readDirectory = async (path: string) => {
-  return fetch(
-    `${API}/api/filesystem?path=` +
-      encodeURIComponent(path.startsWith("/") ? path.slice(1) : path)
-  ).then((rsp) => rsp.json());
+export const readDirectory = async (path: string): Promise<FileSystemApiResponse> => {
+  return fetch(`${API}/api/filesystem?path=` + encodeURIComponent(path.startsWith("/") ? path.slice(1) : path)).then(
+    (rsp) => rsp.json()
+  );
 };
