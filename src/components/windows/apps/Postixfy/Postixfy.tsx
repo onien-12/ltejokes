@@ -239,7 +239,7 @@ export default function Postixfy() {
 
   return (
     <div className="flex flex-col h-full w-full text-start font-code text-sm">
-      <div className="flex flex-row h-full bg-[#1c1c1c]/90 text-white overflow-hidden">
+      <div className="flex flex-row h-full bg-[#1c1c1c]/90 text-white overflow-hidden w-full">
         <div className="flex-none w-full md:w-64 bg-[#0a0a0a]/60 border-r border-[#222] p-4 hidden md:flex flex-col">
           <h2 className="text-xl font-bold mb-4 text-white">Playlists</h2>
           <div className="flex-1 overflow-y-auto space-y-2">
@@ -282,9 +282,9 @@ export default function Postixfy() {
             </Button>
           </div>
         </div>
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {currentView === "player" ? (
-            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 w-full">
               {currentPlaylist ? (
                 <>
                   <h2 className="text-2xl font-bold mb-4 flex items-center">
@@ -315,11 +315,11 @@ export default function Postixfy() {
                           setIsPlaying(true);
                         }}
                         className={clsx(
-                          "flex flex-row justify-between items-center p-3 rounded-md cursor-pointer transition-colors",
+                          "flex flex-row justify-between items-center p-3 rounded-md cursor-pointer transition-colors w-full",
                           currentSongIndex === index ? "bg-[#333]/70" : "hover:bg-[#1a1a1a]"
                         )}
                       >
-                        <div className="flex flex-row gap-2 items-center">
+                        <div className="flex flex-row gap-2 items-center w-9/12">
                           {song.metadata?.imagePath ? (
                             <img
                               src={song.metadata.imagePath}
@@ -338,7 +338,7 @@ export default function Postixfy() {
                             />
                           )}
                           <span className="flex flex-col text-white truncate">
-                            {song.metadata?.title || song.name}
+                            <span className="truncate">{song.metadata?.title || song.name}</span>
                             {song.metadata?.author && (
                               <span className="text-gray-400 text-xs">{song.metadata.author}</span>
                             )}

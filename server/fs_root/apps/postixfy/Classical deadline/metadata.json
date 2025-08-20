@@ -1,332 +1,332 @@
 {
-  "Suite Española No. 1： V. Asturias - Leyenda.mp3": {
+  "Albéniz (arr. Naughtin) - Suite Española No. 1： V. Asturias - Leyenda.mp3": {
     "title": "Suite Española No. 1： V. Asturias - Leyenda",
     "author": "Isaac Albéniz, Andrzej Heimowski",
     "duration": "07:01",
-    "imagePath": null
+    "imagePath": "images/leyenda.png" 
   },
   "Beethoven - Symphony No. 5 in C minor, Op. 67： I. Allegro con brio.mp3": {
     "author": "Beethoven",
     "title": "Symphony No. 5 in C minor, Op. 67： I. Allegro con brio",
     "duration": "07:08",
-    "imagePath": null
+    "imagePath": "images/beethoven.png" 
   },
   "Bizet - Carmen Suite No. 1： VI. Les Toréadors.mp3": {
     "author": "Bizet",
     "title": "Carmen Suite No. 1： VI. Les Toréadors",
     "duration": "02:04",
-    "imagePath": "images/Carmen Suite No. 1： VI. Les Toréadors_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Bizet - L'Arlésienne Suite No. 2： IV. Farandole.mp3": {
     "author": "Bizet",
     "title": "L'Arlésienne Suite No. 2： IV. Farandole",
     "duration": "03:08",
-    "imagePath": "images/L'Arlésienne Suite No. 2： IV. Farandole_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Boccherini - String Quintet in E Major, G. 275： III. Minuetto.mp3": {
     "author": "Boccherini",
     "title": "String Quintet in E Major, G. 275： III. Minuetto",
     "duration": "04:00",
-    "imagePath": "images/String Quintet in E Major, G. 275： III. Minuetto_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Brahms - Hungarian Dance No. 1 in G minor. Allegro molto.mp3": {
     "author": "Brahms",
     "title": "Hungarian Dance No. 1 in G minor. Allegro molto",
     "duration": "03:31",
-    "imagePath": null
+    "imagePath": "images/brahms.png" 
   },
   "Brahms - Hungarian Dance No. 5 in G minor.mp3": {
     "author": "Brahms",
     "title": "Hungarian Dance No. 5 in G minor",
     "duration": "03:10",
-    "imagePath": null
+    "imagePath": "images/brahms.png" 
   },
   "Chopin - Waltzes, Op. 64： No. 1 in D-Flat Major ＂Minute Waltz＂.mp3": {
     "author": "Waltzes, Op. 64： No. 1 in D-Flat Major ＂Minute Waltz＂",
     "title": "Chopin",
     "duration": "02:11",
-    "imagePath": "images/Classical Music for When You’re on a Deadline_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Dvořák - Slavonic Dances, Op. 46： No. 1, Furiant (Live).mp3": {
     "author": "Dvořák",
     "title": "Slavonic Dances, Op. 46： No. 1, Furiant (Live)",
     "duration": "04:16",
-    "imagePath": "images/Slavonic Dances, Op. 46： No. 1, Furiant (Live)_e7ff0c08.png"
+    "imagePath": "images/dvorak.png" 
   },
   "Dvořák - Slavonic Dances, Op. 46： No. 8, Furiant (Live).mp3": {
     "author": "Dvořák",
     "title": "Slavonic Dances, Op. 46： No. 8, Furiant (Live)",
     "duration": "04:29",
-    "imagePath": "images/Slavonic Dances, Op. 46： No. 8, Furiant (Live)_e7ff0c08.png"
+    "imagePath": "images/dvorak.png" 
   },
   "Dvořák - Symphony No. 9 in E Minor, Op. 95 ＂From the New World＂： IV. Allegro con fuoco (Live).mp3": {
     "author": "Dvořák",
     "title": "Symphony No. 9 in E Minor, Op. 95 ＂From the New World＂： IV. Allegro con fuoco (Live)",
     "duration": "11:45",
-    "imagePath": "images/Symphony No. 9 in E Minor, Op. 95 ＂From the New World＂： IV. Allegro con fuoco (Live)_8e667c32.png"
+    "imagePath": "images/dvorak.png" 
   },
   "Grieg - Peer Gynt Suite No. 1, Op. 46： In the Hall of the Mountain King.mp3": {
     "author": "Grieg",
     "title": "Peer Gynt Suite No. 1, Op. 46： In the Hall of the Mountain King",
     "duration": "02:26",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   },
   "Haydn - Die Worte des Erlösers am Kreuze, Hob. XX：1： IX. Il Terremoto.mp3": {
     "author": "Haydn",
     "title": "Die Worte des Erlösers am Kreuze, Hob. XX：1： IX. Il Terremoto",
     "duration": "01:45",
-    "imagePath": "images/Die Worte des Erlösers am Kreuze, Hob. XX：1： IX. Il Terremoto_8e667c32.png"
+    "imagePath": "images/cover.png" 
   },
   "Händel - Solomon, HWV 67： Arrival of the Queen of Sheba.mp3": {
     "author": "Händel",
     "title": "Solomon, HWV 67： Arrival of the Queen of Sheba",
     "duration": "03:04",
-    "imagePath": "images/Solomon, HWV 67： Arrival of the Queen of Sheba_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "I. Allegro con brio.mp3": {
     "title": "Symphony No. 5: I. Allegro con brio",
     "author": "Beethoven",
     "duration": "17:40",
-    "imagePath": null
+    "imagePath": "images/beethoven.png" 
   },
   "I. Allegro vivace.mp3": {
     "title": "Symphony No. 8: I. Allegro vivace",
     "author": "Beethoven",
     "duration": "07:15",
-    "imagePath": null
+    "imagePath": "images/beethoven.png" 
   },
   "IV. Finale. Allegro molto.mp3": {
     "title": "Symphony No. 3: IV. Finale. Allegro molto",
     "author": "Beethoven",
     "duration": "12:07",
-    "imagePath": null
+    "imagePath": "images/beethoven.png" 
   },
   "IV. Saltarello.mp3": {
     "title": "Italian Symphony: IV. Saltarello",
     "author": "Mendelssohn",
     "duration": "05:19",
-    "imagePath": null
+    "imagePath": "images/mendelssohn.png" 
   },
   "Jenkins - Concerto Grosso for Strings ＂Palladio＂： I. Allegretto.mp3": {
     "author": "Jenkins",
     "title": "Concerto Grosso for Strings ＂Palladio＂： I. Allegretto",
     "duration": "02:33",
-    "imagePath": null
+    "imagePath": "images/palladio.png" 
   },
   "Litvinovsky - Pelléas and Mélisande： III. Galliard. Navire dans la tempête (Galliard. Ship in a storm).mp3": {
     "author": "Litvinovsky",
     "title": "Pelléas and Mélisande： III. Galliard. Navire dans la tempête (Galliard. Ship in a storm)",
     "duration": "02:39",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   },
   "Litvinovsky - Pelléas and Mélisande： VII. La chasse commence (The hunting begins).mp3": {
     "author": "Litvinovsky",
     "title": "Pelléas and Mélisande： VII. La chasse commence (The hunting begins)",
     "duration": "03:06",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   },
   "Litvinovsky - Suite for Strings ＂Le Grand Cahier＂： X. L'Incendie.mp3": {
     "author": "Litvinovsky",
     "title": "Suite for Strings ＂Le Grand Cahier＂： X. L'Incendie",
     "duration": "02:20",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   },
   "Mendelssohn - Symphony No. 4, Op. 90 “Italian”： I. Allegro vivace.mp3": {
     "author": "Mendelssohn",
     "title": "Symphony No. 4, Op. 90 “Italian”： I. Allegro vivace",
     "duration": "03:47",
-    "imagePath": "images/Symphony No. 4, Op. 90 “Italian”： I. Allegro vivace_e7ff0c08.png"
+    "imagePath": "images/mendelssohn.png" 
   },
   "Mozart - Don Giovanni： ＂Madamina, il catalogo è questo＂ (Instrumental).mp3": {
     "author": "Mozart",
     "title": "Don Giovanni： ＂Madamina, il catalogo è questo＂ (Instrumental)",
     "duration": "05:21",
-    "imagePath": "images/Don Giovanni： ＂Madamina, il catalogo è questo＂ (Instrumental)_e7ff0c08.png"
+    "imagePath": "images/mozart.png" 
   },
   "Mozart - Eine Kleine Nachtmusik, K. 525： I. Allegro.mp3": {
     "author": "Mozart",
     "title": "Eine Kleine Nachtmusik, K. 525： I. Allegro",
     "duration": "06:03",
-    "imagePath": "images/Eine Kleine Nachtmusik, K. 525： I. Allegro_e7ff0c08.png"
+    "imagePath": "images/mozart.png" 
   },
   "Mozart - Eine Kleine Nachtmusik, K. 525： IV. Rondò.mp3": {
     "author": "Mozart",
     "title": "Eine Kleine Nachtmusik, K. 525： IV. Rondò",
     "duration": "03:12",
-    "imagePath": "images/Eine Kleine Nachtmusik, K. 525： IV. Rondò_e7ff0c08.png"
+    "imagePath": "images/mozart.png" 
   },
   "Mozart - Le Nozze di Figaro： ＂Non più andrai, farfallone amoroso＂ (Instrumental).mp3": {
     "author": "Mozart",
     "title": "Le Nozze di Figaro： ＂Non più andrai, farfallone amoroso＂ (Instrumental)",
     "duration": "03:21",
-    "imagePath": "images/Le Nozze di Figaro： ＂Non più andrai, farfallone amoroso＂ (Instrumental)_e7ff0c08.png"
+    "imagePath": "images/mozart.png" 
   },
   "Mozart - Piano Sonata No. 11 in A Major, K. 331⧸300i： III. Alla Turca.mp3": {
     "author": "Mozart",
     "title": "Piano Sonata No. 11 in A Major, K. 331⧸300i： III. Alla Turca",
     "duration": "03:14",
-    "imagePath": "images/Piano Sonata No. 11 in A Major, K. 331⧸300i： III. Alla Turca_e7ff0c08.png"
+    "imagePath": "images/mozart.png" 
   },
   "Mozart - Symphony No. 40 in G Minor, K. 550： I. Molto Allegro.mp3": {
     "author": "Mozart",
     "title": "Symphony No. 40 in G Minor, K. 550： I. Molto Allegro",
     "duration": "06:20",
-    "imagePath": null
+    "imagePath": "images/mozart.png" 
   },
   "Mozart - The Marriage of Figaro, K. 492： Overture.mp3": {
     "author": "Mozart",
     "title": "The Marriage of Figaro, K. 492： Overture",
     "duration": "04:45",
-    "imagePath": null
+    "imagePath": "images/mozart.png" 
   },
   "Mussorgsky - Night on Bald Mountain (Live).mp3": {
     "author": "Mussorgsky",
     "title": "Night on Bald Mountain (Live)",
     "duration": "11:19",
-    "imagePath": "images/Night on Bald Mountain (Live)_8e667c32.png"
+    "imagePath": "images/cover.png" 
   },
   "Offenbach - Orphée aux enfers： Galop Infernal (Can Can).mp3": {
     "author": "Offenbach",
     "title": "Orphée aux enfers： Galop Infernal (Can Can)",
     "duration": "02:21",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   },
   "Prokofiev - 10 Pieces from Romeo and Juliet, Op. 75： No. 4, Masks.mp3": {
     "author": "Prokofiev",
     "title": "10 Pieces from Romeo and Juliet, Op. 75： No. 4, Masks",
     "duration": "01:47",
-    "imagePath": "images/10 Pieces from Romeo and Juliet, Op. 75： No. 4, Masks_e7ff0c08.png"
+    "imagePath": "images/prokofiev.png" 
   },
   "Prokofiev - Suite No. 1 from Romeo and Juliet, Op. 64bis： No. 6, Death of Tybalt.mp3": {
     "author": "Prokofiev",
     "title": "Suite No. 1 from Romeo and Juliet, Op. 64bis： No. 6, Death of Tybalt",
     "duration": "04:32",
-    "imagePath": "images/Suite No. 1 from Romeo and Juliet, Op. 64bis： No. 6, Death of Tybalt_8e667c32.png"
+    "imagePath": "images/prokofiev.png" 
   },
   "Rossini - Guillaume Tell Overture： IV. March of the Swiss Soldiers (Live).mp3": {
     "author": "Rossini",
     "title": "Guillaume Tell Overture： IV. March of the Swiss Soldiers (Live)",
     "duration": "03:12",
-    "imagePath": "images/Guillaume Tell Overture： IV. March of the Swiss Soldiers (Live)_e7ff0c08.png"
+    "imagePath": "images/rossini.png" 
   },
   "Rossini - Il Barbiere di Siviglia： Overture.mp3": {
     "author": "Rossini",
     "title": "Il Barbiere di Siviglia： Overture",
     "duration": "07:52",
-    "imagePath": null
+    "imagePath": "images/rossini.png" 
   },
   "Rossini - William Tell Overture.mp3": {
     "author": "Rossini",
     "title": "William Tell Overture",
     "duration": "03:34",
-    "imagePath": null
+    "imagePath": "images/rossini.png" 
   },
   "Schubert (arr. Mahler) - String Quartet No. 14 in D Minor, D. 810 ＂Death and the Maiden＂： IV. Presto – Prestissimo (Live).mp3": {
     "author": "Schubert (arr. Mahler)",
     "title": "String Quartet No. 14 in D Minor, D. 810 ＂Death and the Maiden＂： IV. Presto – Prestissimo (Live)",
     "duration": "09:05",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   },
   "Schubert - Erlkönig (The Elf King), D. 328.mp3": {
     "author": "Schubert",
     "title": "Erlkönig (The Elf King), D. 328",
     "duration": "03:38",
-    "imagePath": "images/Erlkönig (The Elf King), D. 328_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Strauss II - Annen Polka, Op. 117.mp3": {
     "author": "Strauss II",
     "title": "Annen Polka, Op. 117",
     "duration": "03:07",
-    "imagePath": "images/Annen Polka, Op. 117_e7ff0c08.png"
+    "imagePath": "images/strauss.png" 
   },
   "Strauss II - Radetzky March, Op. 228.mp3": {
     "author": "Strauss II",
     "title": "Radetzky March, Op. 228",
     "duration": "03:16",
-    "imagePath": "images/Radetzky March, Op. 228_e7ff0c08.png"
+    "imagePath": "images/strauss.png" 
   },
   "Strauss II - Tritsch-Tratsch (Chit-Chat) Polka, Op. 214.mp3": {
     "author": "Classical Music for When You’re on a Deadline",
     "title": "Classical Music for When You’re on a Deadline",
     "duration": "02:50",
-    "imagePath": "images/Classical Music for When You’re on a Deadline_e7ff0c08.png"
+    "imagePath": "images/strauss.png" 
   },
   "Strauss II - Tritsch-Tratsch Polka, Op. 214.mp3": {
     "author": "Classical Music for When You’re on a Deadline",
     "title": "Classical Music for When You’re on a Deadline",
     "duration": "02:55",
-    "imagePath": null
+    "imagePath": "images/strauss.png" 
   },
   "Strauss II - Unter Donner und Blitz (Thunder and Lightning), Op. 324.mp3": {
     "author": "Strauss II",
     "title": "Unter Donner und Blitz (Thunder and Lightning), Op. 324",
     "duration": "03:20",
-    "imagePath": "images/Unter Donner und Blitz (Thunder and Lightning), Op. 324_e7ff0c08.png"
+    "imagePath": "images/strauss.png" 
   },
   "Tchaikovsky - Piano Concerto No. 1 in B Minor, Op. 23： I. Allegro non troppo e molto maestoso.mp3": {
     "author": "Tchaikovsky",
     "title": "Piano Concerto No. 1 in B Minor, Op. 23： I. Allegro non troppo e molto maestoso",
     "duration": "04:29",
-    "imagePath": null
+    "imagePath": "images/tchaikovsky.png" 
   },
   "Tchaikovsky - Swan Lake Theme.mp3": {
     "author": "Tchaikovsky",
     "title": "Swan Lake Theme",
     "duration": "02:23",
-    "imagePath": null
+    "imagePath": "images/tchaikovsky.png" 
   },
   "Tchaikovsky - The Nutcracker Suite, Op. 71a： No. 2a, March of the Toy Soldiers.mp3": {
     "author": "Tchaikovsky",
     "title": "The Nutcracker Suite, Op. 71a： No. 2a, March of the Toy Soldiers",
     "duration": "02:26",
-    "imagePath": "images/The Nutcracker Suite, Op. 71a： No. 2a, March of the Toy Soldiers_e7ff0c08.png"
+    "imagePath": "images/tchaikovsky.png" 
   },
   "Tchaikovsky - The Nutcracker Suite, Op. 71a： No. 2c, Russian Dance.mp3": {
     "author": "Tchaikovsky",
     "title": "The Nutcracker Suite, Op. 71a： No. 2c, Russian Dance",
     "duration": "01:06",
-    "imagePath": "images/The Nutcracker Suite, Op. 71a： No. 2c, Russian Dance_e7ff0c08.png"
+    "imagePath": "images/tchaikovsky.png" 
   },
   "Tchaikovsky - The Nutcracker, Op. 71a： 2b, Dance of the Sugar Plum Fairy (Arr. for Piano).mp3": {
     "author": "Tchaikovsky",
     "title": "The Nutcracker, Op. 71a： 2b, Dance of the Sugar Plum Fairy (Arr. for Piano)",
     "duration": "01:48",
-    "imagePath": "images/The Nutcracker, Op. 71a： 2b, Dance of the Sugar Plum Fairy (Arr. for Piano)_e7ff0c08.png"
+    "imagePath": "images/tchaikovsky.png" 
   },
   "Verdi - La Traviata： ＂Sempre Libera＂ (Instrumental).mp3": {
     "author": "Verdi",
     "title": "La Traviata： ＂Sempre Libera＂ (Instrumental)",
     "duration": "03:16",
-    "imagePath": "images/La Traviata： ＂Sempre Libera＂ (Instrumental)_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Verdi - Un Ballo in Maschera： ＂Saper vorreste＂ (Instrumental).mp3": {
     "author": "Verdi",
     "title": "Un Ballo in Maschera： ＂Saper vorreste＂ (Instrumental)",
     "duration": "02:03",
-    "imagePath": "images/Un Ballo in Maschera： ＂Saper vorreste＂ (Instrumental)_e7ff0c08.png"
+    "imagePath": "images/cover.png" 
   },
   "Vivaldi - The Four Seasons, Concerto No. 2 in G minor, RV 315 ＂Summer＂： III. Presto.mp3": {
     "author": "Vivaldi",
     "title": "The Four Seasons, Concerto No. 2 in G minor, RV 315 ＂Summer＂： III. Presto",
     "duration": "02:40",
-    "imagePath": null
+    "imagePath": "images/vivaldi4.png" 
   },
   "Vivaldi - The Four Seasons, Concerto No. 4 in F minor, RV 297 ＂Winter＂： I. Allegro non molto.mp3": {
     "author": "Vivaldi",
     "title": "The Four Seasons, Concerto No. 4 in F minor, RV 297 ＂Winter＂： I. Allegro non molto",
     "duration": "03:16",
-    "imagePath": null
+    "imagePath": "images/vivaldi4.png" 
   },
   "Vivaldi - The Four Seasons, Concerto No. 4 in F minor, RV 297 ＂Winter＂： III. Allegro.mp3": {
     "author": "Vivaldi",
     "title": "The Four Seasons, Concerto No. 4 in F minor, RV 297 ＂Winter＂： III. Allegro",
     "duration": "03:06",
-    "imagePath": null
+    "imagePath": "images/vivaldi4.png" 
   },
   "Wagner - The Valkyrie, WWV 86b： Ride of the Valkyries.mp3": {
     "author": "Wagner",
     "title": "The Valkyrie, WWV 86b： Ride of the Valkyries",
     "duration": "05:00",
-    "imagePath": null
+    "imagePath": "images/cover.png" 
   }
 }
