@@ -162,5 +162,5 @@ def process_mp3_directory(directory_path):
 
 
 if __name__ == "__main__":
-    target_directory = "sb"
+    target_directory = "for_crying"
     process_mp3_directory(target_directory)
