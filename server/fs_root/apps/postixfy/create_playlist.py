@@ -56,8 +56,7 @@ def extract_metadata_from_mp3(file_path):
 
         if audiofile and audiofile.tag:  # Check if tags exist
             if audiofile.tag.title:
-                metadata['title'] = file_name.replace(
-                    "mp3", "")  # audiofile.tag.title
+                metadata['title'] = audiofile.tag.title
                 print(f"    Title: {metadata['title']}")
             if audiofile.tag.artist:
                 metadata['author'] = audiofile.tag.artist
@@ -162,5 +161,5 @@ def process_mp3_directory(directory_path):
 
 
 if __name__ == "__main__":
-    target_directory = "for_crying"
+    target_directory = "Silent hill"
     process_mp3_directory(target_directory)
