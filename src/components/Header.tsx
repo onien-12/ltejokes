@@ -34,25 +34,17 @@ export default function Header({ onMenuOpen }: { onMenuOpen: () => void }) {
         className="w-[98%] rounded-md bg-neutral-900 h-6 absolute top-1 p-1
                    flex flex-row items-center font-code text-white"
       >
-        <div
-          className="flex flex-row items-center"
-          onClick={() => onMenuOpen()}
-        >
-          <Icon
-            icon="material-symbols:circle-outline"
-            width="18"
-            height="18"
-            className="text-white cursor-pointer"
-          />
+        <div className="flex flex-row items-center" onClick={() => onMenuOpen()}>
+          <Icon icon="material-symbols:circle-outline" width="18" height="18" className="text-white cursor-pointer" />
         </div>
         <div className="w-3"></div>
-        <span className="text-sm">{openWindows.at(-1)}</span>
+        <span className="text-sm truncate">{openWindows.at(-1)}</span>
         <div className="flex-1"></div>
-        <span className="text-sm">
+        <span className="text-sm text-nowrap">
           <TextFace />
         </span>
         <div className="w-3"></div>
-        <span className="text-sm">{formatTime(date)}</span>
+        <span className="text-sm text-nowrap">{formatTime(date)}</span>
       </animated.div>
     </div>
   );

@@ -3,6 +3,7 @@ import Draggable from "react-draggable";
 import { useSystemStore } from "../store/useSystemStore";
 import { animated, useSpring } from "@react-spring/web";
 import { twMerge } from "tailwind-merge";
+import clsx from "clsx";
 
 export type WindowProps = {
   id: string;
@@ -14,15 +15,7 @@ export type WindowProps = {
   className?: string;
 };
 
-export default function Window({
-  id,
-  content,
-  label,
-  open,
-  defaultPosition,
-  onClose,
-  className = "",
-}: WindowProps) {
+export default function Window({ id, content, label, open, defaultPosition, onClose, className = "" }: WindowProps) {
   const nodeRef = useRef(null);
 
   const { openWindows, focusWindow } = useSystemStore();
@@ -74,22 +67,28 @@ export default function Window({
   }, [openWindows]);
 
   return (
-    <Draggable
-      defaultPosition={defaultPosition}
-      handle={`.window-${handleId}`}
-      nodeRef={nodeRef}
-    >
+    <Draggable defaultPosition={defaultPosition} handle={`.window-${handleId}`} nodeRef={nodeRef}>
       <animated.div
         ref={nodeRef}
         className={twMerge(
-          `min-w-48 min-h-12 absolute items-center w-24 text-center select-none text-white
+          `min-w-48 min-h-12 absolute items-center text-center select-none text-white
            rounded-md border backdrop-blur-lg border-neutral-200 overflow-hidden resize shadow-xl`,
+          clsx(
+            {
+              "w-[650px]": window.innerWidth > 650,
+              "w-[98%]": window.innerWidth <= 650,
+            },
+            {
+              "h-[400px]": window.innerWidth > 650,
+              "h-[95dvh]": window.innerWidth <= 650,
+            }
+          ),
           className
         )}
         style={styles}
         onPointerDown={(event) =>
           !(event.target as HTMLDivElement).matches(".close-button") &&
-            openWindows.indexOf(id) != openWindows.length - 1
+          openWindows.indexOf(id) != openWindows.length - 1
             ? focusWindow(id)
             : null
         }
@@ -102,7 +101,7 @@ export default function Window({
             <div className="flex-1"></div>
             <div
               className="cursor-pointer close-button ml-1"
-              onClick={() => {
+              onPointerUp={() => {
                 onClose();
               }}
             >
@@ -110,9 +109,7 @@ export default function Window({
             </div>
           </div>
         </div>
-        <div className="window-content w-full absolute top-[20px]">
-          {content}
-        </div>
+        <div className="window-content w-full absolute top-[20px]">{content}</div>
       </animated.div>
     </Draggable>
   );

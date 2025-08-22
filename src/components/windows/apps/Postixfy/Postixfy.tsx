@@ -25,6 +25,7 @@ export default function Postixfy() {
   const [selectedPlaylistIndex, setSelectedPlaylistIndex] = useState<number | null>(null);
   const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [playlistsOpen, setPlaylistsOpen] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -240,8 +241,27 @@ export default function Postixfy() {
   return (
     <div className="flex flex-col h-full w-full text-start font-code text-sm">
       <div className="flex flex-row h-full bg-[#1c1c1c]/90 text-white overflow-hidden w-full">
-        <div className="flex-none w-full md:w-64 bg-[#0a0a0a]/60 border-r border-[#222] p-4 hidden md:flex flex-col">
-          <h2 className="text-xl font-bold mb-4 text-white">Playlists</h2>
+        <div
+          className={clsx("p-1 top-2 right-2 md:hidden absolute bg-neutral-800 rounded-lg", {
+            hidden: playlistsOpen,
+          })}
+          onPointerUp={() => setPlaylistsOpen(true)}
+        >
+          <Icon icon="material-symbols:menu-rounded" width="32" height="32" />
+        </div>
+
+        <div
+          className={clsx("w-full bg-[#0a0a0a]/60 border-r border-[#222] p-4 flex flex-col", {
+            "w-64": window.innerWidth > 768,
+            hidden: !playlistsOpen && window.innerWidth < 768,
+          })}
+        >
+          <div className="flex flex-row justify-between">
+            <h2 className="text-xl font-bold mb-4 text-white">Playlists</h2>
+            <div className="md:hidden cursor-pointer" onPointerUp={() => setPlaylistsOpen(false)}>
+              <Icon icon="material-symbols:close-rounded" width="32" height="32" />
+            </div>
+          </div>
           <div className="flex-1 overflow-y-auto space-y-2">
             {playlists.length === 0 ? (
               <p className="text-gray-400 text-sm">No playlists found.</p>
@@ -249,7 +269,10 @@ export default function Postixfy() {
               playlists.map((playlist, index) => (
                 <div
                   key={playlist.name}
-                  onClick={() => setSelectedPlaylistIndex(index)}
+                  onClick={() => {
+                    setSelectedPlaylistIndex(index);
+                    setPlaylistsOpen(false);
+                  }}
                   className={clsx(
                     "flex items-center p-2 rounded-md cursor-pointer transition-colors",
                     selectedPlaylistIndex === index ? "bg-[#282828]" : "hover:bg-[#1a1a1a]"
@@ -282,6 +305,7 @@ export default function Postixfy() {
             </Button>
           </div>
         </div>
+
         <div className="flex-1 flex flex-col min-w-0">
           {currentView === "player" ? (
             <div className="flex-1 overflow-y-auto p-4 space-y-2 w-full">
@@ -381,7 +405,7 @@ export default function Postixfy() {
           ) : (
             <Icon icon="material-symbols:album-outline" width="48" height="48" className="mr-3 text-gray-600" />
           )}
-          <div className="flex flex-col">
+          <div className="md:flex flex-col hidden">
             <div className="text-sm font-semibold truncate max-w-[120px]">
               {currentSong ? currentSong.metadata?.title || currentSong.name : "Not playing"}
             </div>
@@ -454,7 +478,7 @@ export default function Postixfy() {
           </div>
         </div>
 
-        <div className="flex items-center flex-shrink-0 w-1/4 justify-end">
+        <div className="md:flex items-center flex-shrink-0 w-1/4 justify-end hidden">
           <Icon icon="material-symbols:volume-up" width="20" height="20" className="text-gray-400 mr-2" />
           <input
             type="range"

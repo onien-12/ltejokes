@@ -19,6 +19,7 @@ interface FileItem {
 
 interface DirectoryOptions {
   groupName?: string;
+  hidden?: string[];
   relatedGroups?: string[];
 }
 
@@ -245,41 +246,50 @@ export default function FileManager({ startPath = "", onFileOpen }: FileManagerP
 
       {error && <div className="text-red-500 text-sm mb-4">Error: {error}</div>}
 
-      <div className="grid grid-cols-5 gap-4 overflow-y-auto flex-1 pr-2">
+      <div className="flex flex-row gap-2 flex-wrap content-start overflow-y-auto flex-1 pr-2">
         {currentDirContents.length === 0 && !loading && !error ? (
           <div className="col-span-5 text-gray-500 text-center py-4">This folder is empty.</div>
         ) : (
-          currentDirContents.map((item) => (
-            <div
-              key={item.name}
-              onClick={(e) => handleItemClick(e, item)}
-              onDoubleClick={() => handleDoubleClick(item)}
-              onContextMenu={(e) => handleContextMenu(e, item)}
-              className={clsx(
-                `h-fit flex flex-col items-center text-center p-3 rounded-lg transition-all select-none`,
-                loading || error ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-gray-700/50",
-                selectedItems.includes(item) ? "bg-blue-600/70" : ""
-              )}
-            >
-              {item.type === "folder" ? (
-                <Icon icon="material-symbols:folder" width="48" height="48" />
-              ) : (
-                <>
-                  {
-                    //prettier-ignore
-                    item.name.endsWith(".pdf") ? <Icon icon="proicons:pdf-2" width="48" height="48" /> :
+          currentDirContents
+            .filter((item) => (currentDirOptions?.hidden ? !currentDirOptions.hidden.includes(item.name) : true))
+            .map((item) => (
+              <div
+                key={item.name}
+                onClick={(e) => handleItemClick(e, item)}
+                onDoubleClick={() => handleDoubleClick(item)}
+                onContextMenu={(e) => handleContextMenu(e, item)}
+                className={clsx(
+                  `h-fit w-24 flex flex-col items-center text-center p-3 rounded-lg transition-all select-none`,
+                  loading || error ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-gray-700/50",
+                  selectedItems.includes(item) ? "bg-blue-600/70" : ""
+                )}
+              >
+                {item.type === "folder" ? (
+                  <Icon icon="material-symbols:folder" width="48" height="48" />
+                ) : (
+                  <>
+                    {
+                      //prettier-ignore
+                      item.name.endsWith(".pdf") ? <Icon icon="proicons:pdf-2" width="48" height="48" /> :
                     item.name.endsWith(".md") ? <Icon icon="proicons:file-text" width="48" height="48" /> :
                     item.name.endsWith(".json") ? <Icon icon="si:json-duotone" width="48" height="48" /> :
                     item.name.endsWith(".png") || item.name.endsWith(".jpg") ? <Icon icon="humbleicons:image" width="48" height="48" /> :
                     item.name.endsWith(".csv") ? <Icon icon="gala:file-csv" width="44" height="48" /> :
                     item.name.endsWith(".py") ? <Icon icon="fluent:document-py-16-regular" width="48" height="48" /> :
                         <Icon icon="mdi-light:file" width="48" height="48" />
-                  }
-                </>
-              )}
-              <span className="text-xs mt-2 truncate w-full px-1">{item.name}</span>
-            </div>
-          ))
+                    }
+                  </>
+                )}
+                <span
+                  className={clsx("text-xs mt-2 w-full px-1", {
+                    truncate: window.innerWidth > 650,
+                    "text-wrap break-words": window.innerWidth <= 650,
+                  })}
+                >
+                  {item.name}
+                </span>
+              </div>
+            ))
         )}
       </div>
 

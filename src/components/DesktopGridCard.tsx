@@ -21,7 +21,7 @@ export default function DesktopGridCard({ item }: { item: DesktopItem }) {
         style={{
           transition: "box-shadow 300ms, backdrop-filter 300ms, border-radius 300ms",
         }}
-        onClick={item.handleClick}
+        onPointerUp={item.handleClick}
       >
         <div className="p-1 rounded-2xl">{item.icon}</div>
         <span className="text-sm">{item.label}</span>

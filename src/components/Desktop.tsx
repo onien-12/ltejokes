@@ -116,24 +116,21 @@ export default function Desktop() {
         id="settings"
         content={<SettingsWindow />}
         label="Settings"
-        defaultPosition={{ x: 100, y: 100 }}
-        className="w-[650px] h-[400px]"
+        defaultPosition={{ x: window.innerWidth > 750 ? 100 : 4, y: window.innerWidth > 650 ? 100 : 30 }}
       />
 
       <ManagedWindow
         id="file manager"
         content={<ProjectsWindow />}
         label="Files"
-        defaultPosition={{ x: 160, y: 160 }}
-        className="w-[650px] h-[400px]"
+        defaultPosition={{ x: window.innerWidth > 750 ? 200 : 4, y: window.innerWidth > 650 ? 200 : 30 }}
       />
 
       <ManagedWindow
         id="terminal"
         content={<TerminalWindow />}
         label="Terminal"
-        defaultPosition={{ x: 220, y: 220 }}
-        className="w-[650px] h-[400px]"
+        defaultPosition={{ x: window.innerWidth > 750 ? 220 : 4, y: window.innerWidth > 650 ? 220 : 30 }}
       />
 
       {customWindows.map((cw) => (

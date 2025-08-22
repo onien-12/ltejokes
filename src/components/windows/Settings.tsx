@@ -173,16 +173,16 @@ export default function SettingsWindow() {
   const [selected, setSelected] = useState("appearance");
 
   return (
-    <div className="flex w-full h-full bg-[#1e1e1e]/80 overflow-hidden text-white font-code">
-      <div className="w-52 bg-[#2a2a2a]/50 border-r border-[#333] p-4">
+    <div className="flex md:flex-row flex-col w-full h-full bg-[#1e1e1e]/80 overflow-hidden text-white font-code">
+      <div className="md:w-52 w-full bg-[#2a2a2a]/50 md:border-r border border-[#333] p-4">
         <h1 className="text-sm font-semibold mb-4 text-gray-400 uppercase tracking-wide">Settings</h1>
-        <ul className="space-y-1">
+        <ul className="space-y-1 flex md:flex-col flex-row w-full items-center">
           {settingsSections.map((section) => (
             <li
               key={section.id}
               onClick={() => setSelected(section.id)}
               className={clsx(
-                "cursor-pointer px-3 py-2 rounded text-gray-300 hover:bg-gray-600 hover:text-white transition-colors",
+                "cursor-pointer px-3 py-2 rounded text-gray-300 hover:bg-gray-600 hover:text-white transition-colors w-full",
                 selected === section.id && "bg-gray-700 text-white font-medium"
               )}
             >
