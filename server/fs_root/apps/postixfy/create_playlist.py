@@ -55,12 +55,17 @@ def extract_metadata_from_mp3(file_path):
         file_name = os.path.basename(file_path)
 
         if audiofile and audiofile.tag:  # Check if tags exist
-            if audiofile.tag.title:
-                metadata['title'] = audiofile.tag.title
-                print(f"    Title: {metadata['title']}")
-            if audiofile.tag.artist:
-                metadata['author'] = audiofile.tag.artist
-                print(f"    Author: {metadata['author']}")
+            if " - " in file_name:
+                metadata['title'] = file_name.split(
+                    '-')[1].strip().replace(".mp3", "").strip()
+                metadata['author'] = file_name.split('-')[0].strip()
+            else:
+                if audiofile.tag.title:
+                    metadata['title'] = audiofile.tag.title
+                    print(f"    Title: {metadata['title']}")
+                if audiofile.tag.artist:
+                    metadata['author'] = audiofile.tag.artist
+                    print(f"    Author: {metadata['author']}")
 
             # Extract album art (picture)
             print(audiofile.tag)
@@ -161,5 +166,5 @@ def process_mp3_directory(directory_path):
 
 
 if __name__ == "__main__":
-    target_directory = "Silent hill"
+    target_directory = "For rainy mood"
     process_mp3_directory(target_directory)

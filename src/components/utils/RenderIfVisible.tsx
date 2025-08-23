@@ -28,12 +28,14 @@ const RenderIfVisible = ({
   const [shouldRender, setShouldRender] = useState<boolean>(initialVisible);
   const intersectionRef = useRef<HTMLDivElement>(null);
   const elementHeight = useRef<number>(defaultHeight);
+  const isHeightCalculated = useRef<boolean>(false);
 
   const updateHeight = useCallback(() => {
     if (intersectionRef.current && shouldRender) {
       const measuredHeight = intersectionRef.current.offsetHeight;
       if (measuredHeight > 0 && measuredHeight !== elementHeight.current) {
         elementHeight.current = measuredHeight;
+        isHeightCalculated.current = true;
       }
     }
   }, [shouldRender]);
@@ -82,7 +84,7 @@ const RenderIfVisible = ({
     return () => {};
   }, [root, visibleOffset, stayRendered]);
 
-  const isCurrentlyRendered = shouldRender || (stayRendered && elementHeight.current > 0);
+  const isCurrentlyRendered = shouldRender || (stayRendered && isHeightCalculated.current);
 
   const contentToRender = isCurrentlyRendered ? (
     <>{children}</>

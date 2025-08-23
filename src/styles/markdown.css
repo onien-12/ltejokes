@@ -7,11 +7,15 @@
 }
 
 .katex-display,
-.markdown table {
+.markdown .table-wrapper {
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(120, 120, 120, 0.5) transparent;
+}
+
+.markdown .table-wrapper {
+  width: 100%;
 }
 
 .katex .mspace.newline {

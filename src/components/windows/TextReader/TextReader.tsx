@@ -307,6 +307,13 @@ export default function TextReader({ path }: { path: string }) {
           </Optimize>
         );
       },
+      table: (props: any) => {
+        return (
+          <div className="table-wrapper">
+            <table>{props.children}</table>
+          </div>
+        );
+      },
       div: (props: any) => {
         if (props["data-directive-name"]) {
           const directiveName = props["data-directive-name"];

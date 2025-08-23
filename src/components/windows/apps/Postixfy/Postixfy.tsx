@@ -6,6 +6,7 @@ import { FileItem } from "../../../../store/useFilesystemStore";
 import { API, readDirectory, readFile } from "../../../../utils";
 import Button from "../../../utils/Button";
 import PostixfyUpload from "./PostfixyUpload";
+import RenderIfVisible from "../../../utils/RenderIfVisible";
 
 interface SongItem extends FileItem {
   metadata?: SongMetadata;
@@ -251,13 +252,14 @@ export default function Postixfy() {
         </div>
 
         <div
-          className={clsx("w-full bg-[#0a0a0a]/60 border-r border-[#222] p-4 flex flex-col", {
+          className={clsx("bg-[#0a0a0a]/60 border-r border-[#222] p-4 flex flex-col", {
             "w-64": window.innerWidth > 768,
+            "w-full": window.innerWidth <= 768,
             hidden: !playlistsOpen && window.innerWidth < 768,
           })}
         >
           <div className="flex flex-row justify-between">
-            <h2 className="text-xl font-bold mb-4 text-white">Playlists</h2>
+            <h2 className="md:text-xl text-lg font-bold mb-4 text-white">Playlists</h2>
             <div className="md:hidden cursor-pointer" onPointerUp={() => setPlaylistsOpen(false)}>
               <Icon icon="material-symbols:close-rounded" width="32" height="32" />
             </div>
@@ -311,12 +313,13 @@ export default function Postixfy() {
             <div className="flex-1 overflow-y-auto p-4 space-y-2 w-full">
               {currentPlaylist ? (
                 <>
-                  <h2 className="text-2xl font-bold mb-4 flex items-center">
+                  <h2 className="md:text-2xl text-xl font-bold mb-4 flex items-center">
                     {currentPlaylist.iconUrl ? (
                       <img
                         src={currentPlaylist.iconUrl}
                         alt={currentPlaylist.name}
                         className="w-12 h-12 rounded mr-4 shadow-md"
+                        fetchPriority="low"
                       />
                     ) : (
                       <Icon
@@ -345,11 +348,14 @@ export default function Postixfy() {
                       >
                         <div className="flex flex-row gap-2 items-center w-9/12">
                           {song.metadata?.imagePath ? (
-                            <img
-                              src={song.metadata.imagePath}
-                              alt={song.metadata.title || song.name}
-                              className="w-10 h-10 rounded mr-3"
-                            />
+                            <RenderIfVisible stayRendered>
+                              <img
+                                src={song.metadata.imagePath}
+                                alt={song.metadata.title || song.name}
+                                className="w-10 h-10 rounded mr-3"
+                                fetchPriority="low"
+                              />
+                            </RenderIfVisible>
                           ) : (
                             <Icon
                               icon="material-symbols:music-note"
@@ -362,7 +368,7 @@ export default function Postixfy() {
                             />
                           )}
                           <span className="flex flex-col text-white truncate">
-                            <span className="truncate">{song.metadata?.title || song.name}</span>
+                            <span className="truncate md:text-sm text-xs">{song.metadata?.title || song.name}</span>
                             {song.metadata?.author && (
                               <span className="text-gray-400 text-xs">{song.metadata.author}</span>
                             )}
