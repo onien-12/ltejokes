@@ -253,7 +253,7 @@ export default function Postixfy() {
 
         <div
           className={clsx("bg-[#0a0a0a]/60 border-r border-[#222] p-4 flex flex-col", {
-            "w-64": window.innerWidth > 768,
+            "w-1/4 min-w-64": window.innerWidth > 768,
             "w-full": window.innerWidth <= 768,
             hidden: !playlistsOpen && window.innerWidth < 768,
           })}
@@ -264,7 +264,7 @@ export default function Postixfy() {
               <Icon icon="material-symbols:close-rounded" width="32" height="32" />
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto space-y-2">
+          <div className="flex-1 overflow-y-auto space-y-2 scrollable">
             {playlists.length === 0 ? (
               <p className="text-gray-400 text-sm">No playlists found.</p>
             ) : (
@@ -310,7 +310,7 @@ export default function Postixfy() {
 
         <div className="flex-1 flex flex-col min-w-0">
           {currentView === "player" ? (
-            <div className="flex-1 overflow-y-auto p-4 space-y-2 w-full">
+            <div className="flex-1 overflow-y-auto p-4 space-y-2 w-full scrollable">
               {currentPlaylist ? (
                 <>
                   <h2 className="md:text-2xl text-xl font-bold mb-4 flex items-center">
@@ -329,7 +329,7 @@ export default function Postixfy() {
                         className="mr-4 text-gray-400"
                       />
                     )}
-                    <div className="flex flex-row items-baseline gap-5">
+                    <div className="flex md:flex-row flex-col flex-wrap items-baseline md:gap-5 gap-1">
                       <span>{currentPlaylist.name}</span>
                       <span className="text-sm text-gray-600">
                         ({playlistDuration && formatTime(playlistDuration)})
