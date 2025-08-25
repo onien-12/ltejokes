@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { ClipLoader } from "react-spinners";
 import { Icon } from "@iconify-icon/react";
 import clsx from "clsx";
@@ -7,6 +7,7 @@ import { API, readDirectory, readFile } from "../../../../utils";
 import Button from "../../../utils/Button";
 import PostixfyUpload from "./PostfixyUpload";
 import RenderIfVisible from "../../../utils/RenderIfVisible";
+import { formatTime, timeToSeconds } from "./utils";
 
 interface SongItem extends FileItem {
   metadata?: SongMetadata;
@@ -216,11 +217,10 @@ export default function Postixfy() {
     if (audioRef.current) audioRef.current.volume = newVolume;
   }, []);
 
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  const playlistDuration = useMemo(
+    () => currentPlaylist?.songs.reduce((acc, next) => acc + timeToSeconds(next.metadata?.duration ?? "0"), 0),
+    [currentPlaylist]
+  );
 
   if (loading) {
     return (
@@ -329,7 +329,12 @@ export default function Postixfy() {
                         className="mr-4 text-gray-400"
                       />
                     )}
-                    {currentPlaylist.name}
+                    <div className="flex flex-row items-baseline gap-5">
+                      <span>{currentPlaylist.name}</span>
+                      <span className="text-sm text-gray-600">
+                        ({playlistDuration && formatTime(playlistDuration)})
+                      </span>
+                    </div>
                   </h2>
                   {currentPlaylist.songs.length === 0 ? (
                     <p className="text-gray-400 text-sm">No songs in this playlist.</p>
@@ -346,9 +351,9 @@ export default function Postixfy() {
                           currentSongIndex === index ? "bg-[#333]/70" : "hover:bg-[#1a1a1a]"
                         )}
                       >
-                        <div className="flex flex-row gap-2 items-center w-9/12">
+                        <div className="flex flex-row gap-2 w-9/12">
                           {song.metadata?.imagePath ? (
-                            <RenderIfVisible stayRendered>
+                            <RenderIfVisible stayRendered rootElementClass="w-10 h-10 shrink-0">
                               <img
                                 src={song.metadata.imagePath}
                                 alt={song.metadata.title || song.name}

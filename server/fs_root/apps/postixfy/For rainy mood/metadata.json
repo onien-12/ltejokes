@@ -245,11 +245,11 @@
     "duration": "03:15",
     "imagePath": "images/math.png"
   },
-  "OSRSBeatz - Tears Of....mp3": {
-    "author": "OSRSBeatz",
+  "tears_of.mp3": {
+    "author": "Akira Yamaoka",
     "title": "Tears Of...",
     "duration": "03:10",
-    "imagePath": "images/rain.png"
+    "imagePath": "images/silent_hill.jpg"
   },
   "Porter Robinson - Fellow Feeling.mp3": {
     "author": "Porter Robinson",
@@ -297,12 +297,6 @@
     "author": "Nocturne",
     "title": "Canon in d (reimagined)",
     "duration": "01:46",
-    "imagePath": "images/math.png"
-  },
-  "repeat.mp3": {
-    "author": "Nocturne",
-    "title": "Dark Academia - Repeat",
-    "duration": "47:39",
     "imagePath": "images/math.png"
   },
   "Ólafur Arnalds - Beth's Theme.mp3": {
