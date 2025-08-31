@@ -47,7 +47,7 @@ app.post(
   handleMusicUpload(FS_ROOT, ffmpeg)
 );
 
-app.listen(PORT, () => {
+app.listen(+PORT, "0.0.0.0", () => {
   console.log(`Server is running on http://localhost:${PORT}`);
   console.log(`Serving filesystem from: ${FS_ROOT}`);
 });

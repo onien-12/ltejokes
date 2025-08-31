@@ -3165,6 +3165,10 @@ def map_crs(antenna_port: int, context: Context):
 
 ::::
 
+###### 1.1.7.1.2. UE-specific Reference Signal
+
+
+
 ---
 
 Заметки для себя:

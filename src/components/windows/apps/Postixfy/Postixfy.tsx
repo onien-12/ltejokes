@@ -129,6 +129,25 @@ export default function Postixfy() {
       if (currentSongUrl) {
         audioRef.current.src = currentSongUrl;
         audioRef.current.load();
+        window.document.title = currentSong?.metadata?.title || "Playing a song";
+        //@ts-expect-error
+        window.document.querySelector("#favicon").href = currentSong?.metadata?.imagePath;
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: currentSong?.metadata?.title,
+          artist: currentSong?.metadata?.author,
+          artwork: currentSong?.metadata?.imagePath
+            ? [
+                { src: currentSong?.metadata?.imagePath, sizes: "96x96", type: "image/png" },
+                { src: currentSong?.metadata?.imagePath, sizes: "128x128", type: "image/png" },
+                { src: currentSong?.metadata?.imagePath, sizes: "192x192", type: "image/png" },
+                { src: currentSong?.metadata?.imagePath, sizes: "256x256", type: "image/png" },
+                { src: currentSong?.metadata?.imagePath, sizes: "384x384", type: "image/png" },
+                { src: currentSong?.metadata?.imagePath, sizes: "512x512", type: "image/png" },
+              ]
+            : [],
+        });
+
         if (isPlaying) {
           audioRef.current.play().catch((e) => console.error("Error playing audio:", e));
         } else {
@@ -156,12 +175,14 @@ export default function Postixfy() {
     const audio = audioRef.current;
     if (!audio) return;
 
+    const onPlay = () => setIsPlaying(true);
+    const onPause = () => !audio.ended && setIsPlaying(false);
+    const onDurationChange = () => setDuration(audio.duration);
     const onTimeUpdate = () => {
       if (!isSeeking.current) {
         setCurrentTime(audio.currentTime);
       }
     };
-    const onDurationChange = () => setDuration(audio.duration);
     const onEnded = () => {
       if (currentPlaylist && currentSongIndex !== null && currentSongIndex < currentPlaylist.songs.length - 1) {
         setCurrentSongIndex((prev) => (prev !== null ? prev + 1 : 0));
@@ -174,11 +195,15 @@ export default function Postixfy() {
     audio.addEventListener("timeupdate", onTimeUpdate);
     audio.addEventListener("durationchange", onDurationChange);
     audio.addEventListener("ended", onEnded);
+    audio.addEventListener("pause", onPause);
+    audio.addEventListener("play", onPlay);
 
     return () => {
       audio.removeEventListener("timeupdate", onTimeUpdate);
       audio.removeEventListener("durationChange", onDurationChange);
       audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("play", onPlay);
     };
   }, [currentPlaylist, currentSongIndex]);
 

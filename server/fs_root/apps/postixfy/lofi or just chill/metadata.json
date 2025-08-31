@@ -1,6 +1,6 @@
 {
   "20080626_Creep Crawl Flash - No Cats.mp3": {
-    "author": "Creep Crawl Flash",
+    "author": "20080626_Creep Crawl Flash",
     "title": "No Cats",
     "duration": "03:22",
     "imagePath": "images/No Cats_064dd628.jpeg"
@@ -24,14 +24,14 @@
     "imagePath": "images/Lucky_bf9cbe5e.png"
   },
   "20160912_Eric Serra - Spaghetti Del Mare.mp3": {
-    "author": "Eric Serra",
+    "author": "20160912_Eric Serra",
     "title": "Spaghetti Del Mare",
     "duration": "02:05",
     "imagePath": "images/Spaghetti Del Mare_2ceab37b.png"
   },
   "20190503_Creep Crawl Flash — Hideaway.mp3": {
-    "author": "Creep Crawl Flash",
-    "title": "Hideaway",
+    "author": "Катамарантiна",
+    "title": "Creep Crawl Flash — Hideaway",
     "duration": "03:02",
     "imagePath": "images/Creep Crawl Flash — Hideaway_4d4fda03.png"
   },
@@ -40,5 +40,221 @@
     "title": "Kwla",
     "duration": "01:27",
     "imagePath": "images/Kwla_a21114e5.png"
+  },
+  "Ballad_of_the_Goddess_-_Mikel_GameChops.mp3": {
+    "author": "Mikel, GameChops",
+    "title": "Ballad of the Goddess",
+    "duration": "02:40",
+    "imagePath": "images/Ballad of the Goddess_e166c383.jpeg"
+  },
+  "Barefoot_-_flâneur_MrAnthony.mp3": {
+    "author": "flâneur, MrAnthony",
+    "title": "Barefoot",
+    "duration": "02:23",
+    "imagePath": "images/Barefoot_ea920865.jpeg"
+  },
+  "Brasilian_Skies_-_Epektase_Stratega.mp3": {
+    "author": "Epektase, Stratega",
+    "title": "Brasilian Skies",
+    "duration": "02:29",
+    "imagePath": "images/Brasilian Skies_117be66e.jpeg"
+  },
+  "Côte_d_Azur_-_j_san_Zeyn_Aboueb.mp3": {
+    "author": "j'san, Zeyn, Aboueb",
+    "title": "Côte d'Azur",
+    "duration": "02:16",
+    "imagePath": "images/Côte d'Azur_942abb26.jpeg"
+  },
+  "Drifting_Tides_-_Lenny_B_Erwin_Do.mp3": {
+    "author": "Lenny B, Erwin Do",
+    "title": "Drifting Tides",
+    "duration": "02:12",
+    "imagePath": "images/Drifting Tides_ea920865.jpeg"
+  },
+  "Drowned_-_Nokiaa.mp3": {
+    "author": "Nokiaa",
+    "title": "Drowned",
+    "duration": "02:45",
+    "imagePath": "images/Drowned_64d550cd.jpeg"
+  },
+  "Dying_Language_-_Nadav_Cohen.mp3": {
+    "author": "Nadav Cohen",
+    "title": "Dying Language",
+    "duration": "03:30",
+    "imagePath": "images/Dying Language_654c5ba3.jpeg"
+  },
+  "Flower_of_Memories_-_Tenno.mp3": {
+    "author": "Tenno",
+    "title": "Flower of Memories",
+    "duration": "02:38",
+    "imagePath": "images/Flower of Memories_e0cdab3a.jpeg"
+  },
+  "Fugue_Arts_-_Auvic.mp3": {
+    "author": "Auvic",
+    "title": "Fugue Arts",
+    "duration": "03:12",
+    "imagePath": "images/Fugue Arts_8830d819.jpeg"
+  },
+  "Head_High_-_Lotus_Beats.mp3": {
+    "author": "Lotus Beats",
+    "title": "Head High",
+    "duration": "01:52",
+    "imagePath": "images/Head High_ea920865.jpeg"
+  },
+  "Heatwave_-_GlobulDub_Fred_Paci.mp3": {
+    "author": "GlobulDub, Fred Paci",
+    "title": "Heatwave",
+    "duration": "02:09",
+    "imagePath": "images/Heatwave_ea920865.jpeg"
+  },
+  "Interstellar_-_Living_Room.mp3": {
+    "author": "Living Room",
+    "title": "Interstellar",
+    "duration": "02:23",
+    "imagePath": "images/Interstellar_92c0916b.jpeg"
+  },
+  "Isolation_-_Dosi_Wishes_and_Dreams_Lofi_Girl.mp3": {
+    "author": "Dosi, Wishes and Dreams, Lofi Girl",
+    "title": "Isolation",
+    "duration": "02:01",
+    "imagePath": "images/Isolation_50831d61.jpeg"
+  },
+  "Jacarézinho_-_IzaBeats.mp3": {
+    "author": "IzaBeats",
+    "title": "Jacarézinho",
+    "duration": "01:41",
+    "imagePath": "images/Jacarézinho_251baebc.jpeg"
+  },
+  "Lazy_Waves_-_marsquake_Dosi.mp3": {
+    "author": "marsquake, Dosi",
+    "title": "Lazy Waves",
+    "duration": "02:17",
+    "imagePath": "images/Lazy Waves_ea920865.jpeg"
+  },
+  "Lights_Down_Low_-_vhskid..mp3": {
+    "author": "vhskid.",
+    "title": "Lights Down Low",
+    "duration": "02:01",
+    "imagePath": "images/Lights Down Low_ea920865.jpeg"
+  },
+  "Naima_Blue_-_Soul_Wun.mp3": {
+    "author": "Soul Wun",
+    "title": "Naima Blue",
+    "duration": "04:41",
+    "imagePath": "images/Naima Blue_7b81d8d3.jpeg"
+  },
+  "Overgrown_-_Tenno.mp3": {
+    "author": "Tenno",
+    "title": "Overgrown",
+    "duration": "02:17",
+    "imagePath": "images/Overgrown_648d5ff4.jpeg"
+  },
+  "Palm_Beach_-_Klemsis_Aboueb.mp3": {
+    "author": "Klemsis, Aboueb",
+    "title": "Palm Beach",
+    "duration": "02:11",
+    "imagePath": "images/Palm Beach_117be66e.jpeg"
+  },
+  "Palm_Island_-_ZENDR_Comodo.mp3": {
+    "author": "ZENDR, Comodo",
+    "title": "Palm Island",
+    "duration": "02:08",
+    "imagePath": "images/Palm Island_ea920865.jpeg"
+  },
+  "Ribeira_Grande_-_DLJ_Florent_Garcia.mp3": {
+    "author": "DLJ, Florent Garcia",
+    "title": "Ribeira Grande",
+    "duration": "02:01",
+    "imagePath": "images/Ribeira Grande_117be66e.jpeg"
+  },
+  "Sacrifice_-_Kinissue.mp3": {
+    "author": "Kinissue",
+    "title": "Sacrifice",
+    "duration": "02:40",
+    "imagePath": "images/Sacrifice_6a524904.jpeg"
+  },
+  "Sails_-_Lawrence_Walther_vhskid..mp3": {
+    "author": "Lawrence Walther, vhskid.",
+    "title": "Sails",
+    "duration": "02:02",
+    "imagePath": "images/Sails_ac64d734.jpeg"
+  },
+  "Sand_Dollars_-_goosetaf_Timothy_Infinite.mp3": {
+    "author": "goosetaf, Timothy Infinite",
+    "title": "Sand Dollars",
+    "duration": "02:13",
+    "imagePath": "images/Sand Dollars_117be66e.jpeg"
+  },
+  "Sea_&_Sun_-_Viktor_Minsky_Living_Room.mp3": {
+    "author": "Viktor Minsky, Living Room",
+    "title": "Sea & Sun",
+    "duration": "02:30",
+    "imagePath": "images/Sea & Sun_ea920865.jpeg"
+  },
+  "Sitting_in_National_Park_-_Akosmo_GameChops.mp3": {
+    "author": "Akosmo, GameChops",
+    "title": "Sitting in National Park",
+    "duration": "02:50",
+    "imagePath": "images/Sitting in National Park_380abb5e.jpeg"
+  },
+  "Summer_Picnic_-_Jordy_Chandra.mp3": {
+    "author": "Jordy Chandra",
+    "title": "Summer Picnic",
+    "duration": "01:54",
+    "imagePath": "images/Summer Picnic_76e34c0a.jpeg"
+  },
+  "Sunny_Afternoon_-_Comodo_Coogan_Maelk.mp3": {
+    "author": "Comodo, Coogan, Maelk",
+    "title": "Sunny Afternoon",
+    "duration": "02:20",
+    "imagePath": "images/Sunny Afternoon_117be66e.jpeg"
+  },
+  "Sweet_Farewell_-_Jordy_Chandra.mp3": {
+    "author": "Jordy Chandra",
+    "title": "Sweet Farewell",
+    "duration": "03:08",
+    "imagePath": "images/Sweet Farewell_335db0e3.jpeg"
+  },
+  "The_Golden_Hour_-_Jay-Lounge_NK_Music.mp3": {
+    "author": "Jay-Lounge, NK Music",
+    "title": "The Golden Hour",
+    "duration": "02:32",
+    "imagePath": "images/The Golden Hour_ba31fc34.jpeg"
+  },
+  "What_a_Wonderful_World_-_Auvic.mp3": {
+    "author": "Auvic",
+    "title": "What a Wonderful World",
+    "duration": "03:15",
+    "imagePath": "images/What a Wonderful World_6db70754.jpeg"
+  },
+  "let_s_be_lazy_together_-_biosphere.mp3": {
+    "author": "biosphere",
+    "title": "let's be lazy together",
+    "duration": "01:14",
+    "imagePath": "images/let's be lazy together_a4ac060e.jpeg"
+  },
+  "littleroot_town_~_pokémon_lofi_-_Closed_on_Sunday.mp3": {
+    "author": "Closed on Sunday",
+    "title": "littleroot town ~ pokémon lofi",
+    "duration": "01:26",
+    "imagePath": "images/littleroot town ~ pokémon lofi_c8034648.jpeg"
+  },
+  "strangers_-_biosphere_CIKI_Chris_Wright_love-sadKID.mp3": {
+    "author": "biosphere, CIKI, Chris Wright, love-sadKID",
+    "title": "strangers",
+    "duration": "03:18",
+    "imagePath": "images/strangers_0e5032a9.jpeg"
+  },
+  "sunny_-_j_san.mp3": {
+    "author": "j'san",
+    "title": "sunny",
+    "duration": "02:18",
+    "imagePath": "images/sunny_c3046424.jpeg"
+  },
+  "wait_-_steaminwaffles.mp3": {
+    "author": "steaminwaffles",
+    "title": "wait",
+    "duration": "02:07",
+    "imagePath": "images/wait_4254bd2a.jpeg"
   }
 }
