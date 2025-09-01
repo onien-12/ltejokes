@@ -29,6 +29,14 @@ export default function Window({ id, content, label, open, defaultPosition, onCl
     },
   }));
 
+  console.log(`rendering ${id}, ${openWindows.indexOf(id)}`);
+
+  useEffect(() => {
+    api.set({
+      zIndex: (20 + openWindows.indexOf(id)).toString(),
+    });
+  }, []);
+
   useEffect(() => {
     api.set({
       zIndex: open ? (20 + openWindows.indexOf(id)).toString() : "100",
@@ -59,12 +67,22 @@ export default function Window({ id, content, label, open, defaultPosition, onCl
 
   useEffect(() => {
     if (open) {
-      console.log(id, "update", openWindows.indexOf(id));
+      const index = openWindows.indexOf(id);
+      console.log(id, "update", index);
       api.set({
-        zIndex: (20 + openWindows.indexOf(id)).toString(),
+        zIndex: (20 + index).toString(),
       });
+      if (index == openWindows.length - 1) {
+        window.document.title = label;
+      }
     }
   }, [openWindows]);
+
+  useEffect(() => {
+    if (openWindows.indexOf(id) == openWindows.length - 1) {
+      window.document.title = label;
+    }
+  }, [label]);
 
   return (
     <Draggable defaultPosition={defaultPosition} handle={`.window-${handleId}`} nodeRef={nodeRef}>

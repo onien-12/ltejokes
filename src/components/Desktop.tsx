@@ -102,12 +102,14 @@ export default function Desktop() {
             icon: <Icon icon="simple-icons:spotify" width="32" height="32" />,
             label: "postixfy",
             defaultPosition: { x: 160, y: 0 },
-            handleClick: () =>
+            handleClick: () => {
+              const id = `postixfy-${Date.now()}`;
               addCustomWindow({
-                id: `postixfy-${Date.now()}`,
+                id,
                 name: "Postixfy",
-                window: <Postixfy />,
-              }),
+                window: <Postixfy winId={id} />,
+              });
+            },
           },
         ]}
       />

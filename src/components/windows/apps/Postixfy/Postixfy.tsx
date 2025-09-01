@@ -8,6 +8,7 @@ import Button from "../../../utils/Button";
 import PostixfyUpload from "./PostfixyUpload";
 import RenderIfVisible from "../../../utils/RenderIfVisible";
 import { formatTime, timeToSeconds } from "./utils";
+import { useSystemStore } from "../../../../store/useSystemStore";
 
 interface SongItem extends FileItem {
   metadata?: SongMetadata;
@@ -20,8 +21,10 @@ interface SongMetadata {
   imagePath?: string;
 }
 
-export default function Postixfy() {
+export default function Postixfy({ winId }: { winId: string }) {
   const POSTIXFY_ROOT = "/apps/postixfy";
+
+  const setCustomWindow = useSystemStore((store) => store.setCustomWindow);
 
   const [playlists, setPlaylists] = useState<{ name: string; iconUrl: string | null; songs: SongItem[] }[]>([]);
   const [selectedPlaylistIndex, setSelectedPlaylistIndex] = useState<number | null>(null);
@@ -129,9 +132,12 @@ export default function Postixfy() {
       if (currentSongUrl) {
         audioRef.current.src = currentSongUrl;
         audioRef.current.load();
-        window.document.title = currentSong?.metadata?.title || "Playing a song";
-        //@ts-expect-error
-        window.document.querySelector("#favicon").href = currentSong?.metadata?.imagePath;
+
+        setCustomWindow({
+          id: winId,
+          name: "Postixfy - " + (currentSong?.metadata?.title || "Playing a song"),
+        });
+        // window.document.querySelector("#favicon").href = currentSong?.metadata?.imagePath;
 
         navigator.mediaSession.metadata = new MediaMetadata({
           title: currentSong?.metadata?.title,
