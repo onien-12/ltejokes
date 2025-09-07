@@ -323,6 +323,8 @@ export default function TextReader({ path }: { path: string }) {
                 <FsImageRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
               </Optimize>
             );
+          } else if (directiveName === "disable") {
+            return <></>;
           } else if (directiveName === "optimize-section") {
             return (
               <RenderIfVisible key={`riw-section-${props.key || Date.now()}`}>
@@ -362,6 +364,8 @@ export default function TextReader({ path }: { path: string }) {
                 <GlossaryTermRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
               </Optimize>
             );
+          } else if (directiveName === "heading") {
+            return <span className="markdown-heading">{props.children}</span>;
           }
         }
         return (

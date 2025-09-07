@@ -34,6 +34,7 @@ export default function Postixfy({ winId }: { winId: string }) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [songLoading, setSongLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [volume, setVolume] = useState(1);
   const [currentView, setCurrentView] = useState<"player" | "upload">("player");
@@ -41,6 +42,7 @@ export default function Postixfy({ winId }: { winId: string }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const volumeRef = useRef(1);
   const isSeeking = useRef(false);
+  const isLoading = useRef(false);
 
   const currentPlaylist = selectedPlaylistIndex !== null ? playlists[selectedPlaylistIndex] : null;
   const currentSong = currentPlaylist && currentSongIndex !== null ? currentPlaylist.songs[currentSongIndex] : null;
@@ -178,16 +180,20 @@ export default function Postixfy({ winId }: { winId: string }) {
   }, [isPlaying]);
 
   useEffect(() => {
+    isLoading.current = songLoading;
+  }, [songLoading]);
+
+  useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
+    const onLoadStart = () => setSongLoading(true);
     const onPlay = () => setIsPlaying(true);
     const onPause = () => !audio.ended && setIsPlaying(false);
     const onDurationChange = () => setDuration(audio.duration);
     const onTimeUpdate = () => {
-      if (!isSeeking.current) {
-        setCurrentTime(audio.currentTime);
-      }
+      if (!isSeeking.current) setCurrentTime(audio.currentTime);
+      if (isLoading.current) setSongLoading(false);
     };
     const onEnded = () => {
       if (currentPlaylist && currentSongIndex !== null && currentSongIndex < currentPlaylist.songs.length - 1) {
@@ -203,6 +209,7 @@ export default function Postixfy({ winId }: { winId: string }) {
     audio.addEventListener("ended", onEnded);
     audio.addEventListener("pause", onPause);
     audio.addEventListener("play", onPlay);
+    audio.addEventListener("loadstart", onLoadStart);
 
     return () => {
       audio.removeEventListener("timeupdate", onTimeUpdate);
@@ -210,6 +217,7 @@ export default function Postixfy({ winId }: { winId: string }) {
       audio.removeEventListener("ended", onEnded);
       audio.removeEventListener("pause", onPause);
       audio.removeEventListener("play", onPlay);
+      audio.removeEventListener("loadstart", onLoadStart);
     };
   }, [currentPlaylist, currentSongIndex]);
 
@@ -379,7 +387,7 @@ export default function Postixfy({ winId }: { winId: string }) {
                         }}
                         className={clsx(
                           "flex flex-row justify-between items-center p-3 rounded-md cursor-pointer transition-colors w-full",
-                          currentSongIndex === index ? "bg-[#333]/70" : "hover:bg-[#1a1a1a]"
+                          currentSongIndex === index ? "bg-[#333]/70 border border-green-800" : "md:hover:bg-[#1a1a1a]"
                         )}
                       >
                         <div className="flex flex-row gap-2 w-9/12">
@@ -470,13 +478,23 @@ export default function Postixfy({ winId }: { winId: string }) {
             >
               <Icon icon="material-symbols:skip-previous" width="24" height="24" />
             </button>
-            <button onClick={togglePlayPause} className="p-2 rounded-full hover:bg-[#3e3e3e] mx-2">
-              <Icon
-                icon={isPlaying ? "material-symbols:pause" : "material-symbols:play-arrow"}
-                width="32"
-                height="32"
-                className="text-green-500"
-              />
+            <button
+              onClick={togglePlayPause}
+              disabled={songLoading}
+              className={clsx("p-2 rounded-full mx-2", {
+                "hover:bg-[#3e3e3e]": !songLoading,
+              })}
+            >
+              {songLoading ? (
+                <ClipLoader color="#fff" />
+              ) : (
+                <Icon
+                  icon={isPlaying ? "material-symbols:pause" : "material-symbols:play-arrow"}
+                  width="32"
+                  height="32"
+                  className="text-green-500"
+                />
+              )}
             </button>
             <button
               onClick={() => {

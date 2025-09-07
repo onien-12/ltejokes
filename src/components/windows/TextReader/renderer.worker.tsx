@@ -63,7 +63,19 @@ function customDirectivesPlugin() {
         } else if (node.value) {
           data.hChildren = [{ type: "text", value: node.value }];
         }
-      } else if (tagName === "optimize-section") {
+      } else if (tagName === "heading") {
+        data.hName = "span";
+        data.hProperties = {
+          className: [],
+          "data-directive-name": tagName,
+          "data-heading": node.attributes.h || "",
+        };
+        if (node.children) {
+          data.hChildren = node.children;
+        } else if (node.value) {
+          data.hChildren = [{ type: "text", value: node.value }];
+        }
+      } else if (tagName === "optimize-section" || tagName === "disable") {
         data.hName = "div";
         data.hProperties = {
           className: ["markdown-directive", "markdown-directive-section"],
