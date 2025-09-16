@@ -15,6 +15,9 @@ import { useUIOptionsStore } from "../../../store/useUIOptionsStore";
 import clsx from "clsx";
 import { handleOpen } from "../FileManager";
 import { useSystemStore } from "../../../store/useSystemStore";
+import ReactDOM from "react-dom/client";
+import Button from "../../utils/Button";
+import { Icon } from "@iconify-icon/react";
 
 const markdownWorker = new Worker(new URL("./renderer.worker.tsx", import.meta.url));
 
@@ -89,7 +92,7 @@ const FsImageRenderer: React.FC<any> = ({ node, children, addCustomWindow, ...pr
       <img
         src={imageUrl}
         alt={alt || name || "Custom image from filesystem"}
-        className="max-w-full h-auto rounded-md shadow-md"
+        className="fs-image max-w-full h-auto rounded-md shadow-md"
         style={{
           width: width ? width : "100%",
           height: height ? height : "auto",
@@ -182,6 +185,7 @@ export default function TextReader({ path }: { path: string }) {
   const deferredRenderMath = useDeferredValue(renderMath);
 
   const currentRequestRef = useRef<number>(Math.floor(Math.random() * 2 ** 20));
+  const printIframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     if (deferredPath === null) {
@@ -263,132 +267,209 @@ export default function TextReader({ path }: { path: string }) {
     };
   }, [rawContent, deferredRenderMath]);
 
-  const components = useMemo(() => {
-    const Optimize = ({
-      children,
-      type,
-      props,
-      isInline = false,
-    }: {
-      children: React.ReactNode;
-      type: string;
-      props: any;
-      isInline?: boolean;
-    }) => {
-      return optimizeUI ? (
-        <RenderIfVisible
-          key={`riw-${type}-${props.key || Date.now()}`}
-          rootElementClass={isInline ? "inline" : undefined}
-        >
-          {children}
-        </RenderIfVisible>
-      ) : (
-        <>{children}</>
-      );
-    };
+  const components = useMemo(
+    () =>
+      (optimize: boolean = true) => {
+        const Optimize = ({
+          children,
+          type,
+          props,
+          isInline = false,
+        }: {
+          children: React.ReactNode;
+          type: string;
+          props: any;
+          isInline?: boolean;
+        }) => {
+          return optimizeUI && optimize ? (
+            <RenderIfVisible
+              key={`riw-${type}-${props.key || Date.now()}`}
+              rootElementClass={isInline ? "inline" : undefined}
+            >
+              {children}
+            </RenderIfVisible>
+          ) : (
+            <>{children}</>
+          );
+        };
 
-    return {
-      "<fragment>": (props: any) => {
-        return <>{props.children}</>;
-      },
-      p: (props: any) => {
-        const paragraph = <p key={props.key}>{props.children}</p>;
-        return (
-          <Optimize type="p" props={props}>
-            {paragraph}
-          </Optimize>
-        );
-      },
-      h1: (props: any) => {
-        const heading = <h1 key={props.key}>{props.children}</h1>;
-        return (
-          <Optimize type="h1" props={props}>
-            {heading}
-          </Optimize>
-        );
-      },
-      table: (props: any) => {
-        return (
-          <div className="table-wrapper">
-            <table>{props.children}</table>
-          </div>
-        );
-      },
-      div: (props: any) => {
-        if (props["data-directive-name"]) {
-          const directiveName = props["data-directive-name"];
-          if (directiveName === "fs-image") {
+        return {
+          "<fragment>": (props: any) => {
+            return <>{props.children}</>;
+          },
+          p: (props: any) => {
+            const paragraph = <p key={props.key}>{props.children}</p>;
             return (
-              <Optimize type="fs" props={props}>
-                <FsImageRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
+              <Optimize type="p" props={props}>
+                {paragraph}
               </Optimize>
             );
-          } else if (directiveName === "disable") {
-            return <></>;
-          } else if (directiveName === "optimize-section") {
+          },
+          h1: (props: any) => {
+            const heading = <h1 key={props.key}>{props.children}</h1>;
             return (
-              <RenderIfVisible key={`riw-section-${props.key || Date.now()}`}>
-                <section>{props.children}</section>
-              </RenderIfVisible>
+              <Optimize type="h1" props={props}>
+                {heading}
+              </Optimize>
             );
-          } else if (directiveName === "center") {
+          },
+          table: (props: any) => {
             return (
-              <Optimize type="center" props={props}>
-                <div key={props.key} {...props} className="text-center flex flex-col justify-center items-center">
+              <div className="table-wrapper">
+                <table>{props.children}</table>
+              </div>
+            );
+          },
+          div: (props: any) => {
+            if (props["data-directive-name"]) {
+              const directiveName = props["data-directive-name"];
+              if (directiveName === "fs-image") {
+                return (
+                  <Optimize type="fs" props={props}>
+                    <FsImageRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
+                  </Optimize>
+                );
+              } else if (directiveName === "disable") {
+                return <></>;
+              } else if (directiveName === "optimize-section") {
+                return optimize ? (
+                  <RenderIfVisible key={`riw-section-${props.key || Date.now()}`}>
+                    <section>{props.children}</section>
+                  </RenderIfVisible>
+                ) : (
+                  <section>{props.children}</section>
+                );
+              } else if (directiveName === "center") {
+                return (
+                  <Optimize type="center" props={props}>
+                    <div key={props.key} {...props} className="text-center flex flex-col justify-center items-center">
+                      {props.children}
+                    </div>
+                  </Optimize>
+                );
+              } else if (directiveName === "margin") {
+                return (
+                  <Optimize type="directive" props={props}>
+                    <MarginRenderer {...props} node={props} />
+                  </Optimize>
+                );
+              }
+            }
+            return (
+              <Optimize type="div" props={props}>
+                <div key={props.key} {...props}>
                   {props.children}
                 </div>
               </Optimize>
             );
-          } else if (directiveName === "margin") {
+          },
+          span: (props: any) => {
+            if (props["data-directive-name"]) {
+              const directiveName = props["data-directive-name"];
+              if (directiveName === "glossary") {
+                return (
+                  <Optimize type="glossary" props={props} isInline>
+                    <GlossaryTermRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
+                  </Optimize>
+                );
+              } else if (directiveName === "heading") {
+                return <span className="markdown-heading">{props.children}</span>;
+              }
+            }
             return (
-              <Optimize type="directive" props={props}>
-                <MarginRenderer {...props} node={props} />
-              </Optimize>
+              <span key={props.key} {...props}>
+                {props.children}
+              </span>
             );
-          }
-        }
-        return (
-          <Optimize type="div" props={props}>
-            <div key={props.key} {...props}>
-              {props.children}
-            </div>
-          </Optimize>
-        );
+          },
+        };
       },
-      span: (props: any) => {
-        if (props["data-directive-name"]) {
-          const directiveName = props["data-directive-name"];
-          if (directiveName === "glossary") {
-            return (
-              <Optimize type="glossary" props={props} isInline>
-                <GlossaryTermRenderer {...props} node={props} addCustomWindow={addCustomWindow} />
-              </Optimize>
-            );
-          } else if (directiveName === "heading") {
-            return <span className="markdown-heading">{props.children}</span>;
-          }
-        }
-        return (
-          <span key={props.key} {...props}>
-            {props.children}
-          </span>
-        );
-      },
-    };
-  }, [optimizeUI]);
+    [optimizeUI]
+  );
+
+  const handlePrint = useCallback(() => {
+    if (printIframeRef.current) {
+      const iframe = printIframeRef.current;
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+      if (!iframeDoc) {
+        console.error("Could not access iframe document for printing.");
+        return;
+      }
+
+      iframeDoc.open();
+      iframeDoc.write("");
+      iframeDoc.close();
+
+      const printRoot = iframeDoc.createElement("div");
+      iframeDoc.body.appendChild(printRoot);
+
+      const root = ReactDOM.createRoot(printRoot);
+
+      root.render(
+        <div className="markdown printing scrollable text-black">
+          <InnerRehypeRenderer nodes={nodes} components={components(false)} optimizeUI={false} renderId={renderId} />
+        </div>
+      );
+      const head = iframeDoc.getElementsByTagName("head")[0] || iframeDoc.createElement("head");
+
+      const mainDocumentStyleTags = Array.from(document.querySelectorAll("style")) as HTMLStyleElement[];
+      mainDocumentStyleTags.forEach((styleTag) => {
+        const newStyle = iframeDoc.createElement("style");
+        newStyle.textContent = styleTag.textContent;
+        head.appendChild(newStyle);
+      });
+
+      const images = iframeDoc.querySelectorAll("img");
+      const promises = Array.from(images)
+        .filter((img) => !img.complete)
+        .map((img) => {
+          return new Promise((resolve) => {
+            img.onload = img.onerror = resolve;
+          });
+        });
+
+      Promise.all(promises).then(() => {
+        setTimeout(() => {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        }, 500);
+      });
+    }
+  }, [printIframeRef, nodes]);
 
   return (
-    <div className="markdown scrollable p-2 bg-[#101010]/80 h-full overflow-y-auto select-text">
-      {loadingPhase !== "idle" || isPending ? (
-        <div className="flex flex-col justify-center items-center h-full">
-          <ClipLoader className="text-white" color="#fff" />
-          <span className="ml-2 text-gray-400">{loadingPhase === "fetching" ? "Fetching..." : "Processing..."}</span>
+    <div className="h-full">
+      <div className="markdown scrollable p-2 bg-[#101010]/80 h-full overflow-y-auto select-text">
+        <div className="flex justify-end p-2 border-b border-[#333] mb-4">
+          <Button
+            onClick={handlePrint}
+            disabled={loadingPhase !== "idle" || isPending}
+            className="text-white border-neutral-500 flex items-center justify-center"
+          >
+            <Icon icon="material-symbols:print" />
+          </Button>
         </div>
-      ) : nodes !== null ? (
-        <InnerRehypeRenderer nodes={nodes} components={components} renderId={renderId} optimizeUI={optimizeUI} />
-      ) : (
-        <p className="text-red-500">No content available. ({loadingPhase})</p>
-      )}
+        {loadingPhase !== "idle" || isPending ? (
+          <div className="flex flex-col justify-center items-center h-full">
+            <ClipLoader className="text-white" color="#fff" />
+            <span className="ml-2 text-gray-400">{loadingPhase === "fetching" ? "Fetching..." : "Processing..."}</span>
+          </div>
+        ) : nodes !== null ? (
+          <InnerRehypeRenderer
+            nodes={nodes}
+            components={components(true)}
+            renderId={renderId}
+            optimizeUI={optimizeUI}
+          />
+        ) : (
+          <p className="text-red-500">No content available. ({loadingPhase})</p>
+        )}
+      </div>
+      <iframe
+        ref={printIframeRef}
+        style={{ display: "none", position: "absolute", left: "-9999px" }}
+        title="Print Document"
+      />
     </div>
   );
 }

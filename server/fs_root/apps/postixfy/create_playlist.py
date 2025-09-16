@@ -166,5 +166,5 @@ def process_mp3_directory(directory_path):
 
 
 if __name__ == "__main__":
-    target_directory = "useful for studying"
+    target_directory = "investigation"
     process_mp3_directory(target_directory)

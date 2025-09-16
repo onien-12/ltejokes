@@ -5,6 +5,7 @@
 @import url("https://code.cdn.mozilla.net/fonts/fira.css");
 @import "styles/markdown.css";
 @import "styles/postixfy.css";
+@import "styles/print.css";
 
 :root {
   --font-mono: "Fira Mono";

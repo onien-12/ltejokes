@@ -178,5 +178,29 @@
     "title": "sh2 - White Noiz",
     "duration": "01:24",
     "imagePath": "images/icon.jpeg"
+  },
+  "20200416_Cradel Of Forest.mp3": {
+    "author": "Akira Yamaoka",
+    "title": "sh4 - Cradel Of Forest",
+    "duration": "06:31",
+    "imagePath": "images/sh4.png"
+  },
+  "20200416_Waiting For You ~LIVE AT ＂Heaven's Night＂~ (unreleased tunes).mp3": {
+    "author": "Akira Yamaoka",
+    "title": "sh4 - Waiting for you ('Heaven's Night Live')",
+    "duration": "06:19",
+    "imagePath": "images/sh4.png"
+  },
+  "20200416_Your Rain.mp3": {
+    "author": "Akira Yamaoka",
+    "title": "sh4 - Your rain",
+    "duration": "04:43",
+    "imagePath": "images/sh4.png"
+  },
+  "20200416_Pulsating Ambience.mp3": {
+    "author": "Akira Yamaoka",
+    "title": "sh4 - Pulsating Ambience",
+    "duration": "03:05",
+    "imagePath": "images/sh4.png"
   }
 }

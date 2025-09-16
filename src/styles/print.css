@@ -1,0 +1,197 @@
+@font-face {
+  font-family: ComputerModern;
+  src: url(/public/fonts/cmu.serif-roman.ttf);
+}
+
+@font-face {
+  font-family: ComputerModernBold;
+  src: url(/public/fonts/cmu.serif-bold.ttf);
+}
+
+@font-face {
+  font-family: ComputerModernSans;
+  src: url(/public/fonts/cmu.sans-serif-medium.ttf);
+}
+
+@font-face {
+  font-family: LatinModernMath;
+  src: url(/public/fonts/latinmodern-math.otf);
+}
+
+@media print {
+  iframe[title="Print Document"] {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    color: black;
+    background: white;
+    font-family: ComputerModern, sans-serif !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .markdown.printing {
+    font-family: ComputerModern, sans-serif !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 2cm;
+  }
+
+  /* prettier-ignore */
+  img, figure,
+  h1, h2, h3, h4, h5, h6,
+  .markdown-directive-section,
+  .math-display,
+  .math-inline,
+  code, blockquote,
+  table, .table-wrapper, thead, tbody, tr {
+    page-break-inside: avoid;
+  }
+
+  /* prettier-ignore */
+  h1, h2, h3, h4 {
+    page-break-before: auto;
+    font-family: ComputerModernBold, ComputerModern, sans-serif;
+  }
+
+  b {
+    font-family: ComputerModernBold, ComputerModern, sans-serif;
+  }
+
+  code.language-python,
+  code.language-c {
+    page-break-inside: auto;
+  }
+
+  p {
+    margin: 1em 0;
+  }
+  h1 {
+    font-size: 24pt;
+    margin: 1.5em 0 0.5em 0;
+    color: black;
+  }
+  h2 {
+    font-size: 20pt;
+    margin: 1.2em 0 0.5em 0;
+    color: black;
+  }
+  h3 {
+    font-size: 16pt;
+    margin: 1em 0 0.5em 0;
+    color: black;
+  }
+  h4 {
+    font-size: 14pt;
+    margin: 1em 0 0.5em 0;
+    color: black;
+  }
+  h5 {
+    font-size: 12pt;
+    margin: 0.8em 0 0.4em 0;
+    color: black;
+  }
+  h6 {
+    font-size: 11pt;
+    margin: 0.8em 0 0.4em 0;
+    color: #555;
+  }
+
+  pre {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 0.5em;
+    font-size: 9pt;
+  }
+  code {
+    background-color: #eee;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+    font-size: 9pt;
+  }
+  blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 1em;
+    color: #555;
+    font-style: italic;
+    margin: 1em 0;
+  }
+
+  table {
+    border: 1px solid #6e6e6e;
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+    font-size: 10pt;
+  }
+  table th,
+  table td {
+    border: 1px solid #6e6e6e;
+    padding: 0.4em 0.6em;
+    text-align: left;
+  }
+  table th {
+    background-color: #f0f0f0;
+  }
+
+  .fs-image {
+    box-shadow: none !important;
+  }
+
+  .katex {
+    font-size: small;
+    font-weight: lighter;
+    font-family: LatinModernMath !important;
+  }
+
+  .katex.mathnormal {
+    font-family: LatinModernMath !important;
+  }
+
+  .math-display,
+  .math-inline {
+    page-break-inside: avoid;
+    text-align: center;
+    margin: 1em 0;
+  }
+
+  .markdown-glossary-term {
+    background-color: #e0f2f7;
+    border-bottom: 1px dotted #81d4fa;
+    padding: 0 0.2em;
+  }
+
+  a {
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  .markdown-directive-center {
+    text-align: center;
+    display: block;
+  }
+  .markdown-directive-section {
+    border: 1px solid #e0e0e0;
+    background-color: #f8f8f8;
+    padding: 1em;
+    border-radius: 5px;
+    margin: 1.5em 0;
+    page-break-inside: avoid;
+    page-break-before: auto;
+  }
+  .markdown-directive-margin {
+    padding-left: 1em;
+  }
+}
