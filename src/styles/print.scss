@@ -14,40 +14,14 @@
 }
 
 @font-face {
-  font-family: LatinModernMath;
-  src: url(/public/fonts/latinmodern-math.otf);
+  font-family: "Latin Modern Math";
+  src: url(/public/fonts/latinmodern-math.woff2);
+  font-weight: normal;
+  font-style: normal;
 }
 
-@media print {
-  iframe[title="Print Document"] {
-    display: block !important;
-    position: static !important;
-    width: 100% !important;
-    height: 100% !important;
-    border: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    color: black;
-    background: white;
-    font-family: ComputerModern, sans-serif !important;
-    font-size: 11pt;
-    line-height: 1.5;
-  }
-
-  .markdown.printing {
-    font-family: ComputerModern, sans-serif !important;
-  }
-
-  @page {
-    size: A4;
-    margin: 2cm;
-  }
+.markdown.printing {
+  font-family: ComputerModern, sans-serif !important;
 
   /* prettier-ignore */
   img, figure,
@@ -63,11 +37,14 @@
   /* prettier-ignore */
   h1, h2, h3, h4 {
     page-break-before: auto;
-    font-family: ComputerModernBold, ComputerModern, sans-serif;
+    font-weight: bold;
+    color: rgb(40, 40, 40) !important;
+    font-family: ComputerModernBold, ComputerModern, sans-serif !important;
   }
 
   b {
-    font-family: ComputerModernBold, ComputerModern, sans-serif;
+    font-family: ComputerModernBold, ComputerModern, sans-serif !important;
+    color: rgb(47, 47, 47) !important;
   }
 
   code.language-python,
@@ -81,32 +58,28 @@
   h1 {
     font-size: 24pt;
     margin: 1.5em 0 0.5em 0;
-    color: black;
   }
   h2 {
     font-size: 20pt;
     margin: 1.2em 0 0.5em 0;
-    color: black;
   }
   h3 {
     font-size: 16pt;
     margin: 1em 0 0.5em 0;
-    color: black;
   }
   h4 {
     font-size: 14pt;
     margin: 1em 0 0.5em 0;
-    color: black;
   }
   h5 {
     font-size: 12pt;
     margin: 0.8em 0 0.4em 0;
-    color: black;
+    color: rgb(47, 47, 47) !important;
   }
   h6 {
     font-size: 11pt;
     margin: 0.8em 0 0.4em 0;
-    color: #555;
+    color: rgb(85, 85, 85) !important;
   }
 
   pre {
@@ -151,14 +124,16 @@
   }
 
   .katex {
-    font-size: small;
-    font-weight: lighter;
-    font-family: LatinModernMath !important;
+    font-size: 16px;
   }
 
-  .katex.mathnormal {
-    font-family: LatinModernMath !important;
+  .katex * {
+    font-weight: 300 !important;
   }
+
+  /* .katex *:not(.delimsizing) {
+    font-family: Katex !important;
+  } */
 
   .math-display,
   .math-inline {
@@ -193,5 +168,33 @@
   }
   .markdown-directive-margin {
     padding-left: 1em;
+  }
+}
+
+@media print {
+  iframe[title="Print Document"] {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    color: black;
+    background: white;
+    font-family: ComputerModern, sans-serif !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  @page {
+    size: A4;
+    margin: 2cm;
   }
 }

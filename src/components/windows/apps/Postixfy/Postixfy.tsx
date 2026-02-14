@@ -22,7 +22,7 @@ interface SongMetadata {
 }
 
 export default function Postixfy({ winId }: { winId: string }) {
-  const POSTIXFY_ROOT = "/apps/postixfy";
+  const POSTIXFY_ROOT = "/apps/postixfy/playlists";
 
   const setCustomWindow = useSystemStore((store) => store.setCustomWindow);
 
@@ -73,7 +73,7 @@ export default function Postixfy({ winId }: { winId: string }) {
 
           const iconFile = playlistContents.contents.find((item) => item.name === "icon.png");
           const songFiles = playlistContents.contents.filter(
-            (item) => item.type === "file" && !item.name.includes("icon.png") && !item.name.includes("metadata.json")
+            (item) => item.type === "file" && !item.name.includes("icon.png") && !item.name.includes("metadata.json"),
           );
           const metadataFile = playlistContents.contents.find((item) => item.name === "metadata.json");
 
@@ -113,7 +113,7 @@ export default function Postixfy({ winId }: { winId: string }) {
             iconUrl: iconFile ? `${API}/api/filesystem/file?path=${playlistPath}/icon.png` : null,
             songs: songs.sort((a, b) => a.name.localeCompare(b.name)),
           };
-        })
+        }),
       );
       setPlaylists(loadedPlaylists);
     } catch (err: any) {
@@ -258,7 +258,7 @@ export default function Postixfy({ winId }: { winId: string }) {
 
   const playlistDuration = useMemo(
     () => currentPlaylist?.songs.reduce((acc, next) => acc + timeToSeconds(next.metadata?.duration ?? "0"), 0),
-    [currentPlaylist]
+    [currentPlaylist],
   );
 
   if (loading) {
@@ -316,7 +316,7 @@ export default function Postixfy({ winId }: { winId: string }) {
                   }}
                   className={clsx(
                     "flex items-center p-2 rounded-md cursor-pointer transition-colors",
-                    selectedPlaylistIndex === index ? "bg-[#282828]" : "hover:bg-[#1a1a1a]"
+                    selectedPlaylistIndex === index ? "bg-[#282828]" : "hover:bg-[#1a1a1a]",
                   )}
                 >
                   {playlist.iconUrl ? (
@@ -336,10 +336,13 @@ export default function Postixfy({ winId }: { winId: string }) {
           </div>
           <div className="mt-4 pt-4 border-t border-[#222]">
             <Button
-              onClick={() => setCurrentView(currentView == "upload" ? "player" : "upload")}
+              onClick={() => {
+                setCurrentView(currentView == "upload" ? "player" : "upload");
+                if (window.innerWidth < 768) setPlaylistsOpen(false);
+              }}
               className={clsx(
                 "w-full justify-center",
-                currentView === "upload" ? "bg-green-600 hover:bg-green-700" : "bg-[#3a3a3a] hover:bg-[#4a4a4a]"
+                currentView === "upload" ? "bg-green-600 hover:bg-green-700" : "bg-[#3a3a3a] hover:bg-[#4a4a4a]",
               )}
             >
               <Icon icon="material-symbols:cloud-upload" className="mr-2" /> Upload Music
@@ -387,7 +390,7 @@ export default function Postixfy({ winId }: { winId: string }) {
                         }}
                         className={clsx(
                           "flex flex-row justify-between items-center p-3 rounded-md cursor-pointer transition-colors w-full",
-                          currentSongIndex === index ? "bg-[#333]/70 border border-green-800" : "md:hover:bg-[#1a1a1a]"
+                          currentSongIndex === index ? "bg-[#333]/70 border border-green-800" : "md:hover:bg-[#1a1a1a]",
                         )}
                       >
                         <div className="flex flex-row gap-2 w-9/12">
@@ -405,7 +408,7 @@ export default function Postixfy({ winId }: { winId: string }) {
                               icon="material-symbols:music-note"
                               className={clsx(
                                 "mr-3",
-                                currentSongIndex === index && isPlaying ? "text-green-500" : "text-gray-400"
+                                currentSongIndex === index && isPlaying ? "text-green-500" : "text-gray-400",
                               )}
                               width="24"
                               height="24"

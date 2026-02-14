@@ -10,6 +10,8 @@ import GlossaryWindow from "./GlossaryWindow";
 import HTMLViewer from "./HTMLViewer";
 import Navigator3GPP from "./utilities/Navigator3GPP";
 import ContextMenu, { ContextMenuItem } from "../utils/ContextMenu";
+import ProjectsWindow from "./Projects";
+import CodeViewer from "./CodeViewer";
 
 interface FileItem {
   name: string;
@@ -30,8 +32,8 @@ export function handleOpen({
   fullPath,
 }: {
   file: FileItem;
-  currentRelativePathSegments?: string[];
   addCustomWindow: SystemStore["addCustomWindow"];
+  currentRelativePathSegments?: string[];
   fullPath?: string;
 }) {
   console.log(file, currentRelativePathSegments, addCustomWindow);
@@ -60,6 +62,31 @@ export function handleOpen({
         window: <Navigator3GPP />,
       });
     }
+    if (file.name === "projects") {
+      return addCustomWindow({
+        id: `projects`,
+        name: `Projects`,
+        window: <ProjectsWindow />,
+      });
+    }
+    if (file.name === "file_manager") {
+      return addCustomWindow({
+        id: `file_manager - ${Date.now()}`,
+        name: "Files",
+        window: (
+          <FileManager
+            startPath={fullApiPath}
+            onFileOpen={(path, file) =>
+              handleOpen({
+                file,
+                currentRelativePathSegments: path,
+                addCustomWindow,
+              })
+            }
+          />
+        ),
+      });
+    }
   }
 
   if (file.name.endsWith(".md") || file.name.endsWith(".txt")) {
@@ -68,29 +95,29 @@ export function handleOpen({
       name: `Reader - ${file.name}`,
       window: <TextReader path={fullApiPath} />,
     });
-  }
-
-  if (file.name.endsWith(".html") || file.name.endsWith(".htm")) {
+  } else if (file.name.endsWith(".html") || file.name.endsWith(".htm")) {
     return addCustomWindow({
       id: file.name,
       name: `HTML Viewer - ${file.name}`,
       window: <HTMLViewer path={fullApiPath} />,
     });
-  }
-
-  if (file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
+  } else if (file.name.endsWith(".png") || file.name.endsWith(".jpg") || file.name.endsWith(".jpeg")) {
     return addCustomWindow({
       id: file.name,
       name: `Media - ${file.name}`,
       window: <MediaViewer path={fullApiPath} />,
     });
-  }
-
-  if (file.name.endsWith(".pdf")) {
+  } else if (file.name.endsWith(".pdf")) {
     return addCustomWindow({
       id: file.name,
       name: `PDFReader - ${file.name}`,
       window: <PDFReader path={fullApiPath} />,
+    });
+  } else {
+    return addCustomWindow({
+      id: file.name,
+      name: `Code - ${file.name}`,
+      window: <CodeViewer path={fullApiPath} />,
     });
   }
 
@@ -134,7 +161,7 @@ export default function FileManager({ startPath = "", onFileOpen }: FileManagerP
         setLoading(false);
       }
     },
-    [currentPathSegments]
+    [currentPathSegments],
   );
 
   useEffect(() => {
@@ -163,7 +190,7 @@ export default function FileManager({ startPath = "", onFileOpen }: FileManagerP
     setContextMenu({ isOpen: false, x: 0, y: 0, item: null });
     if (event.metaKey || event.ctrlKey) {
       setSelectedItems((prevSelected) =>
-        prevSelected.includes(item) ? prevSelected.filter((i) => i !== item) : [...prevSelected, item]
+        prevSelected.includes(item) ? prevSelected.filter((i) => i !== item) : [...prevSelected, item],
       );
     } else if (event.shiftKey) {
       if (selectedItems.length > 0) {
@@ -261,7 +288,7 @@ export default function FileManager({ startPath = "", onFileOpen }: FileManagerP
                 className={clsx(
                   `h-fit w-24 flex flex-col items-center text-center p-3 rounded-lg transition-all select-none`,
                   loading || error ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-gray-700/50",
-                  selectedItems.includes(item) ? "bg-blue-600/70" : ""
+                  selectedItems.includes(item) ? "bg-blue-600/70" : "",
                 )}
               >
                 {item.type === "folder" ? (
@@ -282,8 +309,9 @@ export default function FileManager({ startPath = "", onFileOpen }: FileManagerP
                 )}
                 <span
                   className={clsx("text-xs mt-2 w-full px-1", {
+                    "text-wrap break-words":
+                      window.innerWidth <= 650 || selectedItems.includes(item) || item.name.length < 20,
                     truncate: window.innerWidth > 650,
-                    "text-wrap break-words": window.innerWidth <= 650,
                   })}
                 >
                   {item.name}

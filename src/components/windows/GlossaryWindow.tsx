@@ -16,12 +16,134 @@ interface GlossaryWindowProps {
   currentContextGroup?: string;
   initialTab?: "glossary" | "protocols";
 }
+const markdownComponents = {
+  p: ({ node, ...props }: any) => (
+    <p {...props} className="mt-0 mb-0">
+      {props.children}
+    </p>
+  ),
+};
+
+const rehypePlugins = [[rehypeKatex, { trust: true }]];
+
+const GlossaryTermCard = React.memo(
+  ({
+    term,
+    currentContextGroup,
+    setSearchTerm,
+  }: {
+    term: GlossaryTerm;
+    currentContextGroup?: string;
+    setSearchTerm: (s: string) => void;
+  }) => {
+    let definitionsToDisplay: GlossaryDefinition[] = [];
+    let showingSpecificContext = false;
+    let fallbackContext = false;
+
+    const definitionMatchesContext = (def: GlossaryDefinition, targetCtx: string) => {
+      return Array.isArray(def.context) ? def.context.includes(targetCtx) : def.context === targetCtx;
+    };
+
+    // Context Logic
+    if (currentContextGroup) {
+      const specificDef = term.definitions.find((def) => definitionMatchesContext(def, currentContextGroup));
+
+      if (specificDef) {
+        definitionsToDisplay = [specificDef];
+        showingSpecificContext = true;
+      } else {
+        const generalDef = term.definitions.find((def) => definitionMatchesContext(def, "general"));
+        if (generalDef) {
+          definitionsToDisplay = [generalDef];
+          fallbackContext = true;
+        } else if (term.definitions.length > 0) {
+          definitionsToDisplay = [term.definitions[0]];
+          fallbackContext = true;
+        } else {
+          definitionsToDisplay = [];
+        }
+      }
+    } else {
+      definitionsToDisplay = term.definitions;
+    }
+
+    if (definitionsToDisplay.length === 0) {
+      return (
+        <div className="py-3 px-4">
+          <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+            <Icon icon="material-symbols:book" className="mr-2 text-gray-400" />
+            {term.word}
+          </h3>
+          <p className="text-gray-500">No definition available.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="py-3 px-4">
+        <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
+          <Icon icon="material-symbols:book" className="mr-2 text-gray-400" />
+          {term.word}
+        </h3>
+        <div className="space-y-2 ml-3">
+          {definitionsToDisplay.map((def, index) => (
+            <div
+              key={def.context.reduce((acc, next) => acc + next) || index}
+              className={clsx(
+                "text-gray-300",
+                index !== definitionsToDisplay.length - 1 ? "border-b border-b-neutral-700 pb-1" : "",
+              )}
+            >
+              <div className="w-fit inline">
+                <Markdown
+                  remarkPlugins={[remarkMath]}
+                  //@ts-ignore
+                  rehypePlugins={rehypePlugins}
+                  components={markdownComponents}
+                >
+                  {def.text}
+                </Markdown>
+              </div>
+              <div className="mt-1 space-x-1">
+                {def.context.map((ctx) => (
+                  <span
+                    key={ctx}
+                    className={clsx("px-1 py-0.5 rounded text-xs", {
+                      "bg-blue-600/30 text-blue-300":
+                        currentContextGroup && ctx === currentContextGroup && showingSpecificContext,
+                      "bg-yellow-600/30 text-yellow-300": currentContextGroup && ctx === "general" && fallbackContext,
+                      "bg-gray-600/30 text-gray-300":
+                        !currentContextGroup ||
+                        (currentContextGroup && !showingSpecificContext && !fallbackContext) ||
+                        (currentContextGroup && ctx !== currentContextGroup),
+                    })}
+                  >
+                    {ctx}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+          {currentContextGroup && definitionsToDisplay.length < term.definitions.length && (
+            <p className="text-gray-500 text-xs mt-2">
+              <Icon icon="material-symbols:info" className="inline-block align-bottom mr-1" />
+              Showing definition for current context.{" "}
+              <span className="underline cursor-pointer" onClick={() => setSearchTerm(term.word)}>
+                Click to see all contexts.
+              </span>
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  },
+);
 
 const ProtocolElementRenderer: React.FC<{
   element: ProtocolElement;
   level?: number;
   searchTermLower?: string;
-}> = ({ element, level = 0, searchTermLower = "" }) => {
+}> = React.memo(({ element, level = 0, searchTermLower = "" }) => {
   const termSegments = searchTermLower.split(".");
   const matches = (segs: string[], where?: string) => where && segs.find((s) => where.toLowerCase().includes(s));
 
@@ -39,7 +161,7 @@ const ProtocolElementRenderer: React.FC<{
     () =>
       ({ children }: { children: React.ReactNode }) =>
         level == 2 ? <RenderIfVisible>{children}</RenderIfVisible> : <>{children}</>,
-    [searchTermLower]
+    [searchTermLower],
   );
 
   const DefinitionMarkdownRenderer: React.FC<{ markdown: string }> = React.memo(({ markdown }) => {
@@ -75,7 +197,7 @@ const ProtocolElementRenderer: React.FC<{
         {
           "border-white/5 bg-black/20 mt-2":
             showDescription || (element.elements && element.elements.length > 0 && level > 0),
-        }
+        },
       )}
       style={{ marginLeft: `${paddingLeft}px` }}
     >
@@ -115,7 +237,7 @@ const ProtocolElementRenderer: React.FC<{
       </Optimize>
     </div>
   );
-};
+});
 
 const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
   initialTerm = "",
@@ -180,96 +302,6 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
       });
   }, [terms, searchTerm]);
 
-  const renderGlossaryDefinition = useCallback(
-    (term: GlossaryTerm) => {
-      let definitionsToDisplay: GlossaryDefinition[] = [];
-      let showingSpecificContext = false;
-      let fallbackContext = false;
-
-      const definitionMatchesContext = (def: GlossaryDefinition, targetCtx: string) => {
-        return Array.isArray(def.context) ? def.context.includes(targetCtx) : def.context === targetCtx;
-      };
-
-      if (currentContextGroup) {
-        const specificDef = term.definitions.find((def) => definitionMatchesContext(def, currentContextGroup));
-
-        if (specificDef) {
-          definitionsToDisplay = [specificDef];
-          showingSpecificContext = true;
-        } else {
-          const generalDef = term.definitions.find((def) => definitionMatchesContext(def, "general"));
-          if (generalDef) {
-            definitionsToDisplay = [generalDef];
-            fallbackContext = true;
-          } else if (term.definitions.length > 0) {
-            definitionsToDisplay = [term.definitions[0]];
-            fallbackContext = true;
-          } else {
-            definitionsToDisplay = [];
-          }
-        }
-      } else {
-        definitionsToDisplay = term.definitions;
-      }
-
-      if (definitionsToDisplay.length === 0) {
-        return <p className="text-gray-500">No definition available.</p>;
-      }
-
-      return (
-        <div className="space-y-2 ml-3">
-          {definitionsToDisplay.map((def, index) => (
-            <p
-              key={def.context.reduce((acc, next) => acc + next) || index}
-              className={clsx(
-                "text-gray-300",
-                index != definitionsToDisplay.length - 1 ? "border-b border-b-neutral-700 pb-1" : ""
-              )}
-            >
-              <div className="w-fit inline">
-                <Markdown
-                  remarkPlugins={[remarkMath]}
-                  //@ts-ignore
-                  rehypePlugins={[[rehypeKatex, { trust: true }]]}
-                >
-                  {def.text}
-                </Markdown>
-              </div>
-              <div className="mt-1 space-x-1">
-                {def.context.map((ctx) => (
-                  <span
-                    key={ctx}
-                    className={clsx("px-1 py-0.5 rounded text-xs", {
-                      "bg-blue-600/30 text-blue-300":
-                        currentContextGroup && ctx === currentContextGroup && showingSpecificContext,
-                      "bg-yellow-600/30 text-yellow-300": currentContextGroup && ctx === "general" && fallbackContext,
-                      "bg-gray-600/30 text-gray-300":
-                        !currentContextGroup ||
-                        (currentContextGroup && !showingSpecificContext && !fallbackContext) ||
-                        (currentContextGroup && ctx !== currentContextGroup),
-                    })}
-                  >
-                    {ctx}
-                  </span>
-                ))}
-              </div>
-            </p>
-          ))}
-          {currentContextGroup && definitionsToDisplay.length < term.definitions.length && (
-            <p className="text-gray-500 text-xs mt-2">
-              <Icon icon="material-symbols:info" className="inline-block align-bottom mr-1" />
-              Showing definition for current context.{" "}
-              <span className="underline cursor-pointer" onClick={() => setSearchTerm(term.word)}>
-                Click to see all contexts.
-              </span>
-            </p>
-          )}
-        </div>
-      );
-    },
-    [currentContextGroup, searchTerm, terms]
-  );
-
   const filteredProtocols = useMemo(() => {
     if (!searchTerm) {
       return [...protocols].sort((a, b) => a.name.localeCompare(b.name));
@@ -283,7 +315,7 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
     const searchElements = (
       elements: ProtocolElement[],
       pathIndex: number,
-      currentProtocolPath: string[]
+      currentProtocolPath: string[],
     ): ProtocolElement[] => {
       const foundElements: ProtocolElement[] = [];
 
@@ -328,7 +360,7 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
 
         if (el.elements) {
           foundElements.push(
-            ...searchElements(el.elements, pathIndex + (segmentMatches ? 1 : 0), [...currentProtocolPath, el.name])
+            ...searchElements(el.elements, pathIndex + (segmentMatches ? 1 : 0), [...currentProtocolPath, el.name]),
           );
         }
       });
@@ -355,11 +387,10 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
   const glossaryRowVirtualizer = useVirtualizer({
     count: filteredTerms.length,
     getScrollElement: () => glossaryParentRef.current,
-    estimateSize: useCallback(() => 150, []),
+    estimateSize: useCallback(() => 120, []),
     overscan: 5,
     gap: 12,
   });
-  const glossaryVirtualRows = glossaryRowVirtualizer.getVirtualItems();
 
   return (
     <div className="flex flex-col h-full bg-[#111111]/80 text-white scrollable select-text">
@@ -368,7 +399,7 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
           onClick={() => setSelectedTab("glossary")}
           className={clsx(
             "flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors",
-            selectedTab === "glossary" ? "bg-blue-600/50 text-white" : "text-gray-400 hover:bg-[#3a3a3a]"
+            selectedTab === "glossary" ? "bg-blue-600/50 text-white" : "text-gray-400 hover:bg-[#3a3a3a]",
           )}
         >
           Glossary
@@ -377,7 +408,7 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
           onClick={() => setSelectedTab("protocols")}
           className={clsx(
             "flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors",
-            selectedTab === "protocols" ? "bg-blue-600/50 text-white" : "text-gray-400 hover:bg-[#3a3a3a]"
+            selectedTab === "protocols" ? "bg-blue-600/50 text-white" : "text-gray-400 hover:bg-[#3a3a3a]",
           )}
         >
           Protocols
@@ -416,7 +447,7 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
                 position: "relative",
               }}
             >
-              {glossaryVirtualRows.map((row) => {
+              {glossaryRowVirtualizer.getVirtualItems().map((row) => {
                 const term = filteredTerms[row.index];
                 return (
                   <div
@@ -431,16 +462,16 @@ const GlossaryWindow: React.FC<GlossaryWindowProps> = ({
                       transform: `translateY(${row.start}px)`,
                     }}
                     className={clsx(
-                      "py-3 px-4 rounded-md border border-[#444] bg-[#0e0e0e]/50 hover:bg-[#111111]/50 transition-colors duration-200",
+                      "py-1 px-2 rounded-md border border-[#444] bg-[#0e0e0e]/50 hover:bg-[#111111]/50 transition-colors duration-200",
                       "mb-4 last:mb-0",
-                      "text-left mb-2"
+                      "text-left mb-2",
                     )}
                   >
-                    <h3 className="text-lg font-semibold text-white mb-2 flex items-center">
-                      <Icon icon="material-symbols:book" className="mr-2 text-gray-400" />
-                      {term.word}
-                    </h3>
-                    {renderGlossaryDefinition(term)}{" "}
+                    <GlossaryTermCard
+                      term={term}
+                      currentContextGroup={currentContextGroup}
+                      setSearchTerm={setSearchTerm}
+                    />
                   </div>
                 );
               })}

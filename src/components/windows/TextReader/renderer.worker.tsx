@@ -8,10 +8,11 @@ import remarkDirective from "remark-directive";
 import remarkRehype from "remark-rehype";
 import { visit } from "unist-util-visit";
 import rehypeRaw from "rehype-raw";
-import rehypeKatex from "rehype-katex";
 import { VFile } from "vfile";
 import rehypeHighlight from "rehype-highlight";
 import rehypeReact from "rehype-react";
+// import rehypeMathjax from "rehype-mathjax/chtml";
+import rehypeMathML from "@daiji256/rehype-mathml";
 import { jsx, jsxs } from "react/jsx-runtime";
 import React from "react";
 //@ts-expect-error
@@ -112,7 +113,7 @@ self.onmessage = async (
     markdown: string;
     renderMath: boolean;
     requestId: number;
-  }>
+  }>,
 ) => {
   const { markdown, renderMath, requestId } = event.data;
 
@@ -142,7 +143,8 @@ self.onmessage = async (
     const file = new VFile("");
 
     clonedTree = rehypeRaw()(clonedTree, file);
-    if (renderMath) rehypeKatex({ trust: true })(clonedTree, file);
+    //@ts-ignore
+    if (renderMath) rehypeMathML()(clonedTree, file);
     rehypeHighlight()(clonedTree, file);
 
     const renderer = unified().use(function () {

@@ -27,7 +27,7 @@ export default function Desktop() {
   const customWindows = useSystemStore<CustomWindow[]>(
     (state) => state.customWindows,
     //@ts-expect-error
-    shallow
+    shallow,
   );
 
   const [startMenuOpen, setStartMenuOpen] = useState(false);
@@ -54,7 +54,17 @@ export default function Desktop() {
             icon: <Icon icon="wpf:books" width="32" height="32" />,
             label: "Files",
             defaultPosition: { x: 0, y: 80 },
-            handleClick: () => openWindow("file manager"),
+            handleClick: () =>
+              handleOpen({
+                file: {
+                  name: "file_manager",
+                  type: "exec",
+                  data: {},
+                },
+                addCustomWindow,
+                currentRelativePathSegments: [],
+                fullPath: "/",
+              }),
           },
           {
             id: "3",
@@ -99,6 +109,22 @@ export default function Desktop() {
           },
           {
             id: "6",
+            icon: <Icon icon="gg:browse" width="32" height="32" />,
+            label: "Projects",
+            defaultPosition: { x: 80, y: 165 },
+            handleClick: () =>
+              handleOpen({
+                file: {
+                  name: "projects",
+                  type: "exec",
+                  data: {},
+                },
+                addCustomWindow,
+                currentRelativePathSegments: [],
+              }),
+          },
+          {
+            id: "7",
             icon: <Icon icon="simple-icons:spotify" width="32" height="32" />,
             label: "postixfy",
             defaultPosition: { x: 160, y: 0 },
@@ -119,13 +145,6 @@ export default function Desktop() {
         content={<SettingsWindow />}
         label="Settings"
         defaultPosition={{ x: window.innerWidth > 750 ? 100 : 4, y: window.innerWidth > 650 ? 100 : 30 }}
-      />
-
-      <ManagedWindow
-        id="file manager"
-        content={<ProjectsWindow />}
-        label="Files"
-        defaultPosition={{ x: window.innerWidth > 750 ? 200 : 4, y: window.innerWidth > 650 ? 200 : 30 }}
       />
 
       <ManagedWindow

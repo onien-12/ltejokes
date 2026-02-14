@@ -6,7 +6,7 @@ import TextFace from "./utils/TextFace";
 import { useSystemStore } from "../store/useSystemStore";
 
 export default function Header({ onMenuOpen }: { onMenuOpen: () => void }) {
-  const { openWindows } = useSystemStore();
+  const { openWindows, customWindows } = useSystemStore();
 
   const [hovered, setHovered] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -38,7 +38,9 @@ export default function Header({ onMenuOpen }: { onMenuOpen: () => void }) {
           <Icon icon="material-symbols:circle-outline" width="18" height="18" className="text-white cursor-pointer" />
         </div>
         <div className="w-3"></div>
-        <span className="text-sm truncate">{openWindows.at(-1)}</span>
+        <span className="text-sm truncate">
+          {customWindows.find((w) => w.id == openWindows.at(-1))?.name ?? openWindows.at(-1)}
+        </span>
         <div className="flex-1"></div>
         <span className="text-sm text-nowrap">
           <TextFace />

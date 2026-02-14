@@ -10,7 +10,8 @@ export type DesktopItem = {
 };
 
 export default function DesktopGridCard({ item }: { item: DesktopItem }) {
-  const nodeRef = useRef(null);
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const startPos = useRef<[number, number]>([0, 0]);
 
   return (
     <Draggable key={item.id} defaultPosition={item.defaultPosition} grid={[20, 20]} bounds="parent" nodeRef={nodeRef}>
@@ -21,7 +22,17 @@ export default function DesktopGridCard({ item }: { item: DesktopItem }) {
         style={{
           transition: "box-shadow 300ms, backdrop-filter 300ms, border-radius 300ms",
         }}
-        onPointerUp={item.handleClick}
+        onPointerDown={() => {
+          const rect = nodeRef.current?.getBoundingClientRect();
+          if (rect) startPos.current = [rect.x, rect.y];
+        }}
+        onPointerUp={() => {
+          const rect = nodeRef.current?.getBoundingClientRect();
+          if (!rect) return;
+
+          const distance = Math.sqrt((rect.x - startPos.current[0]) ** 2 + (rect.y - startPos.current[1]) ** 2);
+          if (distance == 0) item.handleClick();
+        }}
       >
         <div className="p-1 rounded-2xl">{item.icon}</div>
         <span className="text-sm">{item.label}</span>

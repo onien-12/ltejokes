@@ -2,8 +2,8 @@ import React, { useEffect, useState, useDeferredValue, useTransition, useMemo, u
 import { API, readFile } from "../../../utils";
 import { ClipLoader } from "react-spinners";
 
+//@ts-ignore
 import "highlight.js/styles/atom-one-dark.css";
-import "katex/dist/katex.min.css";
 
 //@ts-expect-error
 import { deserialize } from "react-serialize";
@@ -53,7 +53,6 @@ const GlossaryTermRenderer: React.FC<any> = ({ node, children, addCustomWindow, 
     </span>
   );
 };
-
 const FsImageRenderer: React.FC<any> = ({ node, children, addCustomWindow, ...props }) => {
   const path = node["data-path"];
   const alt = node["data-alt"];
@@ -152,24 +151,37 @@ interface InnerRehypeRendererProps {
   optimizeUI: boolean;
 }
 
-const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = ({ nodes, components, renderId, optimizeUI }) => {
-  const renderedJsx = useMemo(() => {
-    if (!nodes) return null;
-    if (!renderId) return null;
+const InnerRehypeRenderer: React.FC<InnerRehypeRendererProps> = React.memo(
+  ({ nodes, components, renderId, optimizeUI }) => {
+    const [renderedContent, setRenderedContent] = useState<React.ReactNode | null>(null);
+    const [isCalculating, setIsCalculating] = useState(false);
 
-    try {
-      console.log(nodes, renderId);
-      return deserialize(nodes, {
-        components,
-      });
-    } catch (error) {
-      console.error("Error rendering HAST to JSX:", error);
-      return <p className="text-red-500">Error rendering content.</p>;
-    }
-  }, [renderId, optimizeUI]);
+    useEffect(() => {
+      if (!nodes || !renderId) return;
 
-  return <>{renderedJsx}</>;
-};
+      setIsCalculating(true);
+
+      const t = setTimeout(() => {
+        try {
+          const result = deserialize(nodes, { components });
+          setRenderedContent(result);
+        } catch (error) {
+          console.error("Error rendering HAST to JSX:", error);
+          setRenderedContent(<p className="text-red-500">Error rendering content.</p>);
+        } finally {
+          setIsCalculating(false);
+        }
+      }, 0);
+
+      return () => clearTimeout(t);
+    }, [nodes, renderId, components]);
+
+    return <>{renderedContent}</>;
+  },
+  (prev, next) => {
+    return prev.renderId === next.renderId && prev.nodes === next.nodes && prev.components === next.components;
+  },
+);
 
 export default function TextReader({ path }: { path: string }) {
   const { optimizeUI, renderMath } = useUIOptionsStore();
@@ -179,6 +191,7 @@ export default function TextReader({ path }: { path: string }) {
   const [nodes, setNodes] = useState<any>(null);
   const [loadingPhase, setLoadingPhase] = useState<"idle" | "fetching" | "processing">("idle");
   const [renderId, setRenderId] = useState<number | null>(null);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const [isPending, startTransition] = useTransition();
   const deferredPath = useDeferredValue(path);
@@ -384,8 +397,11 @@ export default function TextReader({ path }: { path: string }) {
           },
         };
       },
-    [optimizeUI]
+    [optimizeUI],
   );
+
+  const viewComponents = useMemo(() => components(true), [optimizeUI, addCustomWindow]);
+  const printComponents = useMemo(() => components(false), [addCustomWindow]);
 
   const handlePrint = useCallback(() => {
     if (printIframeRef.current) {
@@ -395,6 +411,8 @@ export default function TextReader({ path }: { path: string }) {
         console.error("Could not access iframe document for printing.");
         return;
       }
+
+      setIsPrinting(true);
 
       iframeDoc.open();
       iframeDoc.write("");
@@ -407,8 +425,8 @@ export default function TextReader({ path }: { path: string }) {
 
       root.render(
         <div className="markdown printing scrollable text-black">
-          <InnerRehypeRenderer nodes={nodes} components={components(false)} optimizeUI={false} renderId={renderId} />
-        </div>
+          <InnerRehypeRenderer nodes={nodes} components={printComponents} optimizeUI={false} renderId={renderId} />
+        </div>,
       );
       const head = iframeDoc.getElementsByTagName("head")[0] || iframeDoc.createElement("head");
 
@@ -420,18 +438,22 @@ export default function TextReader({ path }: { path: string }) {
       });
 
       const images = iframeDoc.querySelectorAll("img");
-      const promises = Array.from(images)
+      const imagePromises = Array.from(images)
         .filter((img) => !img.complete)
-        .map((img) => {
-          return new Promise((resolve) => {
-            img.onload = img.onerror = resolve;
-          });
-        });
+        .map(
+          (img) =>
+            new Promise((resolve) => {
+              img.onload = img.onerror = resolve;
+            }),
+        );
+
+      const promises = [...imagePromises, iframeDoc.fonts.ready];
 
       Promise.all(promises).then(() => {
         setTimeout(() => {
           iframe.contentWindow?.focus();
           iframe.contentWindow?.print();
+          setIsPrinting(false);
         }, 500);
       });
     }
@@ -446,7 +468,11 @@ export default function TextReader({ path }: { path: string }) {
             disabled={loadingPhase !== "idle" || isPending}
             className="text-white border-neutral-500 flex items-center justify-center"
           >
-            <Icon icon="material-symbols:print" />
+            {isPrinting ? (
+              <ClipLoader className="text-white" color="#fff" size={14} />
+            ) : (
+              <Icon icon="material-symbols:print" />
+            )}
           </Button>
         </div>
         {loadingPhase !== "idle" || isPending ? (
@@ -455,19 +481,14 @@ export default function TextReader({ path }: { path: string }) {
             <span className="ml-2 text-gray-400">{loadingPhase === "fetching" ? "Fetching..." : "Processing..."}</span>
           </div>
         ) : nodes !== null ? (
-          <InnerRehypeRenderer
-            nodes={nodes}
-            components={components(true)}
-            renderId={renderId}
-            optimizeUI={optimizeUI}
-          />
+          <InnerRehypeRenderer nodes={nodes} components={viewComponents} renderId={renderId} optimizeUI={optimizeUI} />
         ) : (
           <p className="text-red-500">No content available. ({loadingPhase})</p>
         )}
       </div>
       <iframe
         ref={printIframeRef}
-        style={{ display: "none", position: "absolute", left: "-9999px" }}
+        style={{ visibility: "hidden", position: "absolute", left: "-9999px" }}
         title="Print Document"
       />
     </div>
