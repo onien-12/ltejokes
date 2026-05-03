@@ -833,3 +833,159 @@ it was 4 or even 5 years since the last time we talked. this is just insane to t
 it was so long ago, it took me 5 minutes to even remember who is that and the story.
 
 it is not a full story from that time, of course. because we had so much more. we had drama, projects, rise and fall... insane to remember these times...
+
+---
+
+## 16.02.2026
+
+i am crying. i am crying. i am crying.
+
+---
+
+## 19.02.2026
+
+i really dont care. it does not matter what my final project would be. \
+i already accepted my death. its just a matter of time. \
+even when i am happy, even when i am laughing, i cant stop thinking about killing myself. \
+i am thinking about it all the time, thinking about every possible scenario that can happen on my way. \
+i am visualizing, imagining what i exactly would do. \
+i already know a plan, my last message and my last words.
+
+i really do not care anymore. yes, i care about what i eat, "care" about my grades, but its only because i am already in a system. \
+it does not matter if you are a communist if you are living in a capitalistic system. you have to obey. my situation is the same.
+
+<br/>
+
+i havent done *it* yet, because my plan requires insane amount of prep time. i am preparing, researching, testing, doing everything.
+
+it feels very bad. i am a terrible person. if i really was a good man, maybe everything would be different. \
+but i am a loser. a total failure. i am worse than them. these people, who succeeded. yes, i am comparing myself and i am jealous, and i am stupid for this as well. \
+i feel like i am such a moron.
+
+this is envy talking. envy is bad. it is a... sin.
+
+---
+
+## 20.02.2026
+
+memory loss and maladaptive (or immersive) daydreaming are insane.
+
+lets start with a memory loss. it is so insane. today i walked with my friend and we were discussing our walks, first trip to dacha on summer. and... i remember these moments so... blurry and bad! i dont remember like 99% of what happened. it took me some time to even remember some basic things... i am still trying to recall moments from, for example, first trip to dacha, and i can pull some of them, but its like... 2-3 of them... and they are NOT VIVID. they are very loose and... blurry, i dont know. \
+its not only about dacha... i completely forgot some other walks and moments. COMPLETELY! I DO NOT REMEMBER THEM! I dont even remember the FACT that it happened. \
+all the memories without HER are wiped. i still perfectly remember our late night walks or other of million things we did together. \
+but i cant recall walks with other friends for example. or i recall them either by fact ("i know it happened") or very blurry. \
+this is insane. i literally almost cried before my friend today when i realized this. \
+it is scary. i genuinely wanted to cry. it is very scary, eerie and weird. i am scared.
+
+second thing is maladaptive daydreaming. i can control it. so its not like something uncontrollable that is ruining my life. it scenarios are vivid. they are almost DEVOID of people. people are not the primary focus there. primary focus is beauty of nature, for example. it is lonely even there. but not that bad loneliness. its calm and good in there. \
+it is not ruining my life, thought i am spending time on daydreams and it is strange. now i have to fit it into my schedule and allocate less time for something else. \
+also, when interrupted, i feel bad and a bit angry. because i cant just "start" daydreams whenever i want, i must focus and have some initial flow, i dont want to lose it. \
+but it is good in there and i started waiting for me to enter them. i am feeling that i am more and more addicted to daydreaming...
+
+---
+
+it is scary. i mean, i am panicking. this is very scary. \
+this is the scariest shit i have had for months. \
+i am scared and i feel trapped. i feel trapped in a broken mind with memories wiped out...
+
+---
+
+## 21.02.2026
+
+i am talking more right now. i feel like i want to close again, but i am forcing myself to talk and communicate more.
+
+there is an interesting question. if i disappear, how fast will i be replaced? how much time it is required to replace me? or is there anything irreplaceable in me? maybe if i disappear, there would be no need to replace me because nobody noticed me anyway? or maybe not just "nobody noticed" me, but they wanted for me to be gone? my disappearance will cause relief or something different?
+
+i see people saying: "i got attached. we dont talk for 8 months and i still miss them" or "i got attached. we dont talk for 2 years and i still miss them". what is my fate? the pain will continue. i am not moving on. there is only one exit.
+
+maybe in another universe i would not wish for another universe? maybe in another universe i'd find someone who values me? maybe in another universe... my parents would love their son? \
+or maybe... in another universe i'd never existed?
+
+---
+
+## 23.02.2026
+
+"you never really liked me, did you? not in the way i like you. you liked the convenience of me, they way i showed up when you were bored, lonely or just someone needed to feel the silence. you like somebody who replied fast, someone who cared deeply, someone who never made you question where they stood. you liked the attention. validation. the comfort of knowing someone was always there for you. even when you werent giving much back. but me... the real me... with emotions, feelings, needs, expectations... he was a trash. because the moment i asked for something, the moment i wanted consistency, reassurance instead of confusion, you said 'i dont know'. you liked how i made you feel important, listened without interrupting, stayed when i was hurting, when i gave love freely, without demanding anything in return. i was safe for you, comfortable, predictable... and what hurts the most is realizing that the person who gives the most usually ends up being the one forgotten. i replay everything now. every conversation. every moment i ignored my gut. i see how i confused mixed signals for love. how i kept telling to myself 'maybe they are just scared', 'maybe they need time', 'maybe one day they will chose me the way i chose them', but... i am too trash to be chosen. i stayed longer then i should have because i believed in potential. it hurts to realize that the connection felt real to me, but optional to you. but i do not deserve not to be someone's option when i give everything. i still dont understand what you were doing, why did you try to ping me when i was gone. but i am done. i am not scared of dying. this is the point of no return. i am sorry"
+
+<br/>
+
+thoughts about killing myself is not something scary anymore. its a part of my life. "i want to eat. i want to die.", "i need to shower. i want to die", "i want to go walk a little. hm, what if i go and jump off a bridge", "i need to wash dishes. cool, maybe try to kill myself using a kitchen knife"
+
+---
+
+## 12.03.2026
+
+no one would notice if 1 rock disappear
+no one would notice if 1 tree disappear
+no one would notice if 1 star disappear
+no one would notice if 1 flower disappear
+no one would notice if 1 water drop disappear
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 07.04.2026
+
+EVERYTHING IS GOOD. I AM IN A GOOD MOODD! I LOVE MY LIFE HEHE.
+
+and yes, "лавочка закрыта!"

@@ -90,15 +90,18 @@ export const get3GPPDataRoute = (_3gppSpecsFilePath: string) => async (req: Requ
       release.documents.forEach((doc) => {
         const revisions: Revision[] = [];
         doc.revisions.forEach((rev) => {
-          const term = searchTerm ? searchTerm.toLowerCase() : "";
+          const termWords = searchTerm ? searchTerm.toLowerCase().split(/\s/g) : [];
           const matches =
-            !term ||
-            sanitizeSearchString(release.code).includes(term) ||
-            sanitizeSearchString(release.name).includes(term) ||
-            sanitizeSearchString(doc.code).includes(term) ||
-            sanitizeSearchString(doc.name).includes(term) ||
-            sanitizeSearchString(rev.code).includes(term) ||
-            sanitizeSearchString(rev.file).includes(term);
+            !termWords.length ||
+            termWords.filter(
+              (term) =>
+                sanitizeSearchString(release.code).includes(term) ||
+                sanitizeSearchString(release.name).includes(term) ||
+                sanitizeSearchString(doc.code).includes(term) ||
+                sanitizeSearchString(doc.name).includes(term) ||
+                sanitizeSearchString(rev.code).includes(term) ||
+                sanitizeSearchString(rev.file).includes(term),
+            ).length > Math.ceil(termWords.length / 2);
 
           if (matches) {
             revisions.push(rev);
@@ -118,7 +121,7 @@ export const get3GPPDataRoute = (_3gppSpecsFilePath: string) => async (req: Requ
     console.log(
       `[Server] Responding with ${result.length} releases (filtered by releases query: ${
         releasesToFilter || "all"
-      }, and search term: "${searchTerm || "none"}")`
+      }, and search term: "${searchTerm || "none"}")`,
     );
     res.json({ releases: result });
   } catch (error: any) {

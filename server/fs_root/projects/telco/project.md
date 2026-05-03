@@ -1966,7 +1966,10 @@ n'_{\tilde{p}}(n_s) = \begin{cases}
   [c(n'_{\tilde{p}}(n_s - 1) + 1)] \mod (c \cdot N^{RB}_{sc} / \Delta^{PUCCH}_{shift} + 1) - 1 & \text{если } n^{(1,\tilde{p})}_{PUCCH} \geq c \cdot N^{(1)}_{cs}/\Delta^{PUCCH}_{shift} \\
   \lfloor h_{\tilde{p}} / c \rfloor + \frac{(h_{\tilde{p}} \mod c) \cdot N'}{\Delta^{PUCCH}_{shift}} & \text{иначе}
  \end{cases} & \text{при } n_s \mod 2 = 1
-\end{cases} \\
+\end{cases}
+$$
+
+$$
 h_{\tilde{p}} = (n'_{\tilde{p}}(n_s - 1) + d) \mod (c \cdot N' / \Delta^{PUCCH}_{shift})
 $$
 
@@ -2071,7 +2074,10 @@ $$
 n^{(\tilde{p})}_{cs}(n_s, l) = \begin{cases}
  (n^{cell}_{cs}(n_s, l) + (n'_{\tilde{p}}(n_s) \cdot \Delta^{PUCCH}_{shift} + (n^{(\tilde{p})}_{oc}(n_s) \mod \Delta^{PUCCH}_{shift})) \mod N' ) \mod N^{RB}_{sc} & \text{для normal CP} \\
  (n^{cell}_{cs}(n_s, l) + (n'_{\tilde{p}}(n_s) \cdot \Delta^{PUCCH}_{shift} + n^{(\tilde{p})}_{oc}(n_s)/2) \mod N' ) \mod N^{RB}_{sc} & \text{для extended CP}
-\end{cases} \\
+\end{cases} 
+$$
+
+$$
 n^{cell}_{cs}(n_s, l) = \sum^{7}_{i=0}{c(8N^{UL}_{symb} \cdot n_s + 8l + i)} \cdot 2^i, \ c_{init} = n^{RS}_{ID}
 $$
 
