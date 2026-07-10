@@ -3,3 +3,4 @@ server/fs_root/materials/neuroscience/Principles[[:space:]]of[[:space:]]Neural[[
 Fifth[[:space:]]-[[:space:]]KANDEL.pdf filter=lfs diff=lfs merge=lfs -text
 /server/fs_root/materials/neuroscience/Principles[[:space:]]of[[:space:]]Neural[[:space:]]Science,[[:space:]]Fifth[[:space:]]-[[:space:]]KANDEL.pdf filter=lfs diff=lfs merge=lfs -text
 /server/fs_root/apps/postixfy/For[[:space:]]rainy[[:space:]]mood/20220423_7[[:space:]]дней[[:space:]]лета.[[:space:]]Плейлист[[:space:]]для[[:space:]]дождливого[[:space:]]настроения.mp3 filter=lfs diff=lfs merge=lfs -text
+server/fs_root/materials/neuroscience/Principles[[:space:]]of[[:space:]]Neural[[:space:]]Science.pdf filter=lfs diff=lfs merge=lfs -text
