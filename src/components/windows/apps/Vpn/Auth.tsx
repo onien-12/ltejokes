@@ -16,7 +16,7 @@ export default function Auth({
   onAuthed: (clientId: string, debugNoAntibot: boolean) => void;
 }) {
   const status = useFingerprintStore((s) => s.status);
-  const take = useFingerprintStore((s) => s.take);
+  const attempt = useFingerprintStore((s) => s.attempt);
   const refresh = useFingerprintStore((s) => s.refresh);
 
   const [code, setCode] = useState("");
@@ -30,13 +30,12 @@ export default function Auth({
     setBusy(true);
     setError(null);
     try {
-      const payload = await take();
-      if (!payload) {
-        refresh();
-        return setError(t("errFpFailed"));
-      }
-
-      const result = await vpnApi<AuthResponse>("/api/auth", "POST", { invite_code: code.trim(), n: payload });
+      // attempt() re-acquires the fingerprint, and finally re-downloads the
+      // antifraud code, when the server says the payload was unusable. Without
+      // it a bad payload stays cached and every retry fails identically.
+      const result = await attempt((payload) =>
+        vpnApi<AuthResponse>("/api/auth", "POST", { invite_code: code.trim(), n: payload }),
+      );
       refresh();
       onAuthed(result.antibot_client_id || result.client_id || "", !!result.debug);
     } catch (e: any) {

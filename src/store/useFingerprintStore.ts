@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { isPayloadRejection } from "../components/windows/apps/Vpn/api";
 
 export type FingerprintStatus = "idle" | "loading" | "ready" | "failed";
 
@@ -36,26 +37,33 @@ const FP_MAX_AGE_MS = 300_000;
 
 const SCRIPTS = [`${VPN_ASSETS}/output/bundle.js`, `${VPN_ASSETS}/fp.js`];
 
+// Bumped by hardReset so a re-download cannot be served from cache.
+let scriptCacheBuster = 0;
+
 type FingerprintStore = {
   status: FingerprintStatus;
   booted: boolean;
   pow: PowProgress | null;
 
   boot: () => void;
-  take: () => Promise<string | null>;
+  take: (force?: boolean) => Promise<string | null>;
   refresh: () => void;
+  hardReset: () => Promise<void>;
+  attempt: <T>(send: (payload: string) => Promise<T>) => Promise<T>;
   solveHashPow: (digest: string, difficulty: number) => Promise<{ solution: number }>;
   solveAesPow: (puzzle: unknown) => Promise<{ result: any }>;
 };
 
 function loadScript(src: string): Promise<void> {
+  const url = scriptCacheBuster ? `${src}?r=${scriptCacheBuster}` : src;
   return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) return resolve();
+    if (document.querySelector(`script[src="${url}"]`)) return resolve();
     const el = document.createElement("script");
-    el.src = src;
+    el.src = url;
+    el.dataset.fpAsset = "1";
     el.async = true;
     el.onload = () => resolve();
-    el.onerror = () => reject(new Error(`failed to load ${src}`));
+    el.onerror = () => reject(new Error(`failed to load ${url}`));
     document.head.appendChild(el);
   });
 }
@@ -85,7 +93,7 @@ export const useFingerprintStore = create<FingerprintStore>((set, get) => ({
       .catch(() => set({ status: "failed" }));
   },
 
-  take: async () => {
+  take: async (force = false) => {
     get().boot();
     let nfp: Nfp;
     try {
@@ -95,13 +103,67 @@ export const useFingerprintStore = create<FingerprintStore>((set, get) => ({
       return null;
     }
 
+    // age() is Infinity while the first payload is still being computed, so
+    // testing it alone would throw away work in progress.
     const status = nfp.status();
-    if (status === "failed" || (status === "ready" && nfp.age() > FP_MAX_AGE_MS)) nfp.fresh();
+    if (force || status === "failed" || (status === "ready" && nfp.age() > FP_MAX_AGE_MS)) nfp.fresh();
     return nfp.get();
   },
 
   refresh: () => {
     window.__nfp__?.fresh();
+  },
+
+  /**
+   * Throws away the loaded antifraud code and fetches it again.
+   *
+   * refresh() only re-runs the payload builder against the bundle already in
+   * memory, which cannot help when that memory is the problem. Re-executing
+   * bundle.js publishes a fresh set of builder keys — the closest thing to a
+   * page reload without actually reloading.
+   */
+  hardReset: async () => {
+    document.querySelectorAll("script[data-fp-asset]").forEach((el) => el.remove());
+    delete window.__nfp__;
+    // Cache-busted, so a corrupted or truncated copy is not simply reused.
+    scriptCacheBuster = Date.now();
+    set({ booted: false, status: "loading" });
+    try {
+      const nfp = await ensureScripts();
+      nfp.onStatus((status) => set({ status }));
+      nfp.start();
+    } catch {
+      set({ status: "failed" });
+    }
+  },
+
+  /**
+   * Sends a request that needs a fingerprint, escalating if the server says the
+   * payload itself was unusable: reuse, then re-acquire, then re-download the
+   * antifraud code entirely.
+   *
+   * Without this a bad payload sticks in the cache and every retry fails
+   * identically until the page is reloaded by hand — which is exactly what was
+   * happening in production.
+   */
+  attempt: async (send) => {
+    let lastError: unknown = new Error("fingerprint unavailable");
+
+    for (const stage of ["cached", "fresh", "reload"] as const) {
+      if (stage === "reload") await get().hardReset();
+
+      const payload = await get().take(stage !== "cached");
+      if (!payload) continue;
+
+      try {
+        return await send(payload);
+      } catch (e) {
+        // "Looks like a bot" is a verdict, not a glitch; retrying repeats it.
+        if (!isPayloadRejection(e)) throw e;
+        lastError = e;
+      }
+    }
+    throw lastError;
   },
 
   solveHashPow: async (digest, difficulty) => {

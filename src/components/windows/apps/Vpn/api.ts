@@ -87,7 +87,23 @@ export type CostsView = {
 
 export type Challenge = { digest: string; difficulty: number };
 
-export class VpnApiError extends Error {}
+export class VpnApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.status = status;
+  }
+}
+
+/**
+ * True when the server could not parse the fingerprint at all, as opposed to
+ * parsing it and deciding it looks like a bot. Only the former is worth
+ * retrying: a fresh payload fixes a malformed one, but re-sending a valid
+ * payload that scored badly just repeats the same verdict.
+ */
+export function isPayloadRejection(e: unknown): boolean {
+  return e instanceof VpnApiError && e.status === 403 && /invalid payload/i.test(e.message);
+}
 
 export async function vpnApi<T>(
   path: string,
@@ -107,7 +123,7 @@ export async function vpnApi<T>(
       const parsed = await res.json();
       if (parsed?.detail) detail = String(parsed.detail);
     } catch {}
-    throw new VpnApiError(detail);
+    throw new VpnApiError(detail, res.status);
   }
   return res.json();
 }

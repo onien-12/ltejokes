@@ -26,7 +26,7 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
   const { lang, t, toggleLang } = useLang();
   const boot = useFingerprintStore((s) => s.boot);
   const fpStatus = useFingerprintStore((s) => s.status);
-  const take = useFingerprintStore((s) => s.take);
+  const attempt = useFingerprintStore((s) => s.attempt);
   const refresh = useFingerprintStore((s) => s.refresh);
   const solveHashPow = useFingerprintStore((s) => s.solveHashPow);
   const solveAesPow = useFingerprintStore((s) => s.solveAesPow);
@@ -113,12 +113,6 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
 
       setBusy(true);
       try {
-        const payload = await take();
-        if (!payload) {
-          refresh();
-          throw new Error(t("errFpFailed"));
-        }
-
         let powSolution = -1;
         let powDigest = "";
         if (!debugNoAntibot) {
@@ -128,13 +122,17 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
         }
 
         // The backend answers with an encrypted puzzle; the config is inside it.
-        const puzzle = await vpnApi<unknown>("/api/allocate", "POST", {
-          client_id: clientId,
-          server_key: serverKey,
-          n: payload,
-          pow_solution: powSolution,
-          pow_digest: powDigest,
-        });
+        // attempt() retries with a fresh fingerprint, then a re-downloaded
+        // bundle, if the payload itself is rejected.
+        const puzzle = await attempt((payload) =>
+          vpnApi<unknown>("/api/allocate", "POST", {
+            client_id: clientId,
+            server_key: serverKey,
+            n: payload,
+            pow_solution: powSolution,
+            pow_digest: powDigest,
+          }),
+        );
         const { result } = await solveAesPow(puzzle);
 
         const created: ConfigEntry = {
@@ -157,7 +155,7 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
         setBusy(false);
       }
     },
-    [busy, clientId, configs, debugNoAntibot, refresh, showToast, solveAesPow, solveChallenge, t, take],
+    [attempt, busy, clientId, configs, debugNoAntibot, refresh, showToast, solveAesPow, solveChallenge, t],
   );
 
   const reveal = useCallback(
