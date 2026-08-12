@@ -1,11 +1,6 @@
 import { useFingerprintStore } from "../../../../store/useFingerprintStore";
 import { Translate } from "./i18n";
 
-/**
- * Covers the window while a proof-of-work runs. The work is probabilistic, so
- * `max` is the expected count rather than a ceiling and the bar can sit at 100%
- * while the search continues.
- */
 export default function PowOverlay({ t }: { t: Translate }) {
   const pow = useFingerprintStore((s) => s.pow);
   if (!pow) return null;

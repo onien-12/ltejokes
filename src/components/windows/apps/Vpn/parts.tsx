@@ -4,8 +4,6 @@ import clsx from "clsx";
 import { copyText, qrUrl } from "./api";
 import { Translate } from "./i18n";
 
-/** Pieces shared by the subscription view and the config list. */
-
 export function Card({
   children,
   className,
@@ -125,10 +123,10 @@ export function CopyButton({
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const text = copied ? t("copied") : label ?? t("copy");
+  const text = copied ? t("copied") : (label ?? t("copy"));
   const icon = copied
     ? "material-symbols:check-rounded"
-    : idleIcon ?? "material-symbols:content-copy-outline-rounded";
+    : (idleIcon ?? "material-symbols:content-copy-outline-rounded");
 
   if (primary) {
     return (
@@ -144,7 +142,6 @@ export function CopyButton({
   );
 }
 
-/** Long configs are the norm now, so this scrolls rather than stretching the window. */
 export function ConfigBlock({ value, locked, muted }: { value: string; locked?: boolean; muted?: boolean }) {
   return (
     <div
@@ -165,8 +162,17 @@ export function ConfigBlock({ value, locked, muted }: { value: string; locked?: 
   );
 }
 
-/** QR is rendered by the backend, so the site needs no QR library. */
-export function QrPanel({ subId, t, open, onToggle }: { subId: string; t: Translate; open: boolean; onToggle: () => void }) {
+export function QrPanel({
+  subId,
+  t,
+  open,
+  onToggle,
+}: {
+  subId: string;
+  t: Translate;
+  open: boolean;
+  onToggle: () => void;
+}) {
   if (!subId) return null;
   return (
     <>
@@ -176,8 +182,6 @@ export function QrPanel({ subId, t, open, onToggle }: { subId: string; t: Transl
       {open && (
         <div className="mt-3 flex w-full justify-center">
           <div className="rounded-xl bg-white p-3 shadow-lg">
-            {/* Big enough to scan off the screen from a phone held at arm's length;
-                the backend renders it well above this size, so it stays sharp. */}
             <img
               src={qrUrl(subId)}
               alt={t("qrCode")}
@@ -226,7 +230,6 @@ export function HappHelp({ t }: { t: Translate }) {
   );
 }
 
-/** Panel status strings arrive with their own glyph; show a dot and drop the emoji. */
 export function StatusPill({ status, online }: { status: string; online?: boolean }) {
   const isOffline = online === false || /❌|⛔|🔴/.test(status);
   const isOnline = online === true || status.includes("✅");

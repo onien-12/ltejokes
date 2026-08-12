@@ -13,10 +13,6 @@ const PROTO_ICONS: Record<string, string> = {
   hy2: "material-symbols:rocket-launch-outline-rounded",
 };
 
-/**
- * Gateways first and direct servers behind a toggle — the same ordering the
- * standalone page uses, because gateways hold up better under blocking.
- */
 export default function Servers({
   servers,
   busy,
@@ -33,8 +29,6 @@ export default function Servers({
   const gates = servers.filter((s) => s.is_gate);
   const directs = servers.filter((s) => !s.is_gate);
 
-  // A server with no declared transports is allocated on its default inbound;
-  // "tcp" is that default, so it is passed without a suffix.
   const protocolChips = (serverKey: string, protocols: ServerProtocols) => {
     const entries = Object.entries(protocols || {});
     if (entries.length === 0) {
@@ -81,9 +75,7 @@ export default function Servers({
                   </div>
                   <StatusPill status={gate.status} />
                 </div>
-                {gate.description && (
-                  <p className="mt-1 text-[11px] leading-snug text-gray-500">{gate.description}</p>
-                )}
+                {gate.description && <p className="mt-1 text-[11px] leading-snug text-gray-500">{gate.description}</p>}
 
                 <div className="mt-2.5 flex flex-col gap-1.5">
                   {Object.entries(gate.targets || {}).map(([key, target]) => (
@@ -97,9 +89,7 @@ export default function Servers({
                         />
                         <span className="truncate">{target.name}</span>
                       </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {protocolChips(target.server_key, target.protocols)}
-                      </div>
+                      <div className="flex flex-wrap gap-1.5">{protocolChips(target.server_key, target.protocols)}</div>
                     </div>
                   ))}
                 </div>

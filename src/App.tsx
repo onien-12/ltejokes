@@ -22,9 +22,6 @@ const iconifyIcons = [
   "material-symbols:code",
 ];
 
-// The VPN app is icon-heavy and opens from a deep link, where icons popping in
-// one by one is very visible. Same prefix as most of the set above, so iconify
-// still batches the whole preload into a single request.
 const vpnIcons = [
   "material-symbols:vpn-key-outline",
   "material-symbols:vpn-key-off-outline",
@@ -69,9 +66,6 @@ function App() {
     const iconsPromise = new Promise((resolve) => loadIcons([...iconifyIcons, ...vpnIcons], resolve));
     Promise.all([document.fonts.ready, iconsPromise]).then(() => {
       setIsLoaded(true);
-      // The fingerprint costs seconds of canvas, WebGL and audio work. Start it
-      // only once the page is up, and on idle frames, so it never competes with
-      // first paint — the VPN app waits on it if it is opened before it lands.
       const boot = () => useFingerprintStore.getState().boot();
       if ("requestIdleCallback" in window) window.requestIdleCallback(boot, { timeout: 5000 });
       else setTimeout(boot, 1000);

@@ -1,10 +1,3 @@
-/**
- * VPN backend client.
- *
- * The backend is a separate service reverse-proxied under /api/vpn, so it does
- * not share `API` from src/utils.ts with the rest of the site.
- */
-
 export const VPN_API = (process.env.REACT_APP_VPN_API_URL || "/api/vpn").replace(/\/+$/, "");
 
 export const CLIENT_ID_KEY = "client_id";
@@ -76,9 +69,7 @@ export async function vpnApi<T>(
     try {
       const parsed = await res.json();
       if (parsed?.detail) detail = String(parsed.detail);
-    } catch {
-      /* non-JSON error body; the status line is all we have */
-    }
+    } catch {}
     throw new VpnApiError(detail);
   }
   return res.json();
@@ -86,10 +77,8 @@ export async function vpnApi<T>(
 
 export const qrUrl = (subId: string) => `${VPN_API}/api/qr/${encodeURIComponent(subId)}.png`;
 
-/** Date only. The backend sends "2026-08-11 17:13:04", freshly created ones ISO. */
 export const shortDate = (value: string) => (value || "").split(/[T ]/)[0];
 
-/** Clipboard API needs a secure context; the fallback keeps plain HTTP working. */
 export async function copyText(text: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(text);

@@ -2,22 +2,6 @@ import { useEffect } from "react";
 import { SystemStore } from "./store/useSystemStore";
 import { handleOpen } from "./components/windows/FileManager";
 
-/**
- * Hash commands: `#c=open(vpn, <sub_id>)`.
- *
- * Lets a link open a window with arguments without a route or a page load, which
- * is what the desktop metaphor wants — the Telegram bot hands out
- * `site/#c=open(vpn,<sub_id>)` and the config appears in its window.
- *
- * The grammar is deliberately tiny for now:
- *
- *     command := <fn> "(" <window> ("," <param>)* ")"
- *     fn      := "open"
- *
- * Positional arguments are named by the registry below, so a window declares
- * what it takes and a link cannot inject arbitrary keys into its data.
- */
-
 const COMMAND_RE = /^([a-z_]+)\(([^()]*)\)$/;
 
 const WINDOW_PARAMS: Record<string, string[]> = {
@@ -47,8 +31,6 @@ export function parseHashCommand(hash: string): HashCommand | null {
   const [name, ...params] = args;
   const paramNames = name ? WINDOW_PARAMS[name] : undefined;
   if (!paramNames) return null;
-  // Strict: a link that passes more than the window declares is malformed, not
-  // something to silently truncate.
   if (params.length > paramNames.length) return null;
 
   const data: Record<string, string> = {};
@@ -64,8 +46,6 @@ export function useHashCommand(addCustomWindow: SystemStore["addCustomWindow"]) 
     const run = () => {
       const command = parseHashCommand(window.location.hash);
       if (!command) return;
-      // The hash stays in the URL so a reload reopens the same window;
-      // addCustomWindow dedupes by id, so a repeat cannot stack windows.
       handleOpen({
         file: { name: command.name, type: "exec", data: command.data },
         addCustomWindow,

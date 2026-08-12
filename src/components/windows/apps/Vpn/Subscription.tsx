@@ -3,12 +3,6 @@ import { shortDate, SubscriptionView, vpnApi } from "./api";
 import { Translate } from "./i18n";
 import { Card, ConfigBlock, CopyButton, ErrorBox, HappHelp, Loader, QrPanel, SectionLabel } from "./parts";
 
-/**
- * One config, opened straight from a `#c=open(vpn, <sub_id>)` link.
- *
- * No fingerprint and no proof-of-work here: the token is the credential, and the
- * phone this gets opened on is exactly where browser fingerprinting fails.
- */
 export default function Subscription({
   subId,
   t,

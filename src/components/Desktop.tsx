@@ -33,7 +33,6 @@ export default function Desktop() {
 
   const [startMenuOpen, setStartMenuOpen] = useState(false);
 
-  // Opens a window straight from the URL, e.g. #c=open(vpn,<sub_id>).
   useHashCommand(addCustomWindow);
 
   return (
