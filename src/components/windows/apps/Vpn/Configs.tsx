@@ -3,10 +3,7 @@ import { Icon } from "@iconify-icon/react";
 import clsx from "clsx";
 import { ConfigEntry, shortDate } from "./api";
 import { Translate } from "./i18n";
-import { Card, ConfigBlock, CopyButton, EmptyState, HappHelp, PrimaryButton, QrPanel } from "./parts";
-
-const PLACEHOLDER =
-  "vless://••••••••-••••-••••-••••-••••••••••••@hidden.server.com:443?encryption=none&security=reality&sni=hidden#Server";
+import { Card, ConfigBlock, CopyButton, EmptyState, HappHelp, LockedConfig, QrPanel } from "./parts";
 
 function ConfigCard({
   config,
@@ -47,29 +44,22 @@ function ConfigCard({
         <span className="shrink-0 text-[10px] text-gray-600">{shortDate(config.created_at)}</span>
       </div>
 
-      <div className="relative mt-2.5">
-        <ConfigBlock value={revealed ? config.vless_config! : PLACEHOLDER} locked={!revealed} />
-        {!revealed && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-lg bg-black/50">
-            <span className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-gray-400">
-              <Icon icon="material-symbols:lock-outline" width="13" height="13" />
-              {t("hiddenSecurity")}
-            </span>
-            <PrimaryButton
-              disabled={revealing}
-              icon="material-symbols:visibility-outline-rounded"
-              onClick={async () => {
-                setRevealing(true);
-                try {
-                  await onReveal(config.id);
-                } finally {
-                  setRevealing(false);
-                }
-              }}
-            >
-              {revealing ? t("loading") : t("revealToView")}
-            </PrimaryButton>
-          </div>
+      <div className="mt-2.5">
+        {revealed ? (
+          <ConfigBlock value={config.vless_config!} />
+        ) : (
+          <LockedConfig
+            busy={revealing}
+            t={t}
+            onReveal={async () => {
+              setRevealing(true);
+              try {
+                await onReveal(config.id);
+              } finally {
+                setRevealing(false);
+              }
+            }}
+          />
         )}
       </div>
 

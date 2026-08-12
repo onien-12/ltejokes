@@ -142,7 +142,7 @@ export function CopyButton({
   );
 }
 
-export function ConfigBlock({ value, locked, muted }: { value: string; locked?: boolean; muted?: boolean }) {
+export function ConfigBlock({ value, muted }: { value: string; muted?: boolean }) {
   return (
     <div
       className={clsx(
@@ -151,14 +151,77 @@ export function ConfigBlock({ value, locked, muted }: { value: string; locked?: 
       )}
     >
       <code
-        className={clsx(
-          "block select-text whitespace-pre-wrap break-all font-code text-[10.5px] leading-[1.6]",
-          locked ? "select-none text-gray-600 blur-[3px]" : "text-gray-400",
-        )}
+        className="block select-text whitespace-pre-wrap break-all font-code text-[10.5px] leading-[1.6] text-gray-400"
       >
         {value}
       </code>
     </div>
+  );
+}
+
+/**
+ * Stands in for a config that has not been revealed yet.
+ *
+ * The earlier version blurred a fake config under a dark scrim, which mostly
+ * read as a rendering fault. A panel that is plainly meant to be closed says the
+ * same thing without looking broken: locked strip, one action, whole thing is
+ * the button.
+ */
+export function LockedConfig({ onReveal, busy, t }: { onReveal: () => void; busy?: boolean; t: Translate }) {
+  return (
+    <button
+      onClick={onReveal}
+      disabled={busy}
+      className={clsx(
+        "group relative flex w-full items-center gap-3 overflow-hidden rounded-lg border px-3 py-3 text-left",
+        "border-white/[0.07] bg-[#151515] transition-colors",
+        busy ? "cursor-wait" : "hover:border-blue-400/40 hover:bg-[#181a1f]",
+      )}
+    >
+      {/* Faint hatching, so the strip reads as deliberately covered. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(135deg, rgba(255,255,255,0.018) 0 8px, transparent 8px 16px)",
+        }}
+      />
+
+      <span
+        className={clsx(
+          "relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
+          busy ? "bg-blue-500/15 text-blue-300" : "bg-white/[0.06] text-gray-400 group-hover:text-blue-300",
+        )}
+      >
+        <Icon
+          icon={busy ? "material-symbols:lock-open-right-outline-rounded" : "material-symbols:lock-outline"}
+          width="16"
+          height="16"
+        />
+      </span>
+
+      <span className="relative min-w-0 flex-1">
+        <span className="block text-[12px] font-medium text-gray-300">{t("hiddenSecurity")}</span>
+        <span className="mt-0.5 block truncate font-code text-[10px] text-gray-600">
+          vless://••••••••••••••••••••••••••
+        </span>
+      </span>
+
+      <span
+        className={clsx(
+          "relative inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition-colors",
+          busy ? "bg-blue-500/15 text-blue-300" : "bg-blue-600 text-white group-hover:bg-blue-500",
+        )}
+      >
+        {busy ? (
+          <span className="h-3 w-3 animate-spin rounded-full border border-blue-300/40 border-t-blue-300" />
+        ) : (
+          <Icon icon="material-symbols:visibility-outline-rounded" width="13" height="13" />
+        )}
+        {busy ? t("loading") : t("revealToView")}
+      </span>
+    </button>
   );
 }
 
