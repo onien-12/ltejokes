@@ -2,7 +2,18 @@ import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@iconify-icon/react";
 import clsx from "clsx";
 import { useFingerprintStore } from "../../../../store/useFingerprintStore";
-import { Challenge, CLIENT_ID_KEY, ConfigEntry, ServerEntry, StatusEntry, vpnApi } from "./api";
+import { useSystemStore } from "../../../../store/useSystemStore";
+import {
+  Challenge,
+  CLIENT_ID_KEY,
+  ConfigEntry,
+  describeLink,
+  exchangeTgLink,
+  ServerEntry,
+  StatusEntry,
+  TG_SESSION_KEY,
+  vpnApi,
+} from "./api";
 import { useLang } from "./i18n";
 import Auth from "./Auth";
 import Configs from "./Configs";
@@ -22,8 +33,17 @@ const TABS: { key: Tab; icon: string }[] = [
   { key: "status", icon: "material-symbols:monitor-heart-outline-rounded" },
 ];
 
-export default function Vpn({ subscription, userToken }: { subscription?: string; userToken?: string }) {
+export default function Vpn({
+  subscription,
+  userToken,
+  winId,
+}: {
+  subscription?: string;
+  userToken?: string;
+  winId?: string;
+}) {
   const { lang, t, toggleLang } = useLang();
+  const setCustomWindow = useSystemStore((s) => s.setCustomWindow);
   const boot = useFingerprintStore((s) => s.boot);
   const fpStatus = useFingerprintStore((s) => s.status);
   const attempt = useFingerprintStore((s) => s.attempt);
@@ -32,6 +52,12 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
   const solveAesPow = useFingerprintStore((s) => s.solveAesPow);
 
   const [clientId, setClientId] = useState<string | null>(() => localStorage.getItem(CLIENT_ID_KEY));
+  const [tgSession, setTgSession] = useState<string | null>(() => localStorage.getItem(TG_SESSION_KEY));
+  // A token in the link may be a subscription or a one-time login; the server
+  // says which, so the app never has to guess from the string.
+  const [linkKind, setLinkKind] = useState<"subscription" | "auth" | "pending" | "dead">(
+    subscription ? "pending" : "subscription",
+  );
   const [debugNoAntibot, setDebugNoAntibot] = useState(false);
   const [tab, setTab] = useState<Tab>("configs");
 
@@ -58,14 +84,49 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
     if (!subscription && !userToken) boot();
   }, [boot, subscription, userToken]);
 
+  // Resolve what the link token is, then act on it: show the config, or spend a
+  // login link once and keep the session it returns.
+  useEffect(() => {
+    if (!subscription) return;
+    let cancelled = false;
+
+    describeLink(subscription)
+      .then(async ({ kind }) => {
+        if (cancelled) return;
+        if (kind !== "auth") {
+          if (winId) setCustomWindow({ id: winId, name: "VPN - config" });
+          return setLinkKind("subscription");
+        }
+
+        const { session } = await exchangeTgLink(subscription);
+        if (cancelled) return;
+        localStorage.setItem(TG_SESSION_KEY, session);
+        setTgSession(session);
+        setLinkKind("auth");
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        // A spent login link is the common case: the message it came from is
+        // still in the chat. Fall back to whatever session this browser has.
+        if (localStorage.getItem(TG_SESSION_KEY)) return setLinkKind("auth");
+        setLinkKind("dead");
+        setError(e?.message || t("errReqFailed"));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [subscription, t]);
+
   const loadMain = useCallback(async () => {
-    if (!clientId) return;
+    if (!clientId && !tgSession) return;
+    const who = tgSession ? `session=${encodeURIComponent(tgSession)}` : `client_id=${encodeURIComponent(clientId!)}`;
     setLoading(true);
     setError(null);
     try {
       const [serverRes, configRes] = await Promise.all([
         vpnApi<{ servers: ServerEntry[] }>("/api/servers"),
-        vpnApi<{ configs: ConfigEntry[] }>(`/api/configs?client_id=${encodeURIComponent(clientId)}`),
+        vpnApi<{ configs: ConfigEntry[] }>(`/api/configs?${who}`),
       ]);
       setServers(serverRes.servers || []);
       setConfigs(configRes.configs || []);
@@ -74,11 +135,11 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
     } finally {
       setLoading(false);
     }
-  }, [clientId, t]);
+  }, [clientId, tgSession, t]);
 
   useEffect(() => {
-    if (!subscription && clientId) loadMain();
-  }, [subscription, clientId, loadMain]);
+    if (linkKind === "auth" || (!subscription && (clientId || tgSession))) loadMain();
+  }, [subscription, clientId, tgSession, linkKind, loadMain]);
 
   useEffect(() => {
     if (tab !== "status" || statuses || statusError) return;
@@ -91,18 +152,19 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
     async (configId: string) => {
       const challenge = await vpnApi<Challenge>("/api/configs/challenge", "POST", {
         config_id: configId,
-        client_id: clientId,
+        client_id: clientId || "",
+        session: tgSession || "",
         action: configId === "alloc" ? "alloc" : "reveal",
       });
       const solved = await solveHashPow(challenge.digest, challenge.difficulty);
       return { digest: challenge.digest, solution: solved.solution };
     },
-    [clientId, solveHashPow],
+    [clientId, tgSession, solveHashPow],
   );
 
   const allocate = useCallback(
     async (serverKey: string) => {
-      if (busy || !clientId) return;
+      if (busy || (!clientId && !tgSession)) return;
 
       const existing = configs.find((c) => c.server_key === serverKey);
       if (existing) {
@@ -126,7 +188,8 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
         // bundle, if the payload itself is rejected.
         const puzzle = await attempt((payload) =>
           vpnApi<unknown>("/api/allocate", "POST", {
-            client_id: clientId,
+            client_id: clientId || "",
+            session: tgSession || "",
             server_key: serverKey,
             n: payload,
             pow_solution: powSolution,
@@ -155,36 +218,44 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
         setBusy(false);
       }
     },
-    [attempt, busy, clientId, configs, debugNoAntibot, refresh, showToast, solveAesPow, solveChallenge, t],
+    [attempt, busy, clientId, tgSession, configs, debugNoAntibot, refresh, showToast, solveAesPow, solveChallenge, t],
   );
 
   const reveal = useCallback(
     async (configId: ConfigEntry["id"]) => {
-      if (!clientId) return;
+      if (!clientId && !tgSession) return;
       try {
         const solved = await solveChallenge(String(configId));
         const revealed = await vpnApi<{ vless_config: string; sub_link: string; sub_id: string }>(
           "/api/configs/reveal",
           "POST",
-          { config_id: String(configId), client_id: clientId, solution: solved.solution },
+          {
+            config_id: String(configId),
+            client_id: clientId || "",
+            session: tgSession || "",
+            solution: solved.solution,
+          },
         );
         setConfigs((prev) => prev.map((c) => (String(c.id) === String(configId) ? { ...c, ...revealed } : c)));
       } catch (e: any) {
         showToast(e?.message || t("errReqFailed"), "error");
       }
     },
-    [clientId, showToast, solveChallenge, t],
+    [clientId, tgSession, showToast, solveChallenge, t],
   );
 
   const logout = () => {
     localStorage.removeItem(CLIENT_ID_KEY);
+    localStorage.removeItem(TG_SESSION_KEY);
     setClientId(null);
+    setTgSession(null);
     setConfigs([]);
     setServers([]);
     refresh();
   };
 
-  const authed = !subscription && !userToken && !!clientId;
+  // A telegram session counts as signed in even while a link is being resolved.
+  const authed = (!subscription || linkKind === "auth") && !userToken && (!!clientId || !!tgSession);
 
   return (
     <div className="scrollable relative flex h-full w-full flex-col bg-[#1c1c1c] text-left font-sans text-white">
@@ -273,19 +344,24 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
       <main className="scrollable flex-1 overflow-y-auto px-3.5 py-3">
         {showCosts ? (
           <Costs t={t} lang={lang} />
-        ) : subscription ? (
+        ) : subscription && linkKind === "pending" ? (
+          <Loader label={t("loading")} />
+        ) : subscription && linkKind === "subscription" ? (
           <Subscription subId={subscription} t={t} onToast={showToast} />
         ) : userToken ? (
           <MyConfigs userToken={userToken} t={t} onToast={showToast} />
-        ) : !clientId ? (
-          <Auth
+        ) : !clientId && !tgSession ? (
+          <>
+            {linkKind === "dead" && <ErrorBox message={t("linkSpent")} />}
+            <Auth
             t={t}
             onAuthed={(id, debug) => {
               localStorage.setItem(CLIENT_ID_KEY, id);
               setDebugNoAntibot(debug);
               setClientId(id);
             }}
-          />
+            />
+          </>
         ) : (
           <>
             {error && <ErrorBox message={error} />}
@@ -329,12 +405,14 @@ export default function Vpn({ subscription, userToken }: { subscription?: string
         )}
       </main>
 
-      {authed && (
+      {/* Only an invite-code account has an id worth showing. A telegram session
+          is identified by the account it signed in with, not by a device id. */}
+      {authed && clientId && (
         <footer className="flex shrink-0 items-center gap-2 border-t border-white/[0.07] px-3.5 py-2">
           <span className="shrink-0 text-[10px] uppercase tracking-wider text-gray-600">{t("yourId")}</span>
           <span className="truncate font-code text-[10px] text-gray-500">{clientId}</span>
           <span className="ml-auto shrink-0">
-            <CopyButton value={clientId!} t={t} onFail={(m) => showToast(m, "error")} />
+            <CopyButton value={clientId} t={t} onFail={(m) => showToast(m, "error")} />
           </span>
         </footer>
       )}

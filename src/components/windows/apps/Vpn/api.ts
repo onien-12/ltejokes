@@ -1,6 +1,18 @@
 export const VPN_API = (process.env.REACT_APP_VPN_API_URL || "/api/vpn").replace(/\/+$/, "");
 
 export const CLIENT_ID_KEY = "client_id";
+/** Session issued by exchanging the bot's one-time login link. */
+export const TG_SESSION_KEY = "tg_session";
+
+export type LinkKind = "subscription" | "user" | "auth" | "session";
+
+/** What a link token is for. The server owns the key, so it decides. */
+export const describeLink = (token: string) =>
+  vpnApi<{ kind: LinkKind }>(`/api/link/${encodeURIComponent(token)}`);
+
+/** Trades the bot's one-time login link for a durable session token. */
+export const exchangeTgLink = (token: string) =>
+  vpnApi<{ session: string; tg_id: string }>("/api/auth/tg", "POST", { token });
 
 export type ServerProtocols = Record<string, string>;
 

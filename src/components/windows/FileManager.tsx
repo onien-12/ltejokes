@@ -66,10 +66,13 @@ export function handleOpen({
     if (file.name === "vpn" || file.name === "configs") {
       const subscription = file.data?.subscription;
       const userToken = file.data?.user;
+      const winId = `vpn-${subscription || userToken || "main"}`;
       return addCustomWindow({
-        id: `vpn-${subscription || userToken || "main"}`,
-        name: subscription ? "VPN - config" : userToken ? "VPN - my configs" : "VPN",
-        window: <Vpn subscription={subscription} userToken={userToken} />,
+        id: winId,
+        // A token may turn out to be a subscription or a login link; the window
+        // renames itself once the server has said which.
+        name: subscription ? "VPN" : userToken ? "VPN - my configs" : "VPN",
+        window: <Vpn subscription={subscription} userToken={userToken} winId={winId} />,
         className: window.innerWidth > 650 ? "w-[720px] h-[540px]" : "w-[98%] h-[95dvh]",
       });
     }
