@@ -63,12 +63,13 @@ export function handleOpen({
         window: <Navigator3GPP />,
       });
     }
-    if (file.name === "vpn") {
+    if (file.name === "vpn" || file.name === "configs") {
       const subscription = file.data?.subscription;
+      const userToken = file.data?.user;
       return addCustomWindow({
-        id: `vpn-${subscription || "main"}`,
-        name: subscription ? "VPN - config" : "VPN",
-        window: <Vpn subscription={subscription} />,
+        id: `vpn-${subscription || userToken || "main"}`,
+        name: subscription ? "VPN - config" : userToken ? "VPN - my configs" : "VPN",
+        window: <Vpn subscription={subscription} userToken={userToken} />,
         className: window.innerWidth > 650 ? "w-[720px] h-[540px]" : "w-[98%] h-[95dvh]",
       });
     }

@@ -6,6 +6,8 @@ const COMMAND_RE = /^([a-z_]+)\(([^()]*)\)$/;
 
 const WINDOW_PARAMS: Record<string, string[]> = {
   vpn: ["subscription"],
+  // Every config one Telegram user owns, addressed by their link token.
+  configs: ["user"],
 };
 
 export type HashCommand = {

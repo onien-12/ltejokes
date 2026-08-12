@@ -8,6 +8,7 @@ import Auth from "./Auth";
 import Configs from "./Configs";
 import Servers from "./Servers";
 import Subscription from "./Subscription";
+import MyConfigs from "./MyConfigs";
 import Costs from "./Costs";
 import PowOverlay from "./PowOverlay";
 import { Card, Chip, CopyButton, ErrorBox, Loader, StatusPill } from "./parts";
@@ -21,7 +22,7 @@ const TABS: { key: Tab; icon: string }[] = [
   { key: "status", icon: "material-symbols:monitor-heart-outline-rounded" },
 ];
 
-export default function Vpn({ subscription }: { subscription?: string }) {
+export default function Vpn({ subscription, userToken }: { subscription?: string; userToken?: string }) {
   const { lang, t, toggleLang } = useLang();
   const boot = useFingerprintStore((s) => s.boot);
   const fpStatus = useFingerprintStore((s) => s.status);
@@ -54,8 +55,8 @@ export default function Vpn({ subscription }: { subscription?: string }) {
   }, []);
 
   useEffect(() => {
-    if (!subscription) boot();
-  }, [boot, subscription]);
+    if (!subscription && !userToken) boot();
+  }, [boot, subscription, userToken]);
 
   const loadMain = useCallback(async () => {
     if (!clientId) return;
@@ -185,7 +186,7 @@ export default function Vpn({ subscription }: { subscription?: string }) {
     refresh();
   };
 
-  const authed = !subscription && !!clientId;
+  const authed = !subscription && !userToken && !!clientId;
 
   return (
     <div className="scrollable relative flex h-full w-full flex-col bg-[#1c1c1c] text-left font-sans text-white">
@@ -276,6 +277,8 @@ export default function Vpn({ subscription }: { subscription?: string }) {
           <Costs t={t} lang={lang} />
         ) : subscription ? (
           <Subscription subId={subscription} t={t} onToast={showToast} />
+        ) : userToken ? (
+          <MyConfigs userToken={userToken} t={t} onToast={showToast} />
         ) : !clientId ? (
           <Auth
             t={t}

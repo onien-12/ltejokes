@@ -30,6 +30,8 @@ export type ConfigEntry = {
   vless_config?: string;
   sub_link?: string;
   sub_id?: string;
+  /** Transport suffix, so two configs on one server are distinguishable. */
+  protocol?: string;
 };
 
 export type StatusEntry = {
