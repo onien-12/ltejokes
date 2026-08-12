@@ -48,6 +48,41 @@ export type SubscriptionView = {
   sub_app: string;
 };
 
+export type CostItem = {
+  label: string;
+  amount: number;
+  currency: string;
+  period: "month" | "quarter";
+  monthly_rub: number;
+  metered: boolean;
+  per_gb_rub?: number;
+  used_gb?: number | null;
+  traffic_rub?: number | null;
+  live?: boolean;
+  /** Set when the meter only started partway through the month. */
+  since?: string | null;
+};
+
+/** Traffic actually recorded for a closed month. Flat fees are today's prices. */
+export type CostsPrevious = {
+  period: string;
+  known: boolean;
+  items: { label: string; used_gb: number; traffic_rub: number }[];
+  metered_total_rub: number;
+  total_rub: number;
+};
+
+export type CostsView = {
+  period: string;
+  previous?: CostsPrevious;
+  currency: string;
+  rates: { USD: number | null; EUR: number | null; as_of: string; source: string };
+  items: CostItem[];
+  fixed_total_rub: number;
+  metered_total_rub: number;
+  total_rub: number;
+};
+
 export type Challenge = { digest: string; difficulty: number };
 
 export class VpnApiError extends Error {}

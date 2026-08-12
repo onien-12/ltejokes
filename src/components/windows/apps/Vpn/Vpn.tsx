@@ -8,6 +8,7 @@ import Auth from "./Auth";
 import Configs from "./Configs";
 import Servers from "./Servers";
 import Subscription from "./Subscription";
+import Costs from "./Costs";
 import PowOverlay from "./PowOverlay";
 import { Card, Chip, CopyButton, ErrorBox, Loader, StatusPill } from "./parts";
 
@@ -42,6 +43,9 @@ export default function Vpn({ subscription }: { subscription?: string }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  // Deliberately outside the tabs: the costs are public, so they must be readable
+  // without an invite code and from the subscription view too.
+  const [showCosts, setShowCosts] = useState(false);
 
   const showToast = useCallback((message: string, kind: "success" | "error" = "success") => {
     const toast: Toast = { id: Date.now() + Math.random(), message, kind };
@@ -215,6 +219,16 @@ export default function Vpn({ subscription }: { subscription?: string }) {
         )}
 
         <div className="ml-auto flex items-center gap-1.5">
+          <button
+            onClick={() => setShowCosts((v) => !v)}
+            title={t("costsTitle")}
+            className={clsx(
+              "flex h-6 items-center gap-1 rounded-md px-1.5 text-[10px] font-bold transition-colors",
+              showCosts ? "bg-emerald-500/20 text-emerald-300" : "text-gray-500 hover:bg-white/[0.06] hover:text-gray-300",
+            )}
+          >
+            <Icon icon="material-symbols:payments-outline-rounded" width="15" height="15" />
+          </button>
           {authed && (
             <button
               onClick={() => fpStatus === "failed" && refresh()}
@@ -258,7 +272,9 @@ export default function Vpn({ subscription }: { subscription?: string }) {
       </header>
 
       <main className="scrollable flex-1 overflow-y-auto px-3.5 py-3">
-        {subscription ? (
+        {showCosts ? (
+          <Costs t={t} lang={lang} />
+        ) : subscription ? (
           <Subscription subId={subscription} t={t} onToast={showToast} />
         ) : !clientId ? (
           <Auth
