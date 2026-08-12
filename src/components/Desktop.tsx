@@ -15,6 +15,7 @@ import ManagedCustomWindow from "./utils/ManagedCustomWindow";
 import GlossaryWindow from "./windows/GlossaryWindow";
 import { handleOpen } from "./windows/FileManager";
 import Postixfy from "./windows/apps/Postixfy/Postixfy";
+import { useHashCommand } from "../hashCommand";
 
 const MemoizedHeader = React.memo(Header);
 const MemoizedStartMenu = React.memo(StartMenu);
@@ -31,6 +32,9 @@ export default function Desktop() {
   );
 
   const [startMenuOpen, setStartMenuOpen] = useState(false);
+
+  // Opens a window straight from the URL, e.g. #c=open(vpn,<sub_id>).
+  useHashCommand(addCustomWindow);
 
   return (
     <div
@@ -136,6 +140,22 @@ export default function Desktop() {
                 window: <Postixfy winId={id} />,
               });
             },
+          },
+          {
+            id: "8",
+            icon: <Icon icon="material-symbols:vpn-key-outline" width="32" height="32" />,
+            label: "vpn",
+            defaultPosition: { x: 160, y: 80 },
+            handleClick: () =>
+              handleOpen({
+                file: {
+                  name: "vpn",
+                  type: "exec",
+                  data: {},
+                },
+                addCustomWindow,
+                currentRelativePathSegments: [],
+              }),
           },
         ]}
       />

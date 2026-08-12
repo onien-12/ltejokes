@@ -4,6 +4,7 @@ export type CustomWindow = {
   id: string;
   name: string;
   window: React.ReactNode;
+  className?: string;
 };
 
 type Module = {
@@ -32,9 +33,7 @@ export type SystemStore = {
   removeModule: (name: string) => void;
 
   addCustomWindow: (newWindow: CustomWindow) => void;
-  setCustomWindow: (
-    updatedWindow: Partial<CustomWindow> & { id: string }
-  ) => void;
+  setCustomWindow: (updatedWindow: Partial<CustomWindow> & { id: string }) => void;
   removeCustomWindow: (windowId: string) => void;
 };
 
@@ -54,13 +53,10 @@ export const useSystemStore = create<SystemStore>((set) => ({
   openWindow: (window) =>
     set((state) =>
       state.openWindows.includes(window)
-        ?
-        {
-          openWindows: [
-            ...state.openWindows.filter((ow) => ow != window),
-            window,
-          ],
-        } : { openWindows: [...state.openWindows, window] }
+        ? {
+            openWindows: [...state.openWindows.filter((ow) => ow != window), window],
+          }
+        : { openWindows: [...state.openWindows, window] },
     ),
   closeWindow: (window) =>
     set((state) => ({
@@ -68,25 +64,17 @@ export const useSystemStore = create<SystemStore>((set) => ({
     })),
   focusWindow: (window) =>
     set((state) => ({
-      openWindows: [
-        ...state.openWindows.filter((ow) => ow != window),
-        window,
-      ],
+      openWindows: [...state.openWindows.filter((ow) => ow != window), window],
     })),
 
-  setNetworkConnected: (connected) =>
-    set((state) => ({ networkConnected: connected })),
+  setNetworkConnected: (connected) => set((state) => ({ networkConnected: connected })),
 
-  addModule: (module: Module) =>
-    set((state) => ({ modules: [...state.modules, module] })),
+  addModule: (module: Module) => set((state) => ({ modules: [...state.modules, module] })),
   setModule: (module: Partial<Module>) =>
     set((state) => ({
-      modules: state.modules.map((m) =>
-        m.name == module.name ? { ...m, ...module } : m
-      ),
+      modules: state.modules.map((m) => (m.name == module.name ? { ...m, ...module } : m)),
     })),
-  removeModule: (name: string) =>
-    set((state) => ({ modules: state.modules.filter((m) => m.name != name) })),
+  removeModule: (name: string) => set((state) => ({ modules: state.modules.filter((m) => m.name != name) })),
 
   addCustomWindow: (newWindow) =>
     set((state) => {
@@ -95,17 +83,12 @@ export const useSystemStore = create<SystemStore>((set) => ({
       }
       return {
         customWindows: [...state.customWindows, newWindow],
-        openWindows: [
-          ...state.openWindows.filter((ow) => ow !== newWindow.id),
-          newWindow.id,
-        ],
+        openWindows: [...state.openWindows.filter((ow) => ow !== newWindow.id), newWindow.id],
       };
     }),
   setCustomWindow: (updatedWindow) =>
     set((state) => ({
-      customWindows: state.customWindows.map((cw) =>
-        cw.id === updatedWindow.id ? { ...cw, ...updatedWindow } : cw
-      ),
+      customWindows: state.customWindows.map((cw) => (cw.id === updatedWindow.id ? { ...cw, ...updatedWindow } : cw)),
     })),
   removeCustomWindow: (windowId) =>
     set((state) => ({

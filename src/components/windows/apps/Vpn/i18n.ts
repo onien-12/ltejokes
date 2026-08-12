@@ -1,0 +1,149 @@
+import { useCallback, useEffect, useState } from "react";
+
+const EN = {
+  inviteTitle: "Enter Invite Code",
+  inviteDesc: "You need a valid invite code to access this service.",
+  invitePlaceholder: "Invite code",
+  continue: "Continue",
+  errInviteCode: "Enter invite code",
+  errReqFailed: "Request failed",
+  errFpFailed: "Security check failed. Retrying...",
+  errCopy: "Copy failed. Select the text manually.",
+  yourId: "Your ID",
+  copy: "Copy",
+  copied: "Copied!",
+  navConfigs: "Configs",
+  navServers: "Servers",
+  navStatus: "Status",
+  logout: "Logout",
+  noConfigs: "No configs yet. Go to Servers to create one.",
+  gates: "Gates",
+  create: "Create",
+  online: "ONLINE",
+  offline: "OFFLINE",
+  loading: "Loading...",
+  loadingData: "Loading data...",
+  configAllocated: "Config created successfully!",
+  configAlreadyExists: "You already own this server. Revealing config...",
+  powTitle: "Decrypting Config...",
+  powStatus: "Solving proof-of-work puzzle...",
+  powTrying: "Hashing",
+  fpReady: "Secured",
+  fpLoading: "Securing...",
+  fpFailed: "Check failed",
+  fpRetryHint: "Click to run the security check again",
+  retry: "Retry",
+  hiddenSecurity: "Hidden for security",
+  revealToView: "Reveal Config",
+  qrCode: "QR Code",
+  subLink: "Sub Link",
+  noServers: "No servers available",
+  exitTo: "Exit in",
+  helpButton: "📱 How to connect — read this first",
+  helpTitle: "Connect with the Happ app",
+  helpWarn: "Use Happ only. Configs are issued for it, and other clients will not connect correctly.",
+  helpStep1: "Install Happ — search for it in the App Store, Google Play or RuStore.",
+  helpStep2: "Copy the config above with the Copy button (or scan the QR code).",
+  helpStep3:
+    "Open Happ and add the config: it usually picks up what you copied automatically, otherwise use the + button and paste from the clipboard.",
+  helpStep4: "Select the added server and turn the connection on.",
+  helpStep5: "If it does not connect, create a config through another gateway or transport.",
+  gatesRecommended: "Recommended. Traffic is relayed through a gateway, which holds up best against blocking.",
+  showDirect: "Show direct servers",
+  hideDirect: "Hide direct servers",
+  directWarning: "Direct connections are simpler, but are blocked more often. Try a gateway first.",
+  subTitle: "Your config",
+  subHint: "Add this link to Happ as a subscription and the config keeps itself up to date.",
+  subUnknown: "This subscription link is not valid any more.",
+  createdAt: "created",
+  _lang: "EN",
+};
+
+const RU: typeof EN = {
+  inviteTitle: "Введите код приглашения",
+  inviteDesc: "Для доступа к сервису нужен код.",
+  invitePlaceholder: "Код приглашения",
+  continue: "Продолжить",
+  errInviteCode: "Введите код",
+  errReqFailed: "Ошибка запроса",
+  errFpFailed: "Проверка безопасности не удалась. Повторяем...",
+  errCopy: "Не удалось скопировать. Выделите текст вручную.",
+  yourId: "Ваш ID",
+  copy: "Копировать",
+  copied: "Скопировано!",
+  navConfigs: "Конфиги",
+  navServers: "Серверы",
+  navStatus: "Статус",
+  logout: "Выйти",
+  noConfigs: "У вас пока нет конфигов. Создайте их во вкладке Серверы.",
+  gates: "Шлюзы",
+  create: "Создать",
+  online: "ОНЛАЙН",
+  offline: "ОФЛАЙН",
+  loading: "Загрузка...",
+  loadingData: "Загрузка данных...",
+  configAllocated: "Конфиг успешно создан!",
+  configAlreadyExists: "Этот сервер уже у вас есть. Открываем...",
+  powTitle: "Расшифровка...",
+  powStatus: "Решение криптографической задачи...",
+  powTrying: "Хеширование",
+  fpReady: "Защищено",
+  fpLoading: "Защита...",
+  fpFailed: "Проверка не прошла",
+  fpRetryHint: "Нажмите, чтобы повторить проверку безопасности",
+  retry: "Повторить",
+  hiddenSecurity: "Скрыто для безопасности",
+  revealToView: "Показать конфиг",
+  qrCode: "QR код",
+  subLink: "Подписка",
+  noServers: "Нет доступных серверов",
+  exitTo: "Выход в",
+  helpButton: "📱 Как подключиться — прочитайте это",
+  helpTitle: "Подключение через приложение Happ",
+  helpWarn:
+    "Используйте только Happ. Конфиги выдаются именно под него — в других приложениях подключение работать не будет.",
+  helpStep1: "Установите Happ — найдите приложение в App Store, Google Play или RuStore.",
+  helpStep2: "Скопируйте конфиг выше кнопкой Копировать (или отсканируйте QR код).",
+  helpStep3:
+    "Откройте Happ и добавьте конфиг: обычно он сам подхватывает скопированное, иначе нажмите + и вставьте из буфера обмена.",
+  helpStep4: "Выберите добавленный сервер и включите подключение.",
+  helpStep5: "Если не подключается — создайте конфиг через другой шлюз или протокол.",
+  gatesRecommended: "Рекомендуем. Трафик идёт через шлюз — так стабильнее всего при блокировках.",
+  showDirect: "Показать прямые серверы",
+  hideDirect: "Скрыть прямые серверы",
+  directWarning: "Прямое подключение проще, но его чаще блокируют. Сначала попробуйте шлюз.",
+  subTitle: "Ваш конфиг",
+  subHint: "Добавьте эту ссылку в Happ как подписку — конфиг будет обновляться сам.",
+  subUnknown: "Эта ссылка на подписку больше не действует.",
+  createdAt: "создан",
+  _lang: "RU",
+};
+
+export type Lang = "en" | "ru";
+export type StringKey = keyof typeof EN;
+
+const DICTIONARIES: Record<Lang, typeof EN> = { en: EN, ru: RU };
+
+const LANG_KEY = "lang";
+
+function initialLang(): Lang {
+  const stored = localStorage.getItem(LANG_KEY);
+  if (stored === "en" || stored === "ru") return stored;
+  return navigator.language?.toLowerCase().startsWith("ru") ? "ru" : "en";
+}
+
+/** Shares the `lang` key with the standalone page, so the choice carries over. */
+export function useLang() {
+  const [lang, setLang] = useState<Lang>(initialLang);
+
+  useEffect(() => {
+    localStorage.setItem(LANG_KEY, lang);
+  }, [lang]);
+
+  const t = useCallback((key: StringKey) => DICTIONARIES[lang][key], [lang]);
+  const toggleLang = useCallback(() => setLang((prev) => (prev === "ru" ? "en" : "ru")), []);
+
+  return { lang, t, toggleLang };
+}
+
+export type Translate = (key: StringKey) => string;

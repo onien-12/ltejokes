@@ -8,7 +8,7 @@ interface ManagedCustomWindowProps {
 }
 
 const ManagedCustomWindow: React.FC<ManagedCustomWindowProps> = React.memo(({ customWindow }) => {
-  const { id, name, window: content } = customWindow;
+  const { id, name, window: content, className } = customWindow;
 
   const isOpen = useSystemStore((state) => state.openWindows.includes(id));
   const closeWindow = useSystemStore((state) => state.closeWindow);
@@ -31,16 +31,19 @@ const ManagedCustomWindow: React.FC<ManagedCustomWindowProps> = React.memo(({ cu
         closeWindow(id);
         setTimeout(() => removeCustomWindow(id), 300);
       }}
-      className={clsx(
-        {
-          "w-[650px]": window.innerWidth > 650,
-          "w-[98%]": window.innerWidth <= 650,
-        },
-        {
-          "h-[400px]": window.innerWidth > 650,
-          "h-[95dvh]": window.innerWidth <= 650,
-        }
-      )}
+      className={
+        className ??
+        clsx(
+          {
+            "w-[650px]": window.innerWidth > 650,
+            "w-[98%]": window.innerWidth <= 650,
+          },
+          {
+            "h-[400px]": window.innerWidth > 650,
+            "h-[95dvh]": window.innerWidth <= 650,
+          }
+        )
+      }
     />
   );
 });

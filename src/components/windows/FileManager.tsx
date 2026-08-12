@@ -12,6 +12,7 @@ import Navigator3GPP from "./utilities/Navigator3GPP";
 import ContextMenu, { ContextMenuItem } from "../utils/ContextMenu";
 import ProjectsWindow from "./Projects";
 import CodeViewer from "./CodeViewer";
+import Vpn from "./apps/Vpn/Vpn";
 
 interface FileItem {
   name: string;
@@ -60,6 +61,15 @@ export function handleOpen({
         id: `3gpp-navigator`,
         name: `3gpp navigator`,
         window: <Navigator3GPP />,
+      });
+    }
+    if (file.name === "vpn") {
+      const subscription = file.data?.subscription;
+      return addCustomWindow({
+        id: `vpn-${subscription || "main"}`,
+        name: subscription ? "VPN - config" : "VPN",
+        window: <Vpn subscription={subscription} />,
+        className: window.innerWidth > 650 ? "w-[720px] h-[540px]" : "w-[98%] h-[95dvh]",
       });
     }
     if (file.name === "projects") {
