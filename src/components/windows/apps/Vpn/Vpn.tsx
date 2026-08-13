@@ -22,7 +22,7 @@ import Subscription from "./Subscription";
 import MyConfigs from "./MyConfigs";
 import Costs from "./Costs";
 import PowOverlay from "./PowOverlay";
-import { Card, Chip, CopyButton, ErrorBox, Loader, StatusPill } from "./parts";
+import { Card, Chip, CopyButton, ErrorBox, ExitList, Loader, StatusPill } from "./parts";
 
 type Tab = "configs" | "servers" | "status";
 type Toast = { id: number; message: string; kind: "success" | "error" };
@@ -392,13 +392,20 @@ export default function Vpn({
             ) : (
               <div className="flex flex-col gap-2.5">
                 {statuses.map((s) => (
-                  <Card key={s.name}>
+                  <Card key={s.key || s.name}>
                     <div className="flex items-center justify-between gap-2">
                       <span className="truncate text-[13px] font-semibold text-white">{s.name}</span>
                       <StatusPill status={s.online ? t("online") : t("offline")} online={s.online} />
                     </div>
-                    <p className="mt-1 text-[11px] leading-snug text-gray-500">{s.description}</p>
-                    <p className="mt-1 font-code text-[10px] text-gray-600">{s.details}</p>
+                    {s.description && (
+                      <p className="mt-1 text-[11px] leading-snug text-gray-500">{s.description}</p>
+                    )}
+                    {s.has_panel ? (
+                      <p className="mt-1 font-code text-[10px] text-gray-600">{s.details}</p>
+                    ) : (
+                      <p className="mt-1 text-[10px] italic text-gray-600">{t("statusNoPanel")}</p>
+                    )}
+                    <ExitList exits={s.exits} t={t} />
                   </Card>
                 ))}
               </div>

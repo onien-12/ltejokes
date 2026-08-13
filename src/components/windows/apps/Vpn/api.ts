@@ -46,11 +46,25 @@ export type ConfigEntry = {
   protocol?: string;
 };
 
+/** One hop from a gate to an exit behind it, dialled by the gate's own panel. */
+export type StatusExit = {
+  gate: string;
+  /** True when a balancer offers several exits, so they need telling apart. */
+  shared: boolean;
+  index: number;
+  online: boolean;
+  delay_ms: number | null;
+};
+
 export type StatusEntry = {
+  key: string;
   name: string;
   description: string;
   online: boolean;
   details: string;
+  /** False for an exit reachable only through a gate: it has no panel to poll. */
+  has_panel: boolean;
+  exits: StatusExit[];
 };
 
 export type SubscriptionView = {

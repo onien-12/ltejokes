@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify-icon/react";
 import clsx from "clsx";
-import { copyText, qrUrl } from "./api";
+import { copyText, qrUrl, StatusExit } from "./api";
 import { Translate } from "./i18n";
 
 export function Card({
@@ -317,6 +317,50 @@ export function StatusPill({ status, online }: { status: string; online?: boolea
       />
       {label}
     </span>
+  );
+}
+
+/**
+ * Latency from each gate to the exit behind it.
+ *
+ * A gate answering a ping says nothing about whether the exit it relays to is
+ * still up, so these are measured by the gate's own panel dialling the exit.
+ * Exits are named by the server they lead to and numbered when a balancer
+ * offers several — never by address, which resold nodes change without notice.
+ */
+export function ExitList({ exits, t }: { exits?: StatusExit[]; t: Translate }) {
+  if (!exits?.length) return null;
+
+  return (
+    <div className="mt-2 space-y-1 border-t border-white/[0.06] pt-2">
+      {exits.map((exit, index) => (
+        <div key={`${exit.gate}-${exit.index}-${index}`} className="flex items-center gap-1.5 text-[10.5px]">
+          <Icon
+            icon="material-symbols:subdirectory-arrow-right-rounded"
+            width="12"
+            height="12"
+            className="shrink-0 text-gray-600"
+          />
+          <span className="truncate text-gray-400">
+            {t("statusVia")} {exit.gate}
+            {exit.shared && (
+              <span className="text-gray-600">
+                {" · "}
+                {t("statusExit")} {exit.index}
+              </span>
+            )}
+          </span>
+          <span
+            className={clsx(
+              "ml-auto shrink-0 font-code",
+              exit.online ? "text-emerald-300/80" : "text-red-300/80",
+            )}
+          >
+            {exit.online ? `${exit.delay_ms} ms` : t("statusExitDown")}
+          </span>
+        </div>
+      ))}
+    </div>
   );
 }
 
