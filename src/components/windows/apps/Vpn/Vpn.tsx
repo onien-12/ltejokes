@@ -261,7 +261,7 @@ export default function Vpn({
     <div className="scrollable relative flex h-full w-full flex-col bg-[#1c1c1c] text-left font-sans text-white">
       <header className="flex shrink-0 items-center gap-2 border-b border-white/[0.07] px-3.5 py-2.5">
         {authed ? (
-          <div className="flex items-center gap-0.5 rounded-lg bg-black/30 p-0.5">
+          <div className="flex min-w-0 items-center gap-0.5 rounded-lg bg-black/30 p-0.5">
             {TABS.map(({ key, icon }) => (
               <button
                 key={key}
@@ -272,7 +272,9 @@ export default function Vpn({
                 )}
               >
                 <Icon icon={icon} width="14" height="14" />
-                {key === "configs" ? t("navConfigs") : key === "servers" ? t("navServers") : t("navStatus")}
+                <span className="hidden sm:inline">
+                  {key === "configs" ? t("navConfigs") : key === "servers" ? t("navServers") : t("navStatus")}
+                </span>
                 {key === "configs" && configs.length > 0 && (
                   <span className="rounded-full bg-blue-500/25 px-1.5 text-[9.5px] font-bold text-blue-200">
                     {configs.length}
@@ -288,7 +290,7 @@ export default function Vpn({
           </div>
         )}
 
-        <div className="ml-auto flex items-center gap-1.5">
+        <div className="ml-auto flex shrink-0 items-center gap-1.5">
           <button
             onClick={() => setShowCosts((v) => !v)}
             title={t("costsTitle")}
