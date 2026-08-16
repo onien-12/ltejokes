@@ -131,7 +131,9 @@ export default function Costs({ t, lang }: { t: Translate; lang: string }) {
 
       {data.rates.USD && data.rates.EUR && (
         <div className="px-0.5 text-[10.5px] leading-snug text-gray-600">
-          {data.rates.source === "cbr" ? t("costsRatesCbr") : t("costsRatesFallback")}
+          {/* Either live source is the Bank's own fixing; only a hardcoded rate
+              is worth calling out as stale. */}
+          {data.rates.source === "fallback" ? t("costsRatesFallback") : t("costsRatesCbr")}
           {data.rates.as_of ? ` ${data.rates.as_of}` : ""}: 1&nbsp;$ = {data.rates.USD.toFixed(2)} ₽,
           {" "}1&nbsp;€ = {data.rates.EUR.toFixed(2)} ₽
         </div>
