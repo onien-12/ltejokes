@@ -34,6 +34,13 @@ function ConfigCard({
           <span className="truncate text-[13px] font-semibold text-white">
             {config.server_name || config.server_key}
           </span>
+          {/* An auto config is a client config over several routes, not a link,
+              so say so before someone tries to paste it somewhere expecting one. */}
+          {config.kind === "xray_json" && (
+            <span className="shrink-0 rounded bg-blue-500/15 px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wide text-blue-300">
+              xray json
+            </span>
+          )}
           {/* Two configs on one server differ only by transport. */}
           {config.protocol && (
             <span className="shrink-0 rounded bg-white/[0.07] px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wide text-gray-400">

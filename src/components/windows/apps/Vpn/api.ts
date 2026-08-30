@@ -44,6 +44,8 @@ export type ConfigEntry = {
   sub_id?: string;
   /** Transport suffix, so two configs on one server are distinguishable. */
   protocol?: string;
+  /** "xray_json" for an auto config: a whole client config, not a link. */
+  kind?: string;
 };
 
 /** One hop from a gate to an exit behind it, dialled by the gate's own panel. */
