@@ -21,6 +21,8 @@ export type GateTarget = {
   has_protocols: boolean;
   protocols: ServerProtocols;
   server_key: string;
+  /** Routes measured working through this gate; null when not measured lately. */
+  alive?: number | null;
 };
 
 export type ServerEntry = {
@@ -31,6 +33,9 @@ export type ServerEntry = {
   has_protocols: boolean;
   protocols: ServerProtocols;
   is_gate: boolean;
+  is_auto?: boolean;
+  /** For an auto entry: routes to that exit still working, across all gates. */
+  alive?: number | null;
   targets: Record<string, GateTarget>;
 };
 

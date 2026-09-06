@@ -26,8 +26,11 @@ export default function Servers({
 }) {
   const [showDirect, setShowDirect] = useState(false);
 
+  const autos = servers.filter((s) => s.is_auto);
   const gates = servers.filter((s) => s.is_gate);
-  const directs = servers.filter((s) => !s.is_gate);
+  // Auto entries are neither: listing them under "direct servers" would file the
+  // safest option under the one carrying a warning about being blocked.
+  const directs = servers.filter((s) => !s.is_gate && !s.is_auto);
 
   const protocolChips = (serverKey: string, protocols: ServerProtocols) => {
     const entries = Object.entries(protocols || {});
@@ -56,6 +59,56 @@ export default function Servers({
 
   return (
     <div className="flex flex-col gap-4">
+      {/* The gateways route the Google AI domains through their own clean pool,
+          so this holds whichever country is picked below. */}
+      <div className="flex items-start gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/[0.06] px-2.5 py-2">
+        <Icon
+          icon="material-symbols:auto-awesome-outline-rounded"
+          width="15"
+          height="15"
+          className="mt-0.5 shrink-0 text-emerald-300"
+        />
+        <p className="text-[11px] leading-snug text-emerald-200/80">{t("geminiNote")}</p>
+      </div>
+
+      {autos.length > 0 && (
+        <div>
+          <SectionLabel hint={t("autoHint")}>{t("autoSection")}</SectionLabel>
+
+          <div className="flex flex-col gap-2.5">
+            {autos.map((auto) => (
+              <Card key={auto.key}>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Icon
+                      icon="material-symbols:target"
+                      width="17"
+                      height="17"
+                      className="shrink-0 text-blue-300"
+                    />
+                    <span className="truncate text-[13px] font-semibold text-white">{auto.name}</span>
+                    {auto.alive === 0 && (
+                      <span
+                        title={t("exitDownHint")}
+                        className="shrink-0 rounded bg-amber-500/15 px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wide text-amber-300"
+                      >
+                        {t("exitDown")}
+                      </span>
+                    )}
+                  </div>
+                  <Chip disabled={busy} icon="material-symbols:add-rounded" onClick={() => onAllocate(auto.key)}>
+                    {t("create")}
+                  </Chip>
+                </div>
+                {auto.description && (
+                  <p className="mt-1 text-[11px] leading-snug text-gray-500">{auto.description}</p>
+                )}
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
       {gates.length > 0 && (
         <div>
           <SectionLabel hint={t("gatesRecommended")}>{t("gates")}</SectionLabel>
@@ -88,6 +141,17 @@ export default function Servers({
                           className="text-blue-400"
                         />
                         <span className="truncate">{target.name}</span>
+                        {/* Still connects -- the gateway substitutes a reachable
+                            exit -- so what is missing is the country, not the
+                            connection. Say that rather than showing it offline. */}
+                        {target.alive === 0 && (
+                          <span
+                            title={t("exitDownHint")}
+                            className="shrink-0 rounded bg-amber-500/15 px-1.5 py-0.5 text-[9.5px] font-medium uppercase tracking-wide text-amber-300"
+                          >
+                            {t("exitDown")}
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-wrap gap-1.5">{protocolChips(target.server_key, target.protocols)}</div>
                     </div>
