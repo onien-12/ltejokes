@@ -364,8 +364,10 @@ export function ExitList({ exits, t }: { exits?: StatusExit[]; t: Translate }) {
   );
 }
 
+// Best first, which is also the order the blocks are drawn in.
 const LEG_STATES = [
   { key: "ok", tone: "bg-emerald-400/80", label: "legOk" },
+  { key: "ranked_out", tone: "bg-blue-400/80", label: "legRanked" },
   { key: "slow", tone: "bg-amber-400/80", label: "legSlow" },
   { key: "dead", tone: "bg-red-400/80", label: "legDead" },
   { key: "pruned", tone: "bg-gray-600/70", label: "legPruned" },
@@ -395,7 +397,7 @@ export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
 
       <div className="mt-2.5 flex flex-col gap-1.5 border-t border-white/[0.06] pt-2.5">
         {legs.countries.map((country) => {
-          const alive = country.ok + country.slow;
+          const alive = country.ok + country.ranked_out + country.slow;
           return (
             <div key={country.code} className="flex items-center gap-2">
               <span className="w-[104px] shrink-0 truncate text-[11px] text-gray-300">{country.name}</span>

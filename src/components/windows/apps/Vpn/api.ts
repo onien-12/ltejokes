@@ -79,6 +79,8 @@ export type LegCountry = {
   code: string;
   name: string;
   ok: number;
+  /** Healthy, but outside the best few the gateway keeps: a spare, not a fault. */
+  ranked_out: number;
   slow: number;
   dead: number;
   pruned: number;
@@ -89,7 +91,9 @@ export type LegCountry = {
 export type LegsView = {
   known: boolean;
   generated?: number;
-  summary?: { ok?: number; slow?: number; dead?: number; pruned?: number };
+  summary?: { ok?: number; ranked_out?: number; slow?: number; dead?: number; pruned?: number };
+  /** How many exits per country the gateway keeps in rotation. */
+  keep_per_country?: number | null;
   slow_threshold_mbps?: number | null;
   countries: LegCountry[];
 };
