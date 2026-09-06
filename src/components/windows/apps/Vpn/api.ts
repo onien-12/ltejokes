@@ -74,6 +74,25 @@ export type StatusEntry = {
   exits: StatusExit[];
 };
 
+/** Exits the gateway keeps per country, counted by state. Never named. */
+export type LegCountry = {
+  code: string;
+  name: string;
+  ok: number;
+  slow: number;
+  dead: number;
+  pruned: number;
+  best_mbps: number;
+};
+
+export type LegsView = {
+  known: boolean;
+  generated?: number;
+  summary?: { ok?: number; slow?: number; dead?: number; pruned?: number };
+  slow_threshold_mbps?: number | null;
+  countries: LegCountry[];
+};
+
 export type SubscriptionView = {
   server_name: string;
   vless_config: string;

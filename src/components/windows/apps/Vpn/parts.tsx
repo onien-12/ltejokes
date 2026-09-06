@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify-icon/react";
 import clsx from "clsx";
-import { copyText, qrUrl, StatusExit } from "./api";
+import { copyText, qrUrl, LegsView, StatusExit } from "./api";
 import { Translate } from "./i18n";
 
 export function Card({
@@ -361,6 +361,63 @@ export function ExitList({ exits, t }: { exits?: StatusExit[]; t: Translate }) {
         </div>
       ))}
     </div>
+  );
+}
+
+const LEG_STATES = [
+  { key: "ok", tone: "bg-emerald-400/80", label: "legOk" },
+  { key: "slow", tone: "bg-amber-400/80", label: "legSlow" },
+  { key: "dead", tone: "bg-red-400/80", label: "legDead" },
+  { key: "pruned", tone: "bg-gray-600/70", label: "legPruned" },
+] as const;
+
+/**
+ * One block per exit the gateway holds for a country, coloured by how it is
+ * doing. Counts only: which host is behind a block is not published, and a
+ * resold node's address changes anyway.
+ */
+export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
+  if (!legs.known || legs.countries.length === 0) return null;
+
+  return (
+    <Card className="mb-2.5">
+      <div className="text-[13px] font-semibold text-white">{t("legsTitle")}</div>
+      <p className="mt-1 text-[11px] leading-snug text-gray-500">{t("legsHint")}</p>
+
+      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
+        {LEG_STATES.map((state) => (
+          <span key={state.key} className="flex items-center gap-1 text-[10px] text-gray-500">
+            <span className={clsx("h-2 w-2 rounded-[3px]", state.tone)} />
+            {t(state.label)}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-2.5 flex flex-col gap-1.5 border-t border-white/[0.06] pt-2.5">
+        {legs.countries.map((country) => {
+          const alive = country.ok + country.slow;
+          return (
+            <div key={country.code} className="flex items-center gap-2">
+              <span className="w-[104px] shrink-0 truncate text-[11px] text-gray-300">{country.name}</span>
+              <span className="flex min-w-0 flex-1 flex-wrap gap-1">
+                {LEG_STATES.flatMap((state) =>
+                  Array.from({ length: country[state.key] }, (_, i) => (
+                    <span
+                      key={`${state.key}-${i}`}
+                      title={t(state.label)}
+                      className={clsx("h-3 w-5 rounded-[3px]", state.tone)}
+                    />
+                  )),
+                )}
+              </span>
+              <span className="shrink-0 font-code text-[10px] text-gray-600">
+                {alive ? `${country.best_mbps} Mbps` : t("legsNone")}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
   );
 }
 

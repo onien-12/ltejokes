@@ -10,6 +10,7 @@ import {
   describeLink,
   exchangeTgLink,
   ServerEntry,
+  LegsView,
   StatusEntry,
   TG_SESSION_KEY,
   vpnApi,
@@ -22,7 +23,7 @@ import Subscription from "./Subscription";
 import MyConfigs from "./MyConfigs";
 import Costs from "./Costs";
 import PowOverlay from "./PowOverlay";
-import { Card, Chip, CopyButton, ErrorBox, ExitList, Loader, StatusPill } from "./parts";
+import { Card, Chip, CopyButton, ErrorBox, ExitList, LegBlocks, Loader, StatusPill } from "./parts";
 
 type Tab = "configs" | "servers" | "status";
 type Toast = { id: number; message: string; kind: "success" | "error" };
@@ -64,6 +65,7 @@ export default function Vpn({
   const [servers, setServers] = useState<ServerEntry[]>([]);
   const [configs, setConfigs] = useState<ConfigEntry[]>([]);
   const [statuses, setStatuses] = useState<StatusEntry[] | null>(null);
+  const [legs, setLegs] = useState<LegsView | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -147,6 +149,15 @@ export default function Vpn({
       .then((res) => setStatuses(res.statuses || []))
       .catch((e) => setStatusError(e?.message || t("errReqFailed")));
   }, [tab, statuses, statusError, t]);
+
+  // The gateway's own pruner. Independent of the status probe above, and not
+  // worth an error of its own: without it the section simply is not there.
+  useEffect(() => {
+    if (tab !== "status" || legs) return;
+    vpnApi<LegsView>("/api/legs")
+      .then(setLegs)
+      .catch(() => setLegs({ known: false, countries: [] }));
+  }, [tab, legs]);
 
   const solveChallenge = useCallback(
     async (configId: string) => {
@@ -391,6 +402,7 @@ export default function Vpn({
               <Loader label={t("loading")} />
             ) : (
               <div className="flex flex-col gap-2.5">
+                {legs && <LegBlocks legs={legs} t={t} />}
                 {statuses.map((s) => (
                   <Card key={s.key || s.name}>
                     <div className="flex items-center justify-between gap-2">
