@@ -110,7 +110,7 @@ export type CostItem = {
   period: "month" | "quarter";
   monthly_rub: number;
   metered: boolean;
-  per_gb_rub?: number;
+  per_gb_rub?: number | null;
   used_gb?: number | null;
   traffic_rub?: number | null;
   live?: boolean;

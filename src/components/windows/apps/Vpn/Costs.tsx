@@ -74,14 +74,22 @@ export default function Costs({ t, lang }: { t: Translate; lang: string }) {
                 </div>
               )}
 
-              {item.metered && (
+              {/* used_gb is present whenever the host is metered at all. A flat
+                  host shows what it carried without a price attached: the number
+                  is worth watching even when nobody bills for it. */}
+              {item.used_gb !== undefined && (
                 <div className="mt-1 flex items-center gap-1.5 text-[10.5px] text-blue-300/80">
                   <Icon icon="material-symbols:swap-vert-rounded" width="12" height="12" />
                   {item.live ? (
                     <span>
                       {item.since ? `${t("costsTrafficSince")} ${item.since}` : t("costsTraffic")}:{" "}
-                      {item.used_gb?.toLocaleString("ru-RU")} {t("gb")} ×{" "}
-                      {item.per_gb_rub} ₽ = <b>{rub(item.traffic_rub ?? 0)}</b>
+                      {item.used_gb?.toLocaleString("ru-RU")} {t("gb")}
+                      {item.metered && (
+                        <>
+                          {" × "}
+                          {item.per_gb_rub} ₽ = <b>{rub(item.traffic_rub ?? 0)}</b>
+                        </>
+                      )}
                     </span>
                   ) : (
                     <span className="text-gray-600">{t("costsTrafficUnavailable")}</span>
