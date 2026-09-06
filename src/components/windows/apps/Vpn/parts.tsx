@@ -411,7 +411,7 @@ export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
                 )}
               </span>
               <span className="shrink-0 font-code text-[10px] text-gray-600">
-                {alive ? `${country.best_mbps} Mbps` : t("legsNone")}
+                {alive ? `${country.best_mbytes} ${t("legsSpeedUnit")}` : t("legsNone")}
               </span>
             </div>
           );

@@ -82,7 +82,8 @@ export type LegCountry = {
   slow: number;
   dead: number;
   pruned: number;
-  best_mbps: number;
+  /** Megabytes per second, despite what the pruner calls the field. */
+  best_mbytes: number;
 };
 
 export type LegsView = {
