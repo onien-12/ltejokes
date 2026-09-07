@@ -405,7 +405,15 @@ export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
           return (
             <div key={country.code} className="flex items-center gap-2">
               <span className="w-[104px] shrink-0 truncate text-[11px] text-gray-300">{country.name}</span>
-              <span className="flex min-w-0 flex-1 flex-wrap gap-1">
+              <span className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
+                {country.borrowed && (
+                  <Icon
+                    icon="material-symbols:subdirectory-arrow-right-rounded"
+                    width="13"
+                    height="13"
+                    className="text-gray-500"
+                  />
+                )}
                 {LEG_STATES.flatMap((state) =>
                   Array.from({ length: country[state.key] }, (_, i) => (
                     <span
@@ -417,7 +425,11 @@ export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
                 )}
               </span>
               <span className="shrink-0 font-code text-[10px] text-gray-600">
-                {alive ? `${country.best_mbytes} ${t("legsSpeedUnit")}` : t("legsNone")}
+                {alive
+                  ? `${country.best_mbytes} ${t("legsSpeedUnit")}`
+                  : country.borrowed
+                    ? `${t("legBorrowed")} ${country.borrowed_from[0] ?? ""}`
+                    : t("legsNone")}
               </span>
             </div>
           );

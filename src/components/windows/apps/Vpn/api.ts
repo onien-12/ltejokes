@@ -109,6 +109,9 @@ export type LegCountry = {
   pruned: number;
   /** Megabytes per second, despite what the pruner calls the field. */
   best_mbytes: number;
+  /** No leg of its own, but routing through one lent by another country. */
+  borrowed: boolean;
+  borrowed_from: string[];
 };
 
 export type LegsView = {
