@@ -96,6 +96,11 @@ export type StatusEntry = {
 export type LegCountry = {
   code: string;
   name: string;
+  /** The leg actually carrying this country's traffic. */
+  primary: number;
+  /** Wired up to take over the moment the primary stops answering. */
+  fallback: number;
+  /** Older feeds did not split the two; kept so one still renders. */
   ok: number;
   /** Healthy, but outside the best few the gateway keeps: a spare, not a fault. */
   ranked_out: number;
@@ -109,7 +114,15 @@ export type LegCountry = {
 export type LegsView = {
   known: boolean;
   generated?: number;
-  summary?: { ok?: number; ranked_out?: number; slow?: number; dead?: number; pruned?: number };
+  summary?: {
+    primary?: number;
+    fallback?: number;
+    ok?: number;
+    ranked_out?: number;
+    slow?: number;
+    dead?: number;
+    pruned?: number;
+  };
   /** How many exits per country the gateway keeps in rotation. */
   keep_per_country?: number | null;
   slow_threshold_mbps?: number | null;

@@ -366,6 +366,9 @@ export function ExitList({ exits, t }: { exits?: StatusExit[]; t: Translate }) {
 
 // Best first, which is also the order the blocks are drawn in.
 const LEG_STATES = [
+  { key: "primary", tone: "bg-emerald-400/90", label: "legPrimary" },
+  { key: "fallback", tone: "bg-teal-400/70", label: "legFallback" },
+  // Feeds from before primary and fallback were split still send this.
   { key: "ok", tone: "bg-emerald-400/80", label: "legOk" },
   { key: "ranked_out", tone: "bg-blue-400/80", label: "legRanked" },
   { key: "slow", tone: "bg-amber-400/80", label: "legSlow" },
@@ -387,7 +390,7 @@ export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
       <p className="mt-1 text-[11px] leading-snug text-gray-500">{t("legsHint")}</p>
 
       <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
-        {LEG_STATES.map((state) => (
+        {LEG_STATES.filter((s) => legs.countries.some((c) => c[s.key] > 0)).map((state) => (
           <span key={state.key} className="flex items-center gap-1 text-[10px] text-gray-500">
             <span className={clsx("h-2 w-2 rounded-[3px]", state.tone)} />
             {t(state.label)}
@@ -397,7 +400,8 @@ export function LegBlocks({ legs, t }: { legs: LegsView; t: Translate }) {
 
       <div className="mt-2.5 flex flex-col gap-1.5 border-t border-white/[0.06] pt-2.5">
         {legs.countries.map((country) => {
-          const alive = country.ok + country.ranked_out + country.slow;
+          const alive =
+            country.primary + country.fallback + country.ok + country.ranked_out + country.slow;
           return (
             <div key={country.code} className="flex items-center gap-2">
               <span className="w-[104px] shrink-0 truncate text-[11px] text-gray-300">{country.name}</span>
