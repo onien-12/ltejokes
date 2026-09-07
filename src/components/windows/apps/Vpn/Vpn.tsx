@@ -8,6 +8,7 @@ import {
   CLIENT_ID_KEY,
   ConfigEntry,
   describeLink,
+  PairedIdentity,
   exchangeTgLink,
   ServerEntry,
   LegsView,
@@ -22,6 +23,7 @@ import Servers from "./Servers";
 import Subscription from "./Subscription";
 import MyConfigs from "./MyConfigs";
 import Costs from "./Costs";
+import Pairing from "./Pairing";
 import PowOverlay from "./PowOverlay";
 import { Card, Chip, CopyButton, ErrorBox, ExitList, LegBlocks, Loader, StatusPill } from "./parts";
 
@@ -75,6 +77,7 @@ export default function Vpn({
   // Deliberately outside the tabs: the costs are public, so they must be readable
   // without an invite code and from the subscription view too.
   const [showCosts, setShowCosts] = useState(false);
+  const [showPairing, setShowPairing] = useState(false);
 
   const showToast = useCallback((message: string, kind: "success" | "error" = "success") => {
     const toast: Toast = { id: Date.now() + Math.random(), message, kind };
@@ -95,6 +98,15 @@ export default function Vpn({
     describeLink(subscription)
       .then(async ({ kind }) => {
         if (cancelled) return;
+        if (kind === "pairing") {
+          // A scanned QR: the token is the credential, so no puzzle is asked for.
+          adoptPairing(await vpnApi<PairedIdentity>("/api/pair/redeem", "POST", {
+            token: subscription,
+          }));
+          if (winId) setCustomWindow({ id: winId, name: "VPN" });
+          return;
+        }
+
         if (kind !== "auth") {
           if (winId) setCustomWindow({ id: winId, name: "VPN - config" });
           return setLinkKind("subscription");
@@ -158,6 +170,24 @@ export default function Vpn({
       .then(setLegs)
       .catch(() => setLegs({ known: false, countries: [] }));
   }, [tab, legs]);
+
+  /**
+   * Adopt whoever a pairing code or QR belonged to.
+   *
+   * A telegram account arrives with a session token; an invite-code account is
+   * just its device id, so the new device takes that on directly.
+   */
+  const adoptPairing = useCallback((paired: PairedIdentity) => {
+    if (paired.id_type === "tg" && paired.session) {
+      localStorage.setItem(TG_SESSION_KEY, paired.session);
+      setTgSession(paired.session);
+    } else {
+      localStorage.setItem(CLIENT_ID_KEY, paired.identity);
+      setClientId(paired.identity);
+    }
+    setLinkKind("subscription");
+    showToast(t("pairTitle"));
+  }, [showToast, t]);
 
   const solveChallenge = useCallback(
     async (configId: string) => {
@@ -373,6 +403,7 @@ export default function Vpn({
               setDebugNoAntibot(debug);
               setClientId(id);
             }}
+            onPaired={adoptPairing}
             />
           </>
         ) : (
@@ -382,7 +413,23 @@ export default function Vpn({
             {loading ? (
               <Loader label={t("loadingData")} />
             ) : tab === "configs" ? (
-              <Configs configs={configs} t={t} onReveal={reveal} onToast={showToast} />
+              <>
+                <div className="mb-2.5 flex justify-end">
+                  <Chip
+                    icon="material-symbols:qr-code-2"
+                    active={showPairing}
+                    onClick={() => setShowPairing((v) => !v)}
+                  >
+                    {t("pairShow")}
+                  </Chip>
+                </div>
+                {showPairing && (
+                  <div className="mb-2.5">
+                    <Pairing clientId={clientId} session={tgSession} t={t} />
+                  </div>
+                )}
+                <Configs configs={configs} t={t} onReveal={reveal} onToast={showToast} />
+              </>
             ) : tab === "servers" ? (
               <Servers servers={servers} busy={busy} t={t} onAllocate={allocate} />
             ) : statusError ? (

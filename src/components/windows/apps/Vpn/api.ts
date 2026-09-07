@@ -4,7 +4,7 @@ export const CLIENT_ID_KEY = "client_id";
 /** Session issued by exchanging the bot's one-time login link. */
 export const TG_SESSION_KEY = "tg_session";
 
-export type LinkKind = "subscription" | "user" | "auth" | "session";
+export type LinkKind = "subscription" | "user" | "auth" | "session" | "pairing";
 
 /** What a link token is for. The server owns the key, so it decides. */
 export const describeLink = (token: string) =>
@@ -13,6 +13,24 @@ export const describeLink = (token: string) =>
 /** Trades the bot's one-time login link for a durable session token. */
 export const exchangeTgLink = (token: string) =>
   vpnApi<{ session: string; tg_id: string }>("/api/auth/tg", "POST", { token });
+
+/** A code and a QR link that hand this account to another device. */
+export type PairingView = {
+  code: string;
+  token: string;
+  expires_in: number;
+  url: string;
+};
+
+/** Whoever a pairing code or token belonged to, once it is spent. */
+export type PairedIdentity = {
+  id_type: "tg" | "web";
+  identity: string;
+  session?: string;
+};
+
+export const pairQrUrl = (token: string) =>
+  `${VPN_API}/api/pair/qr/${encodeURIComponent(token)}.png`;
 
 export type ServerProtocols = Record<string, string>;
 
